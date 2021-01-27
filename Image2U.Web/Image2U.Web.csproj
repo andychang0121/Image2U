@@ -223,6 +223,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\ImageHelper.cs" />
+    <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\StringHelper.cs" />
     <Compile Include="Helper\ZipHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -242,6 +243,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\newSite.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -251,6 +253,8 @@
     <None Include=".bin\git.cmd" />
     <None Include=".bin\node.cmd" />
     <None Include=".bin\npm.cmd" />
+    <None Include="Properties\PublishProfiles\image2u - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\image2u - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\Image2U\site.js" />
     <Content Include="Scripts\Image2U\Upload.index.js" />

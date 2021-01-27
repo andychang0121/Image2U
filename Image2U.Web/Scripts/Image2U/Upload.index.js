@@ -33,13 +33,19 @@ uploadFiles.addEventListener("click", function (e) {
 
 }, false);
 
+function pageReload()
+{
+    location.reload();
+}
+
 function FileUpload(form) {
+    const _loader = document.getElementById("overlay");
     const API_ENDPOINT = "/upload/post";
     const request = new XMLHttpRequest();
     request.open("POST", API_ENDPOINT, true);
     request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
-
+            _loader.style.display = "none";
             const _response = JSON.parse(request.response);
 
             if (_response.IsOk) {
@@ -48,6 +54,7 @@ function FileUpload(form) {
             }
         }
     };
+    _loader.style.display = "block";
     request.send(form);
 }
 
@@ -67,10 +74,10 @@ function handleFiles(files) {
     if (!files.length) {
         return;
     }
-
-    const fileSelectResult = document.getElementById("fileSelectResult");
-    const tableHead = fileSelectResult.querySelector("thead");
-    const tableBody = fileSelectResult.querySelector("tbody");
+    const _uploadFiles = document.getElementById("uploadFiles");
+    const _fileSelectResult = document.getElementById("fileSelectResult");
+    const tableHead = _fileSelectResult.querySelector("thead");
+    const tableBody = _fileSelectResult.querySelector("tbody");
     tableHead.innerHTML = "";
     tableBody.innerHTML = "";
 
@@ -82,6 +89,8 @@ function handleFiles(files) {
     headTr.appendChild(getTh("Preview"));
 
     const filesCount = files.length;
+
+    _uploadFiles.disabled = false;
 
     const fileLists = [];
     for (let i = 0; i < filesCount; i++) {

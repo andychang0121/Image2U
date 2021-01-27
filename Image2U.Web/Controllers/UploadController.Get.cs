@@ -1,6 +1,5 @@
-﻿using Image2U.Web.Models.Image;
-using Newtonsoft.Json;
-using System;
+﻿using Image2U.Web.Helper;
+using Image2U.Web.Models.Image;
 using System.Web.Mvc;
 
 namespace Image2U.Web.Controllers
@@ -13,7 +12,7 @@ namespace Image2U.Web.Controllers
 
             string tempRs = (string)TempData[encodeKey];
 
-            ResponseData jsonRs = JsonConvert.DeserializeObject<ResponseData>(tempRs);
+            ResponseData jsonRs = tempRs.Deserialize<ResponseData>();
 
             byte[] bytes = jsonRs.Result;
 

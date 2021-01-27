@@ -10,28 +10,68 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Newtonsoft.Json;
-using WebGrease.Css.Extensions;
+using Microsoft.Ajax.Utilities;
 
 namespace Image2U.Web.Controllers
 {
-    public partial class UploadController : Controller
+    public partial class UploadController
     {
-        readonly Dictionary<string, ImageOutput> dict = new Dictionary<string, ImageOutput>
+        private readonly Dictionary<string, ImageOutput> dict =
+            new Dictionary<string, ImageOutput>
         {
-            {"PCHOME",new ImageOutput {
+            {"PCHOME-尺寸1",new ImageOutput {
                 Width = 800,
                 MaxHeight = 120,
-                DPI = 100
+                DPI = 72
+            }},
+            {"PCHOME-尺寸2",new ImageOutput {
+                Width = 360,
+                MaxHeight = 360,
+                DPI = 72
+            }},
+            {"PCHOME-尺寸3",new ImageOutput {
+                Width = 475,
+                MaxHeight = 270,
+                DPI = 72
+            }},
+            {"PCHOME-尺寸4",new ImageOutput {
+                Width = 414,
+                MaxHeight = 270,
+                DPI = 72
+            }},
+            {"PCHOME-尺寸5",new ImageOutput {
+                Width = 314,
+                MaxHeight = 282,
+                DPI = 72
             }},
             {"Momo",new ImageOutput {
                 Width = 1000,
                 MaxHeight = 300,
                 DPI = 200
             }},
-            {"Shopee",new ImageOutput {
+            {"Momo-館內輪播看板",new ImageOutput {
+                Width = 818,
+                MaxHeight = 370,
+                DPI = 200
+            }},
+            {"Momo-輪播看板",new ImageOutput {
+                Width = 960,
+                MaxHeight = 480,
+                DPI = 200
+            }},
+            {"Shopee-輪播看板",new ImageOutput {
+                Width = 2000,
+                MinHeight = 100,
+                MaxHeight = 2200
+            }},
+            {"Shopee-簡易看板",new ImageOutput {
                 Width = 600,
                 MaxHeight = 600
+            }},
+            {"Shopee-簡易圖片-圖片點擊區",new ImageOutput {
+                Width = 1200,
+                MinHeight = 100,
+                MaxHeight = 2200
             }}
         };
 
@@ -59,16 +99,14 @@ namespace Image2U.Web.Controllers
 
             string key = Guid.NewGuid().ToString();
 
-            TempData[key] = JsonConvert.SerializeObject(response);
+            TempData[key] = response.Serialize();
 
             ResponseResult rs = new ResponseResult
             {
                 IsOk = true,
                 Data = key
             };
-
-
-            return Json(rs);
+            return Json(rs, JsonRequestBehavior.AllowGet);
         }
 
         private static IEnumerable<ZipData> GetFileResult(IEnumerable<HttpPostedFileBase> files,
@@ -90,7 +128,7 @@ namespace Image2U.Web.Controllers
 
                         (string fileName, byte[] bytes) = GetFileResult(file, isPortait, ecSetting.Width);
 
-                        fileName = $"{ecName}-{fileName}";
+                        fileName = $"{ecName}\\{fileName}";
 
                         ZipData zipData = new ZipData
                         {
@@ -131,7 +169,7 @@ namespace Image2U.Web.Controllers
         }
 
         private static double GetRatio(bool isPortait, int limitPx, int width, int height)
-            => isPortait ? limitPx / (double)height : 800 / (double)width;
+            => isPortait ? limitPx / (double)height : limitPx / (double)width;
 
         private static string GetFileName(string prefix, int w, int h, string extName)
             => $"{prefix}-{w}x{h}.{extName}";
