@@ -5,6 +5,8 @@
         public bool IsOk { get; set; }
 
         public string Message { get; set; }
+
+        public object Data { get; set; }
     }
 
     public class ResponseResult<T>

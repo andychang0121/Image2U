@@ -39,7 +39,13 @@ function FileUpload(form) {
     request.open("POST", API_ENDPOINT, true);
     request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
-            window.open("/upload/get", "_blank");
+
+            const _response = JSON.parse(request.response);
+
+            if (_response.IsOk) {
+                const _url = `/upload/get?tempdataKey=${_response.Data}`;
+                window.open(_url);
+            }
         }
     };
     request.send(form);
