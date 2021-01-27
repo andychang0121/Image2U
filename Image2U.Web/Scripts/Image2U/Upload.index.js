@@ -33,15 +33,30 @@ uploadFiles.addEventListener("click", function (e) {
 
 }, false);
 
-function pageReload()
-{
+function pageReload() {
     location.reload();
+}
+
+function updateProgress(event) {
+
+    const _progress = document.getElementById("ctlProgress");
+
+    const percentComplete = (event.loaded / event.total) * 100;
+
+    //_progress.value = percentComplete * 100;
+
+    console.log(event, event.loaded, event.total, event.loaded / event.total);
+
+    if (event.lengthComputable) {}
 }
 
 function FileUpload(form) {
     const _loader = document.getElementById("overlay");
     const API_ENDPOINT = "/upload/post";
     const request = new XMLHttpRequest();
+
+    request.upload.addEventListener("progress", updateProgress, false);
+
     request.open("POST", API_ENDPOINT, true);
     request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
