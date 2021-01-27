@@ -38,24 +38,41 @@ function pageReload() {
 }
 
 function updateProgress(event) {
-
+    //https://codepen.io/PerfectIsShit/pen/zogMXP
     const _progress = document.getElementById("ctlProgress");
 
-    const percentComplete = (event.loaded / event.total) * 100;
+    var percentComplete = (event.loaded / event.total) * 100;
 
-    //_progress.value = percentComplete * 100;
+    var pc = Math.round(percentComplete);
 
-    console.log(event, event.loaded, event.total, event.loaded / event.total);
+    _progress.value = pc;
 
-    if (event.lengthComputable) {}
+    console.log(event, event.loaded, event.total);
+
+    if (event.lengthComputable) { }
+}
+
+function completeHandler() {
+
+}
+
+function errorHandler() {
+
+}
+
+function abortHandler() {
+
 }
 
 function FileUpload(form) {
     const _loader = document.getElementById("overlay");
     const API_ENDPOINT = "/upload/post";
-    const request = new XMLHttpRequest();
 
-    request.upload.addEventListener("progress", updateProgress, false);
+    const request = new XMLHttpRequest();
+    request.addEventListener("progress", updateProgress, false);
+    request.addEventListener("load", completeHandler, false);
+    request.addEventListener("error", errorHandler, false);
+    request.addEventListener("abort", abortHandler, false);
 
     request.open("POST", API_ENDPOINT, true);
     request.onreadystatechange = () => {
