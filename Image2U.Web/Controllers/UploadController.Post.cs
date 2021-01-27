@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Image2U.Web.Helper;
+using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
+using Microsoft.Extensions.Primitives;
 
 namespace Image2U.Web.Controllers
 {
@@ -27,7 +30,21 @@ namespace Image2U.Web.Controllers
             }}
         };
 
+        private static bool[] GetIsPortaits(StringValues stringValue)
+            => ((string)stringValue)
+                .GetStringArray()
+                .GetStingArrayToBoolean()
+                ?.ToArray();
 
+
+        public ActionResult Post(RequestFormData formData)
+        {
+            bool[] isPortaits = GetIsPortaits(formData.IsPortaits);
+
+            var files = formData.Files;
+
+            return Json(null);
+        }
 
 
     }

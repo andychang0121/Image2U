@@ -4,11 +4,11 @@ using Newtonsoft.Json;
 
 namespace Image2U.Web.Models
 {
-    public class RequestData
+    public class RequestFormData
     {
         [JsonProperty("isPortaits")]
         public string IsPortaits { set; get; }
 
-        public IEnumerable<HttpPostedFileBase> File { set; get; }
+        public IEnumerable<HttpPostedFileBase> Files { set; get; }
     }
 }
