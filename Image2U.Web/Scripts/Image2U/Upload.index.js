@@ -1,8 +1,16 @@
-﻿const [fileSelect, fileElem, uploadFiles] = [
+﻿const _loader = document.getElementById("overlay");
+const _bsProgress = document.getElementById("progress");
+const API_ENDPOINT = "/upload/post";
+
+const [fileSelect, fileElem, uploadFiles] = [
     document.getElementById("fileSelect")
     , document.getElementById("fileElem")
     , document.getElementById("uploadFiles")
 ];
+
+fileElem.addEventListener("change", function () {
+    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
+});
 
 fileSelect.addEventListener("click", function (e) {
     if (fileElem) {
@@ -23,7 +31,7 @@ uploadFiles.addEventListener("click", function (e) {
 
     for (let image of imgs) {
         const isPortait = image.clientHeight > image.clientWidth;
-        form.append("file", image.file);
+        form.append("files", image.file);
         isPortaitList.push(isPortait);
     }
 
@@ -38,56 +46,97 @@ function pageReload() {
 }
 
 function updateProgress(event) {
-    //https://codepen.io/PerfectIsShit/pen/zogMXP
-    const _progress = document.getElementById("ctlProgress");
+    if (event.lengthComputable) {
 
-    var percentComplete = (event.loaded / event.total) * 100;
+        const percentComplete = (event.loaded / event.total) * 100;
 
-    var pc = Math.round(percentComplete);
+        const pc = Math.round(percentComplete);
 
-    _progress.value = pc;
+        var width = pc;
 
-    console.log(event, event.loaded, event.total);
+        const timeId = setInterval(frame, 100);
 
-    if (event.lengthComputable) { }
+        function frame() {
+            if (width > 100) {
+                clearInterval(timeId);
+            } else {
+                width++;
+                _bsProgress.style.width = width + "%";
+                _bsProgress.innerHTML = (width - 1) + "%";
+            }
+        }
+    }
 }
 
-function completeHandler() {
+function completeHandler() { }
 
-}
+function errorHandler() { }
 
-function errorHandler() {
-
-}
-
-function abortHandler() {
-
-}
+function abortHandler() { }
 
 function FileUpload(form) {
-    const _loader = document.getElementById("overlay");
-    const API_ENDPOINT = "/upload/post";
-
-    const request = new XMLHttpRequest();
-    request.addEventListener("progress", updateProgress, false);
-    request.addEventListener("load", completeHandler, false);
-    request.addEventListener("error", errorHandler, false);
-    request.addEventListener("abort", abortHandler, false);
-
-    request.open("POST", API_ENDPOINT, true);
-    request.onreadystatechange = () => {
-        if (request.readyState === 4 && request.status === 200) {
+    $.post({
+        url: API_ENDPOINT,
+        headers: { 'X-Requested-With': "XMLHttpRequest" },
+        contentType: false,
+        processData: false,
+        mimeType: "multipart/form-data",
+        data: form,
+        xhr: function () {
+            const xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", updateProgress, false);
+            return xhr;
+        },
+        beforeSend: function () {
+            _loader.style.display = "block";
+            _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
+        },
+        success: function (r) {
+            const _response = JSON.parse(r);
+            _bsProgress.classList.value = "progress-bar progress-bar-info";
             _loader.style.display = "none";
-            const _response = JSON.parse(request.response);
-
             if (_response.IsOk) {
                 const _url = `/upload/get?tempdataKey=${_response.Data}`;
                 window.open(_url);
             }
         }
-    };
-    _loader.style.display = "block";
-    request.send(form);
+    });
+    return;
+
+
+    //const request = new XMLHttpRequest();
+
+    //request.upload.addEventListener("progress", updateProgress, false);
+    //request.addEventListener("load", completeHandler, false);
+    //request.addEventListener("error", errorHandler, false);
+    //request.addEventListener("abort", abortHandler, false);
+
+    //console.log(request, request.upload);
+
+    //request.open("POST", API_ENDPOINT, true);
+    //request.setRequestHeader("Cache-Control", "no-cache");
+    //request.setRequestHeader('Accept', 'multipart/form-data');
+    //request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    ////request.setRequestHeader("Content-Type", "multipart/form-data");
+    ////request.setRequestHeader("X-File-Name", file.fileName);
+    ////request.setRequestHeader("X-File-Size", file.fileSize);
+    ////request.setRequestHeader("X-File-Type", file.type);
+
+    //request.onreadystatechange = function (e) {
+    //    if (request.readyState === 4 && request.status === 200) {
+
+    //        _loader.style.display = "none";
+
+    //        const _response = JSON.parse(request.response);
+
+    //        if (_response.IsOk) {
+    //            const _url = `/upload/get?tempdataKey=${_response.Data}`;
+    //            window.open(_url);
+    //        }
+    //    }
+    //};
+    //_loader.style.display = "block";
+    //request.send(form);
 }
 
 function handleFiles(files) {

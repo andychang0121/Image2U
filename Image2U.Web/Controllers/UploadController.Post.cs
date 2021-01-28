@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
+using System.Collections.Specialized;
 
 namespace Image2U.Web.Controllers
 {
@@ -81,12 +82,42 @@ namespace Image2U.Web.Controllers
                 .GetStingArrayToBoolean()
                 ?.ToArray();
 
+        public ActionResult Post()
+        {
+            HttpRequest request = System.Web.HttpContext.Current.Request;
 
-        public ActionResult Post(RequestFormData formData)
+            if (request.Files.Count <= 0) return Json(new ResponseResult
+            {
+                IsOk = false
+            });
+
+            return PostProcess(request);
+        }
+
+        public ActionResult PostProcess(HttpRequest request)
+        {
+            IEnumerable<HttpPostedFile> formFiles = request.GetHttpFiles();
+
+            string isPortaits = request.Form
+                .GetDictionaryValue()
+                .GetDictionaryValue("isPortaits");
+
+            RequestFormData req = new RequestFormData
+            {
+                IsPortaits = isPortaits,
+                File = formFiles
+            };
+
+            ActionResult rs = PostProcess(req);
+
+            return rs;
+        }
+
+        public ActionResult PostProcess(RequestFormData formData)
         {
             bool[] isPortaits = GetIsPortaits(formData.IsPortaits);
 
-            IEnumerable<HttpPostedFileBase> files = formData.File;
+            IEnumerable<HttpPostedFile> files = formData.File;
 
             IEnumerable<ZipData> entryFiles = GetFileResult(files, isPortaits, dict);
 
@@ -109,7 +140,7 @@ namespace Image2U.Web.Controllers
             return Json(rs, JsonRequestBehavior.AllowGet);
         }
 
-        private static IEnumerable<ZipData> GetFileResult(IEnumerable<HttpPostedFileBase> files,
+        private static IEnumerable<ZipData> GetFileResult(IEnumerable<HttpPostedFile> files,
             IReadOnlyList<bool> isPortaits, Dictionary<string, ImageOutput> ecProfile)
         {
             List<ZipData> entryFiles = new List<ZipData>();
@@ -124,7 +155,7 @@ namespace Image2U.Web.Controllers
                     {
                         bool isPortait = isPortaits?[f.i] ?? false;
 
-                        HttpPostedFileBase file = f.e;
+                        HttpPostedFile file = f.e;
 
                         (string fileName, byte[] bytes) = GetFileResult(file, isPortait, ecSetting.Width);
 
@@ -144,7 +175,7 @@ namespace Image2U.Web.Controllers
             return entryFiles;
         }
 
-        private static ValueTuple<string, byte[]> GetFileResult(HttpPostedFileBase formFile, bool isPortait, int limitPx)
+        private static ValueTuple<string, byte[]> GetFileResult(HttpPostedFile formFile, bool isPortait, int limitPx)
         {
             string ext = formFile.FileName.Split('.').LastOrDefault();
 

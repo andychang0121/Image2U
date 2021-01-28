@@ -9,6 +9,6 @@ namespace Image2U.Web.Models
         [JsonProperty("isPortaits")]
         public string IsPortaits { set; get; }
 
-        public IEnumerable<HttpPostedFileBase> File { set; get; }
+        public IEnumerable<HttpPostedFile> File { set; get; }
     }
 }

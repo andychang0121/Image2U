@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image2U.Web", "Image2U.Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image2U.Web.Tests", "Image2U.Web.Tests\Image2U.Web.Tests.csproj", "{E6A3D0BC-1466-4EDF-B9B3-F76A75A1DEB6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{B0D0EF28-B549-470E-BDB0-78B31CAFFFAB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{26BCB19E-A25D-4281-B055-72881BDA0F8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
