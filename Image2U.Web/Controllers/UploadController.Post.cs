@@ -76,8 +76,8 @@ namespace Image2U.Web.Controllers
             }}
         };
 
-        private static bool[] GetIsPortaits(StringValues stringValue)
-            => ((string)stringValue)
+        private static bool[] GetIsPortaits(string stringValue)
+            => stringValue
                 .GetStringArray()
                 .GetStingArrayToBoolean()
                 ?.ToArray();
@@ -91,10 +91,21 @@ namespace Image2U.Web.Controllers
                 IsOk = false
             });
 
-            return PostProcess(request);
+            ResponseData response = PostProcess(request);
+
+            string key = Guid.NewGuid().ToString();
+
+            TempData[key] = response.Serialize();
+
+            ResponseResult rs = new ResponseResult
+            {
+                IsOk = true,
+                Data = key
+            };
+            return Json(rs, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult PostProcess(HttpRequest request)
+        public ResponseData PostProcess(HttpRequest request)
         {
             IEnumerable<HttpPostedFile> formFiles = request.GetHttpFiles();
 
@@ -108,12 +119,12 @@ namespace Image2U.Web.Controllers
                 File = formFiles
             };
 
-            ActionResult rs = PostProcess(req);
+            ResponseData rs = PostProcess(req);
 
             return rs;
         }
 
-        public ActionResult PostProcess(RequestFormData formData)
+        public ResponseData PostProcess(RequestFormData formData)
         {
             bool[] isPortaits = GetIsPortaits(formData.IsPortaits);
 
@@ -128,16 +139,18 @@ namespace Image2U.Web.Controllers
                 Result = zipRs
             };
 
-            string key = Guid.NewGuid().ToString();
+            return response;
 
-            TempData[key] = response.Serialize();
+            //string key = Guid.NewGuid().ToString();
 
-            ResponseResult rs = new ResponseResult
-            {
-                IsOk = true,
-                Data = key
-            };
-            return Json(rs, JsonRequestBehavior.AllowGet);
+            //TempData[key] = response.Serialize();
+
+            //ResponseResult rs = new ResponseResult
+            //{
+            //    IsOk = true,
+            //    Data = key
+            //};
+            //return Json(rs, JsonRequestBehavior.AllowGet);
         }
 
         private static IEnumerable<ZipData> GetFileResult(IEnumerable<HttpPostedFile> files,

@@ -8,6 +8,8 @@ const [fileSelect, fileElem, uploadFiles] = [
     , document.getElementById("uploadFiles")
 ];
 
+let _width = 0;
+
 fileElem.addEventListener("change", function () {
     _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
 });
@@ -52,19 +54,11 @@ function updateProgress(event) {
 
         const pc = Math.round(percentComplete);
 
-        var width = pc;
-
-        const timeId = setInterval(frame, 100);
-
-        function frame() {
-            if (width > 100) {
-                clearInterval(timeId);
-            } else {
-                width++;
-                _bsProgress.style.width = width + "%";
-                _bsProgress.innerHTML = (width - 1) + "%";
-            }
+        for (let i = _width; i < pc; i++) {
+            _bsProgress.style.width = i + 1 + "%";
+            _bsProgress.innerHTML = `${i + 1}% (complete)`;
         }
+        _width = pc;
     }
 }
 
@@ -75,68 +69,69 @@ function errorHandler() { }
 function abortHandler() { }
 
 function FileUpload(form) {
-    $.post({
-        url: API_ENDPOINT,
-        headers: { 'X-Requested-With': "XMLHttpRequest" },
-        contentType: false,
-        processData: false,
-        mimeType: "multipart/form-data",
-        data: form,
-        xhr: function () {
-            const xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", updateProgress, false);
-            return xhr;
-        },
-        beforeSend: function () {
-            _loader.style.display = "block";
-            _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
-        },
-        success: function (r) {
-            const _response = JSON.parse(r);
-            _bsProgress.classList.value = "progress-bar progress-bar-info";
-            _loader.style.display = "none";
-            if (_response.IsOk) {
-                const _url = `/upload/get?tempdataKey=${_response.Data}`;
-                window.open(_url);
-            }
-        }
-    });
-    return;
-
-
-    //const request = new XMLHttpRequest();
-
-    //request.upload.addEventListener("progress", updateProgress, false);
-    //request.addEventListener("load", completeHandler, false);
-    //request.addEventListener("error", errorHandler, false);
-    //request.addEventListener("abort", abortHandler, false);
-
-    //console.log(request, request.upload);
-
-    //request.open("POST", API_ENDPOINT, true);
-    //request.setRequestHeader("Cache-Control", "no-cache");
-    //request.setRequestHeader('Accept', 'multipart/form-data');
-    //request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    ////request.setRequestHeader("Content-Type", "multipart/form-data");
-    ////request.setRequestHeader("X-File-Name", file.fileName);
-    ////request.setRequestHeader("X-File-Size", file.fileSize);
-    ////request.setRequestHeader("X-File-Type", file.type);
-
-    //request.onreadystatechange = function (e) {
-    //    if (request.readyState === 4 && request.status === 200) {
-
+    //$.post({
+    //    url: API_ENDPOINT,
+    //    headers: { 'X-Requested-With': "XMLHttpRequest" },
+    //    contentType: false,
+    //    processData: false,
+    //    mimeType: "multipart/form-data",
+    //    data: form,
+    //    xhr: function () {
+    //        const xhr = new window.XMLHttpRequest();
+    //        xhr.upload.addEventListener("progress", updateProgress, false);
+    //        return xhr;
+    //    },
+    //    beforeSend: function () {
+    //        _loader.style.display = "block";
+    //        _bsProgress.style.width = "";
+    //        _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
+    //    },
+    //    success: function (r) {
+    //        const _response = JSON.parse(r);
+    //        _bsProgress.classList.value = "progress-bar progress-bar-info";
     //        _loader.style.display = "none";
-
-    //        const _response = JSON.parse(request.response);
-
     //        if (_response.IsOk) {
     //            const _url = `/upload/get?tempdataKey=${_response.Data}`;
     //            window.open(_url);
     //        }
     //    }
-    //};
-    //_loader.style.display = "block";
-    //request.send(form);
+    //});
+    //return;
+
+
+    const request = new XMLHttpRequest();
+
+    request.upload.addEventListener("progress", updateProgress, false);
+    request.addEventListener("load", completeHandler, false);
+    request.addEventListener("error", errorHandler, false);
+    request.addEventListener("abort", abortHandler, false);
+    request.open("POST", API_ENDPOINT, true);
+    request.setRequestHeader("Cache-Control", "no-cache");
+    request.setRequestHeader('Accept', 'multipart/form-data');
+    request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+    request.onreadystatechange = function (e) {
+        if (request.readyState === 4 && request.status === 200) {
+            _bsProgress.classList.value = "progress-bar progress-bar-info";
+            _loader.style.display = "none";
+
+            try {
+                const _response = JSON.parse(request.response);
+
+                if (_response.IsOk) {
+                    const _url = `/upload/get?tempdataKey=${_response.Data}`;
+                    window.open(_url);
+                }
+            } catch (e) {
+
+            }
+
+        }
+    };
+    _loader.style.display = "block";
+    _bsProgress.style.width = "";
+    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
+    request.send(form);
 }
 
 function handleFiles(files) {
