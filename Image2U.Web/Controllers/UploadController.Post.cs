@@ -2,7 +2,7 @@
 using Image2U.Web.Helper;
 using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
-using Microsoft.Extensions.Primitives;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,8 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.Ajax.Utilities;
-using System.Collections.Specialized;
 
 namespace Image2U.Web.Controllers
 {
@@ -89,7 +87,7 @@ namespace Image2U.Web.Controllers
             if (request.Files.Count <= 0) return Json(new ResponseResult
             {
                 IsOk = false
-            });
+            },JsonRequestBehavior.AllowGet);
 
             ResponseData response = PostProcess(request);
 
@@ -102,7 +100,7 @@ namespace Image2U.Web.Controllers
                 IsOk = true,
                 Data = key
             };
-            return Json(rs, JsonRequestBehavior.AllowGet);
+            return Json(rs,JsonRequestBehavior.AllowGet);
         }
 
         public ResponseData PostProcess(HttpRequest request)
@@ -140,17 +138,6 @@ namespace Image2U.Web.Controllers
             };
 
             return response;
-
-            //string key = Guid.NewGuid().ToString();
-
-            //TempData[key] = response.Serialize();
-
-            //ResponseResult rs = new ResponseResult
-            //{
-            //    IsOk = true,
-            //    Data = key
-            //};
-            //return Json(rs, JsonRequestBehavior.AllowGet);
         }
 
         private static IEnumerable<ZipData> GetFileResult(IEnumerable<HttpPostedFile> files,
@@ -170,14 +157,12 @@ namespace Image2U.Web.Controllers
 
                         HttpPostedFile file = f.e;
 
-                        (string fileName, byte[] bytes) = GetFileResult(file, isPortait, ecSetting.Width);
-
-                        fileName = $"{ecName}\\{fileName}";
+                        ImageResult rs = GetFileResult(file, isPortait, ecSetting.Width);
 
                         ZipData zipData = new ZipData
                         {
-                            FileName = fileName,
-                            Bytes = bytes,
+                            FileName = $"{ecName}\\{rs.FileName}",
+                            Bytes = rs.Bytes,
                             FolderName = string.Empty
                         };
 
@@ -188,13 +173,31 @@ namespace Image2U.Web.Controllers
             return entryFiles;
         }
 
-        private static ValueTuple<string, byte[]> GetFileResult(HttpPostedFile formFile, bool isPortait, int limitPx)
+        private static ImageResult GetFileResult(HttpPostedFile formFile, bool isPortait, int limitPx)
         {
             string ext = formFile.FileName.Split('.').LastOrDefault();
 
             string originalFileName = formFile.FileName.Split('.').FirstOrDefault();
 
             Stream fileStream = formFile.InputStream;
+
+            fileStream.Position = 0;
+
+            //using (MagickImage image = new MagickImage(fileStream))
+            //{
+            //    IExifProfile exif = image.GetExifProfile();
+
+            //    double ratio = GetRatio(isPortait, limitPx, image.Width, image.Height);
+
+            //    ImageDirection direction = isPortait ? ImageDirection.Portait : ImageDirection.LandScape;
+
+            //    ImageResult rs = await image.Resize(ratio, direction);
+
+            //    rs.FileName = GetFileName(originalFileName, rs.Width, rs.Height, ext);
+
+            //    return rs;
+            //}
+
 
             using (Bitmap image = new Bitmap(Image.FromStream(fileStream)))
             {
@@ -208,7 +211,13 @@ namespace Image2U.Web.Controllers
 
                 byte[] bytes = newImage.ImageToByteArray(image.RawFormat);
 
-                return (fileName, bytes);
+                var rs = new ImageResult
+                {
+                    FileName = fileName,
+                    Bytes = bytes
+                };
+
+                return rs;
             }
         }
 
