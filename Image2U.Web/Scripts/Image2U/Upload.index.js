@@ -27,6 +27,23 @@ uploadFiles.addEventListener("click", function (e) {
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
 
+    singleUploadFiles(imgs);
+
+}, false);
+
+function singleUploadFiles(imgs) {
+    for (let image of imgs) {
+        const isPortaitList = [];
+        const form = new FormData();
+        const isPortait = image.clientHeight > image.clientWidth;
+        form.append("files", image.file);
+        isPortaitList.push(isPortait);
+        form.append("isPortaits", isPortaitList);
+        FileUpload(form);
+    }
+}
+
+function multiUploadFiles(imgs) {
     const isPortaitList = [];
 
     const form = new FormData();
@@ -40,8 +57,7 @@ uploadFiles.addEventListener("click", function (e) {
     form.append("isPortaits", isPortaitList);
 
     FileUpload(form);
-
-}, false);
+}
 
 function pageReload() {
     location.reload();
@@ -69,38 +85,7 @@ function errorHandler() { }
 function abortHandler() { }
 
 function FileUpload(form) {
-    //$.post({
-    //    url: API_ENDPOINT,
-    //    headers: { 'X-Requested-With': "XMLHttpRequest" },
-    //    contentType: false,
-    //    processData: false,
-    //    mimeType: "multipart/form-data",
-    //    data: form,
-    //    xhr: function () {
-    //        const xhr = new window.XMLHttpRequest();
-    //        xhr.upload.addEventListener("progress", updateProgress, false);
-    //        return xhr;
-    //    },
-    //    beforeSend: function () {
-    //        _loader.style.display = "block";
-    //        _bsProgress.style.width = "";
-    //        _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
-    //    },
-    //    success: function (r) {
-    //        const _response = JSON.parse(r);
-    //        _bsProgress.classList.value = "progress-bar progress-bar-info";
-    //        _loader.style.display = "none";
-    //        if (_response.IsOk) {
-    //            const _url = `/upload/get?tempdataKey=${_response.Data}`;
-    //            window.open(_url);
-    //        }
-    //    }
-    //});
-    //return;
-
-
     const request = new XMLHttpRequest();
-
     request.upload.addEventListener("progress", updateProgress, false);
     request.addEventListener("load", completeHandler, false);
     request.addEventListener("error", errorHandler, false);
@@ -135,25 +120,51 @@ function FileUpload(form) {
 }
 
 function handleFiles(files) {
+    if (!files.length) {
+        return;
+    }
     const getTh = function (v) {
         const th = document.createElement("th");
         th.innerHTML = v;
         return th;
     }
-
     const getTd = function (v) {
         const td = document.createElement("td");
         td.innerHTML = v;
         return td;
     }
+    const setHTMLTableImage = function (_tableBody, _fileLists) {
+        for (let i = 0; i < _fileLists.length; i++) {
+            const file = _fileLists[i];
+            //const input = document.createElement("input");
+            //input.setAttribute("type", "checkbox");
+            //console.log(input);
+            const tr = document.createElement("tr");
 
-    if (!files.length) {
-        return;
+            tr.appendChild(getTd(i + 1));
+            tr.appendChild(getTd(file.name));
+            tr.appendChild(getTd(file.size.numberFormat(0, '.', ',')));
+
+            const td = document.createElement("td");
+            const img = document.createElement("img");
+
+            img.src = file.src;
+            img.file = file.file;
+            img.onload = function () {
+                window.URL.revokeObjectURL(this.src);
+            }
+            td.appendChild(img);
+            tr.appendChild(td);
+
+            _tableBody.appendChild(tr);
+        }
     }
+
     const _uploadFiles = document.getElementById("uploadFiles");
     const _fileSelectResult = document.getElementById("fileSelectResult");
     const tableHead = _fileSelectResult.querySelector("thead");
     const tableBody = _fileSelectResult.querySelector("tbody");
+
     tableHead.innerHTML = "";
     tableBody.innerHTML = "";
 
@@ -169,45 +180,47 @@ function handleFiles(files) {
     _uploadFiles.disabled = false;
 
     const fileLists = [];
+
+
     for (let i = 0; i < filesCount; i++) {
         const file = files[i];
         const fileObj = {
             idx: i,
             name: file.name,
             size: file.size,
-            type: file.type.split('/').pop(),
+            type: file.type.split("/").pop(),
             src: window.URL.createObjectURL(file),
             file: file
         }
         fileLists.push(fileObj);
     }
 
-    for (let i = 0; i < fileLists.length; i++) {
-        const file = fileLists[i];
+    setHTMLTableImage(tableBody, fileLists);
 
-        //const input = document.createElement("input");
-        //input.setAttribute("type", "checkbox");
-        //console.log(input);
+    //for (let i = 0; i < fileLists.length; i++) {
+    //    const file = fileLists[i];
+    //    //const input = document.createElement("input");
+    //    //input.setAttribute("type", "checkbox");
+    //    //console.log(input);
+    //    const tr = document.createElement("tr");
 
-        const tr = document.createElement("tr");
+    //    tr.appendChild(getTd(i + 1));
+    //    tr.appendChild(getTd(file.name));
+    //    tr.appendChild(getTd(file.size.numberFormat(0, '.', ',')));
 
-        tr.appendChild(getTd(i + 1));
-        tr.appendChild(getTd(file.name));
-        tr.appendChild(getTd(file.size.numberFormat(0, '.', ',')));
+    //    const td = document.createElement("td");
 
-        const td = document.createElement("td");
+    //    const img = document.createElement("img");
+    //    img.src = file.src;
+    //    img.file = file.file;
+    //    img.onload = function () {
+    //        window.URL.revokeObjectURL(this.src);
+    //    }
+    //    td.appendChild(img);
+    //    tr.appendChild(td);
 
-        const img = document.createElement("img");
-        img.src = file.src;
-        img.file = file.file;
-        img.onload = function () {
-            window.URL.revokeObjectURL(this.src);
-        }
-        td.appendChild(img);
-        tr.appendChild(td);
-
-        tableBody.appendChild(tr);
-    }
+    //    tableBody.appendChild(tr);
+    //}
 }
 
 function getOrientation(file, callback) {

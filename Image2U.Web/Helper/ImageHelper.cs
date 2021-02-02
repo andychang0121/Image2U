@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Image2U.Web.Enum;
+using ImageMagick;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using Image2U.Web.Enum;
+using System.Threading.Tasks;
 using Image2U.Web.Models.Image;
 
 namespace Image2U.Web.Helper
@@ -33,6 +35,44 @@ namespace Image2U.Web.Helper
             return bytes;
         }
 
+        public static async Task<ImageResult> Resize(this MagickImage image, double ratio, ImageDirection direction)
+        {
+            if (direction == ImageDirection.Portait)
+            {
+                image.Rotate(90);
+            }
+
+            int height = image.Height;
+            int width = image.Width;
+
+            ImageResult resizeRs = await Task.Run(() => Resize(image, width, height, ratio));
+
+            return resizeRs;
+        }
+
+        public static ImageResult Resize(this MagickImage originalImage, int originalWidth, int originalHeight, double ratio)
+        {
+            // now we can get the new height and width
+            int newHeight = Convert.ToInt32(originalHeight * ratio);
+            int newWidth = Convert.ToInt32(originalWidth * ratio);
+            // -----
+            using (MagickImage image = new MagickImage(originalImage))
+            {
+                image.Format = MagickFormat.Jpeg;
+                image.Resize(newWidth, newHeight);
+                image.Strip();
+                byte[] bytes = image.ToByteArray();
+                ImageResult rs = new ImageResult
+                {
+                    Width = newWidth,
+                    Height = newHeight,
+                    Bytes = bytes
+                };
+
+                return rs;
+            }
+        }
+
         public static Bitmap Resize(this Image image, double ratio, ImageDirection direction)
         {
             if (direction == ImageDirection.Portait)
@@ -40,7 +80,7 @@ namespace Image2U.Web.Helper
                 image.RotateFlip(RotateFlipType.Rotate90FlipX);
             }
 
-            ImageProfile rs = new ImageProfile(image);
+            Image2U.Web.Models.Image.ImageProfile rs = new Image2U.Web.Models.Image.ImageProfile(image);
 
             return Resize(image, rs.Width, rs.Height, ratio);
         }

@@ -47,6 +47,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Magick.NET-Q8-AnyCPU, Version=7.23.1.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\Magick.NET-Q8-AnyCPU.7.23.1\lib\net40\Magick.NET-Q8-AnyCPU.dll</HintPath>
+    </Reference>
+    <Reference Include="Magick.NET.Core, Version=6.1.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\Magick.NET.Core.6.1.0\lib\net40\Magick.NET.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Http.Features, Version=5.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.5.0.2\lib\net461\Microsoft.AspNetCore.Http.Features.dll</HintPath>
     </Reference>
@@ -232,6 +238,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Image\ImageOutput.cs" />
     <Compile Include="Models\Image\ImageProfile.cs" />
+    <Compile Include="Models\Image\ImageResult.cs" />
     <Compile Include="Models\Image\ResponseData.cs" />
     <Compile Include="Models\Image\ZipData.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
