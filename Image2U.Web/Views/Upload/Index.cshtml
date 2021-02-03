@@ -12,6 +12,13 @@
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             Reset Selected
         </button>
+        
+        <div class="input-group clearfix col-lg-4">
+            <span class="input-group-addon">Width</span>
+            <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度">
+            <span class="input-group-addon">Heigth</span>
+            <input id="customHeight"  type="text" class="form-control" placeholder="自定義高度度">
+        </div>
     </div>
     <input id="fileElem"
            type="file"
@@ -19,7 +26,6 @@
            accept="image/*"
            style="display: none" onchange="handleFiles(this.files)">
     <h5>Shopee，PCHOME，MoMo</h5>
-    
     <div class="progress">
         <div id="progress"
              class="progress-bar progress-bar-striped active progress-bar-success"

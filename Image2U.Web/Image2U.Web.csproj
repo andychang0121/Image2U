@@ -230,12 +230,14 @@
     </Compile>
     <Compile Include="Helper\DictionaryHelper.cs" />
     <Compile Include="Helper\HttpRequestHelper.cs" />
+    <Compile Include="Helper\ImageHelper.ImageMagick.cs" />
     <Compile Include="Helper\ImageHelper.cs" />
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\StringHelper.cs" />
     <Compile Include="Helper\ZipHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Image\ImageFile.cs" />
     <Compile Include="Models\Image\ImageOutput.cs" />
     <Compile Include="Models\Image\ImageProfile.cs" />
     <Compile Include="Models\Image\ImageResult.cs" />

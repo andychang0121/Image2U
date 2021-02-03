@@ -2,11 +2,12 @@
 const _bsProgress = document.getElementById("progress");
 const API_ENDPOINT = "/upload/post";
 
-const [fileSelect, fileElem, uploadFiles] = [
+const [fileSelect, fileElem, uploadFiles, customWidth, customHeight] = [
     document.getElementById("fileSelect")
     , document.getElementById("fileElem")
     , document.getElementById("uploadFiles")
-];
+    , document.getElementById("customWidth")
+    , document.getElementById("customHeight")];
 
 let _width = 0;
 
@@ -27,7 +28,7 @@ uploadFiles.addEventListener("click", function (e) {
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
 
-    singleUploadFiles(imgs);
+    multiUploadFiles(imgs);
 
 }, false);
 
@@ -47,6 +48,8 @@ function multiUploadFiles(imgs) {
     const isPortaitList = [];
 
     const form = new FormData();
+    form.append("customWidth", customWidth.value);
+    form.append("customHeight", customHeight.value);
 
     for (let image of imgs) {
         const isPortait = image.clientHeight > image.clientWidth;
