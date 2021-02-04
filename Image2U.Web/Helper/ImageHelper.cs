@@ -9,6 +9,9 @@ namespace Image2U.Web.Helper
 {
     public static partial class ImageHelper
     {
+        public static string GetFileName(string fileName, int w, int h, string ext)
+            => $"{fileName}-{w}x{h}.{ext}";
+
         public static byte[] ImageToByteArray(this Image image, ImageFormat imageFormat)
         {
             byte[] bytes = null;

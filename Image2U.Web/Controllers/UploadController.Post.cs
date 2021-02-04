@@ -74,12 +74,6 @@ namespace Image2U.Web.Controllers
             }}
         };
 
-        private static bool[] GetIsPortaits(string stringValue)
-            => stringValue
-                .GetStringArray()
-                .GetStingArrayToBoolean()
-                ?.ToArray();
-
         public ActionResult Post()
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
@@ -127,7 +121,7 @@ namespace Image2U.Web.Controllers
 
         public ResponseData Sizing(RequestFormData formData, Dictionary<string, ImageOutput> dict)
         {
-            bool[] isPortaits = GetIsPortaits(formData.IsPortaits);
+            bool[] isPortaits = StringHelper.GetStringToArray(formData.IsPortaits);
 
             IEnumerable<HttpPostedFile> files = (IEnumerable<HttpPostedFile>)formData.File;
 
@@ -244,7 +238,7 @@ namespace Image2U.Web.Controllers
 
                 Bitmap newImage = image.Resize(ratio, imageFile.Direction, ecWidth, ecHeigth);
 
-                string fileName = GetFileName(imageFile.FileName, newImage.Width, newImage.Height, imageFile.Ext);
+                string fileName = ImageHelper.GetFileName(imageFile.FileName, newImage.Width, newImage.Height, imageFile.Ext);
 
                 ImageFormat imageFormat = ImageFormat.Jpeg;
 
@@ -264,8 +258,5 @@ namespace Image2U.Web.Controllers
             => limitWidth == width ?
                 1 :
                 direction == ImageDirection.Portait ? limitWidth / (double)height : limitWidth / (double)width;
-
-        private static string GetFileName(string fileName, int w, int h, string ext)
-            => $"{fileName}-{w}x{h}.{ext}";
     }
 }

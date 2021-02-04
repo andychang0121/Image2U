@@ -122,43 +122,69 @@ function FileUpload(form) {
     request.send(form);
 }
 
-function handleFiles(files) {
-    if (!files.length) {
-        return;
+function getElement(config) {
+    const ele = document.createElement(config.type);
+    ele.setAttribute("class", config.className);
+    if (config.name) {
+        console.log(config.name);
+        input.setAttribute("name", config.name);
     }
-    const getTh = function (v) {
-        const th = document.createElement("th");
-        th.innerHTML = v;
-        return th;
+    
+    ele.textContent = config.text;
+    return ele;
+}
+
+function setHTMLTRImage(file, i) {
+    const _config = {
+        type: "button",
+        className: "btn btn-default btn-sm",
+        text: "Remove"
+    };
+
+    const tr = document.createElement("tr");
+
+    //const input = getElement(_config);
+    //tr.appendChild(getTd(input));
+    tr.appendChild(getTd(i + 1));
+    tr.appendChild(getTd(file.name));
+    tr.appendChild(getTd(file.size.numberFormat(0, '.', ',')));
+    //----
+    const td = document.createElement("td");
+    const img = document.createElement("img");
+
+    img.src = file.src;
+    img.file = file.file;
+    img.onload = function () {
+        window.URL.revokeObjectURL(this.src);
     }
-    const getTd = function (v) {
-        const td = document.createElement("td");
-        td.innerHTML = v;
+    td.appendChild(img);
+    tr.appendChild(td);
+    return tr;
+}
+
+function getTh(v) {
+    const th = document.createElement("th");
+    th.innerHTML = v;
+    return th;
+}
+
+function getTd(v) {
+    const td = document.createElement("td");
+    if (typeof v === "object") {
+        td.appendChild(v);
         return td;
     }
+    td.innerHTML = v;
+    return td;
+}
+
+function handleFiles(files) {
+    if (!files.length) return;
+
     const setHTMLTableImage = function (_tableBody, _fileLists) {
         for (let i = 0; i < _fileLists.length; i++) {
             const file = _fileLists[i];
-            //const input = document.createElement("input");
-            //input.setAttribute("type", "checkbox");
-            //console.log(input);
-            const tr = document.createElement("tr");
-
-            tr.appendChild(getTd(i + 1));
-            tr.appendChild(getTd(file.name));
-            tr.appendChild(getTd(file.size.numberFormat(0, '.', ',')));
-
-            const td = document.createElement("td");
-            const img = document.createElement("img");
-
-            img.src = file.src;
-            img.file = file.file;
-            img.onload = function () {
-                window.URL.revokeObjectURL(this.src);
-            }
-            td.appendChild(img);
-            tr.appendChild(td);
-
+            const tr = setHTMLTRImage(file, i);
             _tableBody.appendChild(tr);
         }
     }
@@ -171,19 +197,21 @@ function handleFiles(files) {
     tableHead.innerHTML = "";
     tableBody.innerHTML = "";
 
-    const headTr = document.createElement("tr");
+    //const headTr = document.createElement("tr");
 
-    headTr.appendChild(getTh("#"));
-    headTr.appendChild(getTh("Name"));
-    headTr.appendChild(getTh("Size"));
-    headTr.appendChild(getTh("Preview"));
+    //headTr.appendChild(getTh(""));
+    //headTr.appendChild(getTh("#"));
+    //headTr.appendChild(getTh("Name"));
+    //headTr.appendChild(getTh("Size"));
+    //headTr.appendChild(getTh("Preview"));
+
+    //tableHead.appendChild(headTr);
 
     const filesCount = files.length;
 
     _uploadFiles.disabled = false;
 
     const fileLists = [];
-
 
     for (let i = 0; i < filesCount; i++) {
         const file = files[i];
@@ -199,31 +227,6 @@ function handleFiles(files) {
     }
 
     setHTMLTableImage(tableBody, fileLists);
-
-    //for (let i = 0; i < fileLists.length; i++) {
-    //    const file = fileLists[i];
-    //    //const input = document.createElement("input");
-    //    //input.setAttribute("type", "checkbox");
-    //    //console.log(input);
-    //    const tr = document.createElement("tr");
-
-    //    tr.appendChild(getTd(i + 1));
-    //    tr.appendChild(getTd(file.name));
-    //    tr.appendChild(getTd(file.size.numberFormat(0, '.', ',')));
-
-    //    const td = document.createElement("td");
-
-    //    const img = document.createElement("img");
-    //    img.src = file.src;
-    //    img.file = file.file;
-    //    img.onload = function () {
-    //        window.URL.revokeObjectURL(this.src);
-    //    }
-    //    td.appendChild(img);
-    //    tr.appendChild(td);
-
-    //    tableBody.appendChild(tr);
-    //}
 }
 
 function getOrientation(file, callback) {
