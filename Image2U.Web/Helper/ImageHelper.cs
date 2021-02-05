@@ -21,7 +21,7 @@ namespace Image2U.Web.Helper
                 using (Bitmap bitmap = new Bitmap(image))
                 {
                     //儲存圖片到 MemoryStream 物件，並且指定儲存影像之格式
-                    bitmap.Save(ms, ImageFormat.Jpeg);
+                    bitmap.Save(ms, imageFormat);
                     //設定資料流位置
                     ms.Position = 0;
                     //設定 buffer 長度

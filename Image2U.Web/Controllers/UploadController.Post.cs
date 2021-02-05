@@ -6,6 +6,7 @@ using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -209,7 +210,7 @@ namespace Image2U.Web.Controllers
 
                 string fileName = GetFileName(originalFileName, newImage.Width, newImage.Height, ext);
 
-                byte[] bytes = newImage.ImageToByteArray(image.RawFormat);
+                byte[] bytes = newImage.ImageToByteArray(ImageFormat.Jpeg);
 
                 var rs = new ImageResult
                 {
