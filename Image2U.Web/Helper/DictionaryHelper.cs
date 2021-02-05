@@ -9,7 +9,7 @@ namespace Image2U.Web.Helper
     public static class DictionaryHelper
     {
         public static Dictionary<string, string> GetDictionaryValue(this NameValueCollection nameValue)
-            => nameValue.Count == 0
+            => nameValue.Count != 0
                 ? nameValue
                     .AllKeys
                     .ToDictionary(key => key, key => nameValue[key])

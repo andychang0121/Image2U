@@ -5,6 +5,12 @@ namespace Image2U.Web.Helper
 {
     public static class StringHelper
     {
+        public static bool[] GetStringToArray(string stringValue)
+            => stringValue
+                .GetStringArray()
+                .GetStingArrayToBoolean()
+                ?.ToArray();
+
         public static string[] GetStringArray(this string value)
         => !string.IsNullOrEmpty(value) ? value.Split(',') : null;
 

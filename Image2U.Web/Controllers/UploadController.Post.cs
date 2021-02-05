@@ -2,7 +2,6 @@
 using Image2U.Web.Helper;
 using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
-using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,7 +15,7 @@ namespace Image2U.Web.Controllers
 {
     public partial class UploadController
     {
-        private readonly Dictionary<string, ImageOutput> dict =
+        private readonly Dictionary<string, ImageOutput> _ecDict =
             new Dictionary<string, ImageOutput>
         {
             {"PCHOME-尺寸1",new ImageOutput {
@@ -75,12 +74,6 @@ namespace Image2U.Web.Controllers
             }}
         };
 
-        private static bool[] GetIsPortaits(string stringValue)
-            => stringValue
-                .GetStringArray()
-                .GetStingArrayToBoolean()
-                ?.ToArray();
-
         public ActionResult Post()
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
@@ -88,9 +81,9 @@ namespace Image2U.Web.Controllers
             if (request.Files.Count <= 0) return Json(new ResponseResult
             {
                 IsOk = false
-            },JsonRequestBehavior.AllowGet);
+            }, JsonRequestBehavior.AllowGet);
 
-            ResponseData response = PostProcess(request);
+            ResponseData response = Sizing(request);
 
             string key = Guid.NewGuid().ToString();
 
@@ -101,35 +94,52 @@ namespace Image2U.Web.Controllers
                 IsOk = true,
                 Data = key
             };
-            return Json(rs,JsonRequestBehavior.AllowGet);
+            return Json(rs, JsonRequestBehavior.AllowGet);
         }
 
-        public ResponseData PostProcess(HttpRequest request)
+        public ResponseData Sizing(HttpRequest request)
         {
             IEnumerable<HttpPostedFile> formFiles = request.GetHttpFiles();
 
-            string isPortaits = request.Form
-                .GetDictionaryValue()
+            Dictionary<string, string> form = request.Form
+                .GetDictionaryValue();
+
+            string isPortaits = form
                 .GetDictionaryValue("isPortaits");
 
-            RequestFormData req = new RequestFormData
+            RequestFormData req = new RequestFormData(form.GetDictionaryValue("customWidth"), form.GetDictionaryValue("customHeight"))
             {
                 IsPortaits = isPortaits,
+                FormData = form,
                 File = formFiles
             };
 
-            ResponseData rs = PostProcess(req);
+            ResponseData rs = Sizing(req, _ecDict);
 
             return rs;
         }
 
-        public ResponseData PostProcess(RequestFormData formData)
+        public ResponseData Sizing(RequestFormData formData, Dictionary<string, ImageOutput> dict)
         {
-            bool[] isPortaits = GetIsPortaits(formData.IsPortaits);
+            bool[] isPortaits = StringHelper.GetStringToArray(formData.IsPortaits);
 
-            IEnumerable<HttpPostedFile> files = formData.File;
+            IEnumerable<HttpPostedFile> files = (IEnumerable<HttpPostedFile>)formData.File;
 
-            IEnumerable<ZipData> entryFiles = GetFileResult(files, isPortaits, dict);
+            Dictionary<string, ImageOutput> refDict = dict;
+
+            if (formData.IsCustomeSpec)
+            {
+                refDict = new Dictionary<string, ImageOutput>
+                {
+                    {"自定義尺寸",new ImageOutput {
+                        Width = formData.CustomWidth,
+                        MaxHeight = formData.CustomHeight,
+                        DPI = 72
+                    }},
+                };
+            }
+
+            IEnumerable<ZipData> entryFiles = GetZip(files, isPortaits, refDict);
 
             byte[] zipRs = ZipHelper.ZipData(entryFiles);
 
@@ -141,7 +151,7 @@ namespace Image2U.Web.Controllers
             return response;
         }
 
-        private static IEnumerable<ZipData> GetFileResult(IEnumerable<HttpPostedFile> files,
+        private static IEnumerable<ZipData> GetZip(IEnumerable<HttpPostedFile> files,
             IReadOnlyList<bool> isPortaits, Dictionary<string, ImageOutput> ecProfile)
         {
             List<ZipData> entryFiles = new List<ZipData>();
@@ -151,38 +161,60 @@ namespace Image2U.Web.Controllers
                 string ecName = ec.Key;
                 ImageOutput ecSetting = ec.Value;
 
-                files.ToList().Select((e, i) => new { e, i })
-                    .ForEach(f =>
+                int fileIdx = 0;
+
+                foreach (HttpPostedFile f in files)
+                {
+                    bool isPortait = isPortaits?[fileIdx] ?? false;
+
+                    ImageFile imageFile = new ImageFile(f, isPortait);
+
+                    ImageResult rs = GetZip(imageFile, ecSetting.Width, ecSetting.MaxHeight);
+
+                    ZipData zipData = new ZipData
                     {
-                        bool isPortait = isPortaits?[f.i] ?? false;
+                        FileName = $"{ecName}\\{rs.FileName}",
+                        Bytes = rs.Bytes,
+                        FolderName = string.Empty
+                    };
 
-                        HttpPostedFile file = f.e;
+                    entryFiles.Add(zipData);
+                    fileIdx++;
+                }
 
-                        ImageResult rs = GetFileResult(file, isPortait, ecSetting.Width);
 
-                        ZipData zipData = new ZipData
-                        {
-                            FileName = $"{ecName}\\{rs.FileName}",
-                            Bytes = rs.Bytes,
-                            FolderName = string.Empty
-                        };
+                //files.ToList().Select((e, i) => new { e, i })
+                //    .ForEach(async f =>
+                //    {
+                //        bool isPortait = isPortaits?[f.i] ?? false;
 
-                        entryFiles.Add(zipData);
-                    });
+                //        HttpPostedFile file = f.e;
+
+                //        ImageResult rs = await GetFileResult(file, isPortait, ecSetting.Width);
+
+                //        ZipData zipData = new ZipData
+                //        {
+                //            FileName = $"{ecName}\\{rs.FileName}",
+                //            Bytes = rs.Bytes,
+                //            FolderName = string.Empty
+                //        };
+
+                //        entryFiles.Add(zipData);
+                //    });
             }
 
             return entryFiles;
         }
 
-        private static ImageResult GetFileResult(HttpPostedFile formFile, bool isPortait, int limitPx)
+        private static ImageResult GetZip(ImageFile imageFile, int ecWidth, int ecHeigth)
         {
-            string ext = formFile.FileName.Split('.').LastOrDefault();
+            //string ext = formFile.Ext;
 
-            string originalFileName = formFile.FileName.Split('.').FirstOrDefault();
+            //string originalFileName = formFile.FileName.Split('.').FirstOrDefault();
 
-            Stream fileStream = formFile.InputStream;
+            //Stream fileStream = formFile.Stream;
 
-            fileStream.Position = 0;
+            //imageFile.Stream.Position = 0;
 
             //using (MagickImage image = new MagickImage(fileStream))
             //{
@@ -200,19 +232,19 @@ namespace Image2U.Web.Controllers
             //}
 
 
-            using (Bitmap image = new Bitmap(Image.FromStream(fileStream)))
+            using (Bitmap image = new Bitmap(Image.FromStream(imageFile.Stream)))
             {
-                double ratio = GetRatio(isPortait, limitPx, image.Width, image.Height);
+                double ratio = GetRatio(imageFile.Direction, ecWidth, image.Width, image.Height);
 
-                ImageDirection direction = isPortait ? ImageDirection.Portait : ImageDirection.LandScape;
+                Bitmap newImage = image.Resize(ratio, imageFile.Direction, ecWidth, ecHeigth);
 
-                Bitmap newImage = image.Resize(ratio, direction);
+                string fileName = ImageHelper.GetFileName(imageFile.FileName, newImage.Width, newImage.Height, imageFile.Ext);
 
-                string fileName = GetFileName(originalFileName, newImage.Width, newImage.Height, ext);
+                ImageFormat imageFormat = ImageFormat.Jpeg;
 
                 byte[] bytes = newImage.ImageToByteArray(ImageFormat.Jpeg);
 
-                var rs = new ImageResult
+                ImageResult rs = new ImageResult
                 {
                     FileName = fileName,
                     Bytes = bytes
@@ -222,10 +254,9 @@ namespace Image2U.Web.Controllers
             }
         }
 
-        private static double GetRatio(bool isPortait, int limitPx, int width, int height)
-            => isPortait ? limitPx / (double)height : limitPx / (double)width;
-
-        private static string GetFileName(string prefix, int w, int h, string extName)
-            => $"{prefix}-{w}x{h}.{extName}";
+        private static double GetRatio(ImageDirection direction, int limitWidth, int width, int height)
+            => limitWidth == width ?
+                1 :
+                direction == ImageDirection.Portait ? limitWidth / (double)height : limitWidth / (double)width;
     }
 }
