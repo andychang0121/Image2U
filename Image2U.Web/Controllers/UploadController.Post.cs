@@ -248,7 +248,7 @@ namespace Image2U.Web.Controllers
 
                 ImageFormat imageFormat = ImageFormat.Jpeg;
 
-                byte[] bytes = newImage.ImageToByteArray(imageFormat);
+                byte[] bytes = newImage.ImageToByteArray(ImageFormat.Jpeg);
 
                 ImageResult rs = new ImageResult
                 {
