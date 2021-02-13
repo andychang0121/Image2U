@@ -1,4 +1,5 @@
-﻿using Image2U.Web.Helper;
+﻿using System.Linq;
+using Image2U.Web.Helper;
 using Image2U.Web.Models.Image;
 using System.Web.Mvc;
 
@@ -16,7 +17,9 @@ namespace Image2U.Web.Controllers
 
             byte[] bytes = jsonRs.Result;
 
-            string fileName = $"{tempdataKey}.zip";
+            string originalFileName = jsonRs.FileName.Split('.').FirstOrDefault();
+
+            string fileName = $"{originalFileName}.zip";
 
             FileContentResult rs = File(bytes, _zipContentType, fileName);
 

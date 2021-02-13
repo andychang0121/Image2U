@@ -223,6 +223,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\UploadController.Get.cs" />
+    <Compile Include="Controllers\UploadController.PostData.cs" />
     <Compile Include="Controllers\UploadController.Post.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Enum\Enum.cs" />
@@ -233,6 +234,7 @@
     <Compile Include="Helper\HttpRequestHelper.cs" />
     <Compile Include="Helper\ImageHelper.ImageMagick.cs" />
     <Compile Include="Helper\ImageHelper.cs" />
+    <Compile Include="Helper\IOHelper.cs" />
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\StringHelper.cs" />
     <Compile Include="Helper\ZipHelper.cs" />

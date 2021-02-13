@@ -5,6 +5,10 @@ namespace Image2U.Web.Helper
 {
     public static class StringHelper
     {
+        public static bool GetStringToBoolean(string stringValue)
+            => !string.IsNullOrEmpty(stringValue) && stringValue.ToLower() == "true";
+
+
         public static bool[] GetStringToArray(string stringValue)
             => stringValue
                 .GetStringArray()
