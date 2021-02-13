@@ -24,13 +24,39 @@ fileSelect.addEventListener("click", function (e) {
 
 uploadFiles.addEventListener("click", function (e) {
     e.preventDefault();
+
     const fileSelectResult = document.getElementById("fileSelectResult");
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
 
-    multiUploadFiles(imgs);
-
+    //multiUploadFiles(imgs);
+    const _requestData = getUploadFiles(fileElem.files);
+    console.log(_requestData);
 }, false);
+
+function getUploadFiles(files) {
+    const rs = [];
+    for (let file of files) {
+        const _requestData = {};
+
+        getBase64(file).then(function (r) {
+            _requestData.base64 = r;
+            _requestData.fileName = file.name;
+            _requestData.type = file.type;
+            _requestData.size = file.size;
+        }).then(function () {
+            const _img = new Image();
+            _img.src = _requestData.base64;
+            _img.onload = function () {
+                _requestData.width = this.width;
+                _requestData.height = this.height;
+                window.URL.revokeObjectURL(this.src);
+            }
+        });
+        rs.push(_requestData);
+    }
+    return rs;
+}
 
 function singleUploadFiles(imgs) {
     for (let image of imgs) {
@@ -129,7 +155,7 @@ function getElement(config) {
         console.log(config.name);
         input.setAttribute("name", config.name);
     }
-    
+
     ele.textContent = config.text;
     return ele;
 }
@@ -154,10 +180,10 @@ function setHTMLTRImage(file, i) {
 
     img.src = file.src;
     img.file = file.file;
+
     img.onload = function () {
         window.URL.revokeObjectURL(this.src);
     }
-
     td.appendChild(img);
     tr.appendChild(td);
     return tr;
@@ -185,8 +211,8 @@ function handleFiles(files) {
     const setHTMLTableImage = function (_tableBody, _fileLists) {
         for (let i = 0; i < _fileLists.length; i++) {
             const file = _fileLists[i];
-            const tr = setHTMLTRImage(file, i);
-            _tableBody.appendChild(tr);
+            const _tr = setHTMLTRImage(file, i);
+            _tableBody.appendChild(_tr);
         }
     }
 
@@ -215,33 +241,27 @@ function handleFiles(files) {
     const fileLists = [];
 
     for (let i = 0; i < filesCount; i++) {
+
         const file = files[i];
         const fileObj = {
             idx: i,
             name: file.name,
             size: file.size,
-            width: 0,
-            height: 0,
             type: file.type.split("/").pop(),
             file: file,
             src: window.URL.createObjectURL(file)
         }
 
-        getSize(file).then((e) => {
-            fileObj.width = e.width;
-            fileObj.height = e.height;
-        });
         fileLists.push(fileObj);
     }
     setHTMLTableImage(tableBody, fileLists);
 }
 
-function getSize(file) {
+function getBase64(file) {
     return new Promise((resolve, reject) => {
-        var _URL = window.URL || window.webkitURL;
-        var img = new Image();
-        img.onload = () => resolve({ height: img.height, width: img.width });
-        img.onerror = reject;
-        img.src = _URL.createObjectURL(file);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
     });
 }
