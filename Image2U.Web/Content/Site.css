@@ -65,8 +65,9 @@ td img {
 }
 
 .spinner {
-    width: 90px;
-    height: 90px;
+    width: 360px;
+    height: 360px;
+    color: orangered;
     border: 4px #ddd solid;
     border-top: 4px #2e93e6 solid;
     border-radius: 50%;
