@@ -6,8 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -74,7 +73,7 @@ namespace Image2U.Web.Controllers
             }}
         };
 
-        public ActionResult Post()
+        public async Task<ActionResult> Post()
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
 
@@ -83,7 +82,9 @@ namespace Image2U.Web.Controllers
                 IsOk = false
             }, JsonRequestBehavior.AllowGet);
 
-            ResponseData response = Sizing(request);
+            ResponseData response = await Task.Run(() => Sizing(request));
+
+            //ResponseData response = Sizing(request);
 
             string key = Guid.NewGuid().ToString();
 
@@ -94,6 +95,7 @@ namespace Image2U.Web.Controllers
                 IsOk = true,
                 Data = key
             };
+
             return Json(rs, JsonRequestBehavior.AllowGet);
         }
 

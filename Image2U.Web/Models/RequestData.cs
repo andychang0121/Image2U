@@ -1,44 +1,47 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Image2U.Web.Helper;
 
 namespace Image2U.Web.Models
 {
-    public class RequestFormData
+    public class RequestData
     {
-        private readonly string _customWidth;
+        public bool IsCustomeSpec => CustomHeight.HasValue && CustomWidth.HasValue;
 
-        private readonly string _customHeight;
+        public int? CustomWidth { get; set; }
 
-        public RequestFormData(string customeWidth, string customHeight)
+        public int? CustomHeight { get; set; }
+
+        public float Width { get; set; }
+
+        public float Height { get; set; }
+
+        public string IsPortait { set; get; }
+
+        public int Size { get; set; }
+
+        public string FileName { get; set; }
+
+        public string Base64 { get; set; }
+
+        public Stream Stream { get; set; }
+
+        public string Type { get; set; }
+    }
+
+    public static class RequestDataExtension
+    {
+        public static Stream GetStream(this string base64String)
         {
-            _customWidth = customeWidth;
-            _customHeight = customHeight;
+            byte[] bytes = base64String.GetBytesFromBase64();
+
+            Stream stream = new MemoryStream(bytes);
+
+            stream.Position = 0;
+
+            return stream;
         }
-
-        private static bool IsDigital(string numberStr)
-        {
-            bool isDigital = !string.IsNullOrWhiteSpace(numberStr) && numberStr.All(char.IsDigit);
-
-            if (!isDigital) return false;
-
-            int number = int.Parse(numberStr);
-
-            return number > 0;
-        }
-
-        public bool IsCustomeSpec =>
-            IsDigital(_customWidth) && IsDigital(_customHeight);
-
-        public int CustomWidth => IsCustomeSpec ? int.Parse(_customWidth) : 0;
-
-        public int CustomHeight => IsCustomeSpec ? int.Parse(_customHeight) : 0;
-
-        [JsonProperty("isPortaits")]
-        public string IsPortaits { set; get; }
-
-        public Dictionary<string, string> FormData { get; set; }
-
-        public IEnumerable<object> File { set; get; }
     }
 }

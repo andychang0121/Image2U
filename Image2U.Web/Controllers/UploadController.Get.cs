@@ -16,7 +16,7 @@ namespace Image2U.Web.Controllers
 
             byte[] bytes = jsonRs.Result;
 
-            string fileName = $"{tempdataKey}.zip";
+            string fileName = $"{jsonRs.FileName}.zip";
 
             FileContentResult rs = File(bytes, _zipContentType, fileName);
 
