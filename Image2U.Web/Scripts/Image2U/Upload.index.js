@@ -30,14 +30,18 @@ uploadFiles.addEventListener("click", function (e) {
     const imgs = tableBody.getElementsByTagName("img");
 
     //multiUploadFiles(imgs);
-    const _requestData = getUploadFiles(fileElem.files);
+    const _requestData = getUploadFiles(fileElem.files, customWidth.value, customHeight.value);
+
     uploadFileHandler(_requestData);
 }, false);
 
-function getUploadFiles(files) {
+function getUploadFiles(files, customWidth, customHeight) {
     const rs = [];
     for (let file of files) {
-        const _requestData = {};
+        const _requestData = {
+            customWidth : customWidth,
+            customHeight : customHeight
+        };
 
         getBase64(file).then(function (r) {
             _requestData.base64 = r;
@@ -223,7 +227,8 @@ function setHTMLTRImage(file, i) {
     //tr.appendChild(getTd(input));
     tr.appendChild(getTd(i + 1));
     tr.appendChild(getTd(file.name));
-    tr.appendChild(getTd(file.size.numberFormat(0, '.', ',')));
+    tr.appendChild(getTd(""));
+    tr.appendChild(getTd(file.size.numberFormat(0, ".", ",")));
     //----
     const td = document.createElement("td");
     const img = document.createElement("img");
@@ -250,8 +255,11 @@ function getTd(v) {
     if (typeof v === "object") {
         td.appendChild(v);
         return td;
+    } else if (typeof v === "string" || typeof v === "number") {
+        const _span = document.createElement('span');
+        _span.innerHTML = v;
+        td.appendChild(_span);
     }
-    td.innerHTML = v;
     return td;
 }
 
