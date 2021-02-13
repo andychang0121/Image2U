@@ -37,8 +37,6 @@ function singleUploadFiles(imgs) {
         const isPortaitList = [];
         const form = new FormData();
         const isPortait = image.clientHeight > image.clientWidth;
-        form.append("width", image.width);
-        form.append("height", image.height);
         form.append("files", image.file);
         isPortaitList.push(isPortait);
         form.append("isPortaits", isPortaitList);
@@ -63,8 +61,6 @@ function multiUploadFiles(imgs) {
 
     FileUpload(form);
 }
-
-function recursiveMultiUploadFiles(imgs) { }
 
 function pageReload() {
     location.reload();
@@ -133,7 +129,7 @@ function getElement(config) {
         console.log(config.name);
         input.setAttribute("name", config.name);
     }
-
+    
     ele.textContent = config.text;
     return ele;
 }
