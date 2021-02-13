@@ -37,6 +37,8 @@ function singleUploadFiles(imgs) {
         const isPortaitList = [];
         const form = new FormData();
         const isPortait = image.clientHeight > image.clientWidth;
+        form.append("width", image.width);
+        form.append("height", image.height);
         form.append("files", image.file);
         isPortaitList.push(isPortait);
         form.append("isPortaits", isPortaitList);
@@ -61,6 +63,8 @@ function multiUploadFiles(imgs) {
 
     FileUpload(form);
 }
+
+function recursiveMultiUploadFiles(imgs) { }
 
 function pageReload() {
     location.reload();
@@ -129,7 +133,7 @@ function getElement(config) {
         console.log(config.name);
         input.setAttribute("name", config.name);
     }
-    
+
     ele.textContent = config.text;
     return ele;
 }
@@ -157,6 +161,7 @@ function setHTMLTRImage(file, i) {
     img.onload = function () {
         window.URL.revokeObjectURL(this.src);
     }
+
     td.appendChild(img);
     tr.appendChild(td);
     return tr;
@@ -219,58 +224,28 @@ function handleFiles(files) {
             idx: i,
             name: file.name,
             size: file.size,
+            width: 0,
+            height: 0,
             type: file.type.split("/").pop(),
-            src: window.URL.createObjectURL(file),
-            file: file
+            file: file,
+            src: window.URL.createObjectURL(file)
         }
+
+        getSize(file).then((e) => {
+            fileObj.width = e.width;
+            fileObj.height = e.height;
+        });
         fileLists.push(fileObj);
     }
-
     setHTMLTableImage(tableBody, fileLists);
 }
 
-function getOrientation(file, callback) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-
-        const view = new DataView(e.target.result);
-
-        if (view.getUint16(0, false) !== 0xFFD8) {
-            return callback(-2);
-        }
-        const length = view.byteLength;
-
-        let offset = 2;
-
-        while (offset < length) {
-            if (view.getUint16(offset + 2, false) <= 8) return callback(-1);
-
-            const marker = view.getUint16(offset, false);
-
-            offset += 2;
-            if (marker === 0xFFE1) {
-                if (view.getUint32(offset += 2, false) !== 0x45786966) {
-                    return callback(-1);
-                }
-
-                const little = view.getUint16(offset += 6, false) === 0x4949;
-                offset += view.getUint32(offset + 4, little);
-                const tags = view.getUint16(offset, little);
-                offset += 2;
-                for (let i = 0; i < tags; i++) {
-                    if (view.getUint16(offset + (i * 12), little) === 0x0112) {
-                        return callback(view.getUint16(offset + (i * 12) + 8, little));
-                    }
-                }
-            }
-            else if ((marker & 0xFF00) !== 0xFF00) {
-                break;
-            }
-            else {
-                offset += view.getUint16(offset, false);
-            }
-        }
-        return callback(-1);
-    };
-    reader.readAsArrayBuffer(file);
+function getSize(file) {
+    return new Promise((resolve, reject) => {
+        var _URL = window.URL || window.webkitURL;
+        var img = new Image();
+        img.onload = () => resolve({ height: img.height, width: img.width });
+        img.onerror = reject;
+        img.src = _URL.createObjectURL(file);
+    });
 }

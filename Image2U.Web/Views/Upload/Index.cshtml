@@ -12,12 +12,12 @@
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             Reset Selected
         </button>
-        
+
         <div class="input-group clearfix col-lg-4">
             <span class="input-group-addon">Width</span>
             <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度">
             <span class="input-group-addon">Heigth</span>
-            <input id="customHeight"  type="text" class="form-control" placeholder="自定義高度度">
+            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度度">
         </div>
     </div>
     <input id="fileElem"
@@ -50,5 +50,6 @@
 </div>
 @section scripts
 {
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
     <script async src="~/Scripts/Image2U/Upload.index.js"></script>
 }
