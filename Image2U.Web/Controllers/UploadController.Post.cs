@@ -6,7 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Threading.Tasks;
+using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -73,7 +74,7 @@ namespace Image2U.Web.Controllers
             }}
         };
 
-        public async Task<ActionResult> Post()
+        public ActionResult Post()
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
 
@@ -82,9 +83,7 @@ namespace Image2U.Web.Controllers
                 IsOk = false
             }, JsonRequestBehavior.AllowGet);
 
-            ResponseData response = await Task.Run(() => Sizing(request));
-
-            //ResponseData response = Sizing(request);
+            ResponseData response = Sizing(request);
 
             string key = Guid.NewGuid().ToString();
 
@@ -95,7 +94,6 @@ namespace Image2U.Web.Controllers
                 IsOk = true,
                 Data = key
             };
-
             return Json(rs, JsonRequestBehavior.AllowGet);
         }
 
@@ -108,6 +106,12 @@ namespace Image2U.Web.Controllers
 
             string isPortaits = form
                 .GetDictionaryValue("isPortaits");
+
+            string width = form
+                .GetDictionaryValue("isPortaits");
+
+            string height = form
+                .GetDictionaryValue("height");
 
             RequestFormData req = new RequestFormData(form.GetDictionaryValue("customWidth"), form.GetDictionaryValue("customHeight"))
             {
