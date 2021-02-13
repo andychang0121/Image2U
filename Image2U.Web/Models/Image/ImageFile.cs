@@ -21,15 +21,6 @@ namespace Image2U.Web.Models.Image
             _stream.Position = 0;
         }
 
-        public ImageFile(Stream stream, string fileName, bool isPortait)
-        {
-            _isPortait = isPortait;
-            _ext = fileName.Split('.').LastOrDefault();
-            _fileName = fileName.Split('.').FirstOrDefault();
-            _stream = stream;
-            _stream.Position = 0;
-        }
-
         public ImageDirection Direction => _isPortait ? ImageDirection.Portait : ImageDirection.LandScape;
 
         public string FileName => _fileName;
