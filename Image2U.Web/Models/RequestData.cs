@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Image2U.Web.Models
+﻿namespace Image2U.Web.Models
 {
     public static class RequestDataExtension
     {

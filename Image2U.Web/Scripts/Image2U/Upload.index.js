@@ -39,8 +39,8 @@ function getUploadFiles(files, customWidth, customHeight) {
     const rs = [];
     for (let file of files) {
         const _requestData = {
-            customWidth : customWidth,
-            customHeight : customHeight
+            customWidth: customWidth,
+            customHeight: customHeight
         };
 
         getBase64(file).then(function (r) {
@@ -69,8 +69,18 @@ function setLoader(b, o) {
     return;
 }
 
+function setProgress(b, o) {
+    const _o = o === undefined ? document.getElementById("progress") : o;
+    if (b) {
+        _o.style.width = "";
+        _o.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
+    } else {
+        _o.classList.value = "progress-bar progress-bar-info";
+    }
+}
 
 function uploadFileHandler(requestData) {
+    setProgress(true);
     setLoader(true);
     for (let request of requestData) {
         uploadFile("POST", "/upload/postdata", request)(2000)
@@ -80,6 +90,7 @@ function uploadFileHandler(requestData) {
                     window.open(_url, "_blank");
                 }
             }).then(function () {
+                setProgress(false);
                 setLoader(false);
             });
     }
@@ -88,7 +99,6 @@ function uploadFileHandler(requestData) {
 function uploadFile(method, url, requestData) {
     return function (ms) {
         return new Promise(function (resolve, reject) {
-            console.log(ms);
             setTimeout(function () {
                 const request = new XMLHttpRequest();
                 request.upload.addEventListener("progress", updateProgress, false);
