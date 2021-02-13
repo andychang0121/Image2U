@@ -2,11 +2,10 @@
 const _bsProgress = document.getElementById("progress");
 const API_ENDPOINT = "/upload/post";
 
-const [fileSelect, fileElem, uploadFiles, resetFiles, customWidth, customHeight] = [
+const [fileSelect, fileElem, uploadFiles, customWidth, customHeight] = [
     document.getElementById("fileSelect")
     , document.getElementById("fileElem")
     , document.getElementById("uploadFiles")
-    , document.getElementById("resetFiles")
     , document.getElementById("customWidth")
     , document.getElementById("customHeight")];
 
@@ -29,106 +28,20 @@ uploadFiles.addEventListener("click", function (e) {
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
 
-    getUploadFiles(imgs);
-    //multiUploadFiles(imgs);
-    //singleUploadFiles(imgs);
-    //uploadAsync(imgs);
+    multiUploadFiles(imgs);
 
 }, false);
 
-resetFiles.addEventListener("click", function () {
-    location.reload();
-}, false);
-
-function getUploadFiles(imgs) {
-    const _method = "POST";
-    const _API_ENDPOINT = "/upload/postdata";
-
-    setLoader(true);
-
+function singleUploadFiles(imgs) {
     for (let image of imgs) {
-
-        const _request = {};
-        const img = new Image();
-        const reader = new FileReader();
-
-        reader.addEventListener("load", function () {
-            _request.base64 = reader.result;
-            img.src = reader.result;
-        }, false);
-
-        reader.addEventListener("progress", function (event) {
-            if (event.lengthComputable) {
-
-                const percentComplete = (event.loaded / event.total) * 100;
-
-                const pc = Math.round(percentComplete);
-
-                for (let i = _width; i < pc; i++) {
-                    _bsProgress.style.width = i + 1 + "%";
-                    _bsProgress.innerHTML = `${i + 1}% (complete)`;
-                }
-                _width = pc;
-            }
-        }, false);
-
-        img.onload = function () {
-            _request.width = this.width;
-            _request.height = this.height;
-            _request.isPortait = this.height > this.width;
-
-            uploadFile(_method, _API_ENDPOINT, _request).then(function (r) {
-                if (r.IsOk) {
-                    const _url = `/upload/get?tempdataKey=${r.Data}`;
-                    window.open(_url, "_blank");
-                    setLoader(false);
-                }
-            });
-        }
-
-        if (image) {
-            const _file = image.file;
-            _request.size = _file.size;
-            _request.fileName = _file.name;
-            _request.type = _file.type;
-            _request.isPortait = image.clientHeight > image.clientWidth;
-
-            reader.readAsDataURL(_file);
-        }
+        const isPortaitList = [];
+        const form = new FormData();
+        const isPortait = image.clientHeight > image.clientWidth;
+        form.append("files", image.file);
+        isPortaitList.push(isPortait);
+        form.append("isPortaits", isPortaitList);
+        FileUpload(form);
     }
-}
-
-function uploadFile(method, url, data) {
-
-    return new Promise(function (resolve, reject) {
-        const _request = JSON.stringify(data);
-        const request = new XMLHttpRequest();
-
-        request.addEventListener("load", completeHandler, false);
-        request.addEventListener("error", errorHandler, false);
-        request.addEventListener("abort", abortHandler, false);
-
-        request.open(method, url, false);
-
-        request.setRequestHeader("Cache-Control", "no-cache");
-        request.setRequestHeader("Content-Type", "application/json");
-        request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-        request.onreadystatechange = function (e) {
-            if (request.readyState === XMLHttpRequest.DONE) {
-                if (request.status === 200) {
-                    resolve(JSON.parse(request.response));
-                } else {
-                    reject(new Error(request.statusText));
-                }
-            }
-        };
-        request.onerror = function () {
-            reject(new Error("Network Error"));
-        };
-
-        request.send(_request);
-    });
 }
 
 function multiUploadFiles(imgs) {
@@ -147,118 +60,6 @@ function multiUploadFiles(imgs) {
     form.append("isPortaits", isPortaitList);
 
     FileUpload(form);
-}
-
-function singleUploadFiles(imgs) {
-    for (let image of imgs) {
-        const isPortaitList = [];
-        const form = new FormData();
-        const isPortait = image.clientHeight > image.clientWidth;
-        form.append("files", image.file);
-        isPortaitList.push(isPortait);
-        form.append("isPortaits", isPortaitList);
-
-        FileUpload(form);
-    }
-}
-
-function uploadAsync(imgs) {
-    for (let image of imgs) {
-        const isPortaitList = [];
-        const form = new FormData();
-        const isPortait = image.clientHeight > image.clientWidth;
-        form.append("files", image.file);
-        isPortaitList.push(isPortait);
-        form.append("isPortaits", isPortaitList);
-
-        promiseUploadFile("POST", API_ENDPOINT, form)
-            .then(function (response) {
-                const _response = JSON.parse(response);
-
-                _bsProgress.classList.value = "progress-bar progress-bar-info";
-
-                if (_response.IsOk) {
-
-                    const _url = `/upload/get?tempdataKey=${_response.Data}`;
-                    window.open(_url);
-                }
-            });
-    }
-}
-
-function promiseUploadFile(method, url, data) {
-
-    return new Promise(function (resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.upload.addEventListener("progress", updateProgress, false);
-        request.addEventListener("load", completeHandler, false);
-        request.addEventListener("error", errorHandler, false);
-        request.addEventListener("abort", abortHandler, false);
-
-        request.open(method, url, false);
-
-        request.setRequestHeader("Cache-Control", "no-cache");
-        request.setRequestHeader("Accept", "multipart/form-data");
-        request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-        request.onreadystatechange = function () {
-            if (request.readyState === XMLHttpRequest.DONE) {
-                if (request.status === 200) {
-                    _bsProgress.classList.value = "progress-bar progress-bar-info";
-                    resolve(request.response);
-                } else {
-                    reject(new Error(request.statusText));
-                }
-            }
-        };
-        request.onerror = function () {
-            reject(new Error("Network Error"));
-        };
-        _bsProgress.style.width = "";
-        _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
-        request.send(data);
-    });
-}
-
-function FileUpload(form) {
-    const request = new XMLHttpRequest();
-    request.upload.addEventListener("progress", updateProgress, false);
-    request.addEventListener("load", completeHandler, false);
-    request.addEventListener("error", errorHandler, false);
-    request.addEventListener("abort", abortHandler, false);
-
-    request.open("POST", API_ENDPOINT, true);
-
-    request.setRequestHeader("Cache-Control", "no-cache");
-    request.setRequestHeader("Accept", "multipart/form-data");
-    request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-    request.onreadystatechange = function (e) {
-        if (request.readyState === 4 && request.status === 200) {
-            _bsProgress.classList.value = "progress-bar progress-bar-info";
-
-            const _response = JSON.parse(request.response);
-
-            if (_response.IsOk) {
-
-                setLoader(false);
-
-                const _url = `/upload/get?tempdataKey=${_response.Data}`;
-                window.open(_url);
-            }
-        }
-    };
-
-    setLoader(true);
-
-    _bsProgress.style.width = "";
-    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
-    request.send(form);
-}
-
-function setLoader(b) {
-    const _loader = document.getElementById("overlay");
-    _loader.style.display = b ? "block" : "none";
 }
 
 function pageReload() {
@@ -286,6 +87,41 @@ function errorHandler() { }
 
 function abortHandler() { }
 
+function FileUpload(form) {
+    const request = new XMLHttpRequest();
+    request.upload.addEventListener("progress", updateProgress, false);
+    request.addEventListener("load", completeHandler, false);
+    request.addEventListener("error", errorHandler, false);
+    request.addEventListener("abort", abortHandler, false);
+    request.open("POST", API_ENDPOINT, true);
+    request.setRequestHeader("Cache-Control", "no-cache");
+    request.setRequestHeader('Accept', 'multipart/form-data');
+    request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+    request.onreadystatechange = function (e) {
+        if (request.readyState === 4 && request.status === 200) {
+            _bsProgress.classList.value = "progress-bar progress-bar-info";
+            _loader.style.display = "none";
+
+            try {
+                const _response = JSON.parse(request.response);
+
+                if (_response.IsOk) {
+                    const _url = `/upload/get?tempdataKey=${_response.Data}`;
+                    window.open(_url);
+                }
+            } catch (e) {
+
+            }
+
+        }
+    };
+    _loader.style.display = "block";
+    _bsProgress.style.width = "";
+    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
+    request.send(form);
+}
+
 function getElement(config) {
     const ele = document.createElement(config.type);
     ele.setAttribute("class", config.className);
@@ -293,7 +129,7 @@ function getElement(config) {
         console.log(config.name);
         input.setAttribute("name", config.name);
     }
-
+    
     ele.textContent = config.text;
     return ele;
 }
@@ -319,7 +155,6 @@ function setHTMLTRImage(file, i) {
     img.src = file.src;
     img.file = file.file;
     img.onload = function () {
-        //alert(this.clientWidth + "x" + this.clientHeight + ', nature:'+this.naturalWidth + 'x' + this.naturalHeight);
         window.URL.revokeObjectURL(this.src);
     }
     td.appendChild(img);

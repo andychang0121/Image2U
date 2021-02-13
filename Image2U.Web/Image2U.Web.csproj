@@ -27,7 +27,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -223,7 +223,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\UploadController.Get.cs" />
-    <Compile Include="Controllers\UploadController.PostData.cs" />
     <Compile Include="Controllers\UploadController.Post.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Enum\Enum.cs" />
@@ -247,7 +246,6 @@
     <Compile Include="Models\Image\ZipData.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\RequestData.cs" />
-    <Compile Include="Models\RequestFormData.cs" />
     <Compile Include="Models\ResponseResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

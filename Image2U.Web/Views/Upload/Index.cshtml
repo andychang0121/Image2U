@@ -2,15 +2,15 @@
     <div class="btn-group" role="group" aria-label="button group" style="margin: 10px 0 10px 0;">
         <button id="fileSelect" type="button" class="btn btn-default">
             <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-            選擇圖片
+            Select Files
         </button>
         <button id="uploadFiles" type="button" class="btn btn-default" disabled="disabled">
             <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>
-            上傳圖片
+            Upload Files
         </button>
-        <button id="resetFiles" type="button" class="btn btn-default">
+        <button id="resetFiles" type="button" class="btn btn-default" onclick="pageReload()">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-            重新選擇
+            Reset Selected
         </button>
         
         <div class="input-group clearfix col-lg-4">
@@ -42,7 +42,7 @@
         <tbody>
             <tr>
                 <td style="height: 120px; background-color: rgba(211, 211, 211, 0.6); color: navy; text-align: center; vertical-align: middle">
-                    <span>請選擇圖片</span>
+                    <span>Please Select Files</span>
                 </td>
             </tr>
         </tbody>
@@ -50,5 +50,5 @@
 </div>
 @section scripts
 {
-    <script src="~/Scripts/Image2U/Upload.index.js"></script>
+    <script async src="~/Scripts/Image2U/Upload.index.js"></script>
 }
