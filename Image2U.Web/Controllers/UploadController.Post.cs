@@ -107,6 +107,12 @@ namespace Image2U.Web.Controllers
             string isPortaits = form
                 .GetDictionaryValue("isPortaits");
 
+            string width = form
+                .GetDictionaryValue("isPortaits");
+
+            string height = form
+                .GetDictionaryValue("height");
+
             RequestFormData req = new RequestFormData(form.GetDictionaryValue("customWidth"), form.GetDictionaryValue("customHeight"))
             {
                 IsPortaits = isPortaits,
