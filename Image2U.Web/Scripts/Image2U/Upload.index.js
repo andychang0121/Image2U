@@ -107,7 +107,7 @@ function uploadFile(method, url, requestData) {
                 request.addEventListener("error", errorHandler, false);
                 request.addEventListener("abort", abortHandler, false);
 
-                request.open(method, url, true);
+                request.open(method, url, false);
 
                 request.setRequestHeader("Cache-Control", "no-cache");
                 request.setRequestHeader('Content-type', 'application/json');
