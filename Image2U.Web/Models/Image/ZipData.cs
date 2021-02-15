@@ -5,12 +5,28 @@ using System.Web;
 
 namespace Image2U.Web.Models.Image
 {
-    public class ZipData
+    public struct ZipData
     {
-        public string FileName { get; set; }
+        private string _fileName { get; set; }
 
-        public byte[] Bytes { get; set; }
+        private byte[] _bytes { get; set; }
 
-        public string FolderName { get; set; }
+        private string _folderName { get; set; }
+
+        public ZipData(byte[] bytes, string fileName, string folderName)
+        {
+            _bytes = bytes;
+            _fileName = fileName;
+            _folderName = folderName;
+        }
+
+        public string FileName => _fileName;
+
+        public byte[] Bytes => _bytes;
+
+        public string FolderName => _folderName;
+
+        public string ZipFileName => string.IsNullOrEmpty(FolderName)
+            ? _fileName : $"{_folderName}\\{_fileName}";
     }
 }

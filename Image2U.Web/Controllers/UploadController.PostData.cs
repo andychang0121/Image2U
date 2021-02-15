@@ -3,29 +3,24 @@ using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace Image2U.Web.Controllers
 {
-    public static class UploadExtension
-    {
-        public static bool ValidRequestData(this RequestData requestData)
-            => !string.IsNullOrEmpty(requestData.Base64)
-               && !string.IsNullOrEmpty(requestData.FileName);
-    }
-
-
     public partial class UploadController
     {
         [HttpPost]
-        public ActionResult PostData(RequestData requestData)
+        public async Task<ActionResult> PostData(RequestData requestData)
         {
             if (!requestData.ValidRequestData()) return Json(new ResponseResult
             {
                 IsOk = false
             }, JsonRequestBehavior.AllowGet);
 
-            ResponseData response = Sizing(requestData);
+            ResponseData response = await Sizing(requestData);
 
             string key = Guid.NewGuid().ToString();
 
@@ -39,18 +34,18 @@ namespace Image2U.Web.Controllers
             return Json(rs, JsonRequestBehavior.AllowGet);
         }
 
-        public ResponseData Sizing(RequestData request)
+        public async Task<ResponseData> Sizing(RequestData request)
         {
-            ResponseData rs = Sizing(request, _ecDict);
+            ResponseData rs = await Sizing(request, _ecDict);
 
             return rs;
         }
 
-        public ResponseData Sizing(RequestData requestData, Dictionary<string, ImageOutput> dict)
+        public async Task<ResponseData> Sizing(RequestData requestData, Dictionary<string, ImageOutput> dict)
         {
             Dictionary<string, ImageOutput> refDict = dict;
 
-            if (requestData.CustomHeight.HasValue && requestData.CustomWidth.HasValue)
+            if (requestData.IsCustomSize)
             {
                 refDict = new Dictionary<string, ImageOutput>
                 {
@@ -62,7 +57,7 @@ namespace Image2U.Web.Controllers
                 };
             }
 
-            IEnumerable<ZipData> entryFiles = GetZip(requestData, refDict);
+            IEnumerable<ZipData> entryFiles = await GetZip(requestData, refDict);
 
             byte[] zipRs = ZipHelper.ZipData(entryFiles);
 
@@ -76,7 +71,7 @@ namespace Image2U.Web.Controllers
             return response;
         }
 
-        private static IEnumerable<ZipData> GetZip(RequestData requestData, Dictionary<string, ImageOutput> ecProfile)
+        private static async Task<IEnumerable<ZipData>> GetZip(RequestData requestData, Dictionary<string, ImageOutput> ecProfile)
         {
             List<ZipData> entryFiles = new List<ZipData>();
 
@@ -87,38 +82,19 @@ namespace Image2U.Web.Controllers
 
                 bool isPortait = requestData.IsPortsait();
 
-                ImageFile imageFile = new ImageFile(requestData.Base64.GetStream(), requestData.FileName, isPortait);
+                Stream stream = requestData.Base64.GetStream();
 
-                ImageResult rs = GetZip(imageFile, ecSetting.Width, ecSetting.MaxHeight);
+                ImageFile imageFile = new ImageFile(stream, requestData.FileName, isPortait);
 
-                ZipData zipData = new ZipData
-                {
-                    FileName = $"{ecName}\\{rs.FileName}",
-                    Bytes = rs.Bytes,
-                    FolderName = string.Empty
-                };
+                byte[] bytes = await Task.Run(() =>
+                        imageFile.Resize(ecSetting.Width, ecSetting.MaxHeight, ImageFormat.Jpeg));
+
+                string zipFileName =
+                    imageFile.GetZipFileName(ecSetting.Width, ecSetting.MaxHeight);
+
+                ZipData zipData = new ZipData(bytes, zipFileName, ecName);
 
                 entryFiles.Add(zipData);
-
-
-                //files.ToList().Select((e, i) => new { e, i })
-                //    .ForEach(async f =>
-                //    {
-                //        bool isPortait = isPortaits?[f.i] ?? false;
-
-                //        HttpPostedFile file = f.e;
-
-                //        ImageResult rs = await GetFileResult(file, isPortait, ecSetting.Width);
-
-                //        ZipData zipData = new ZipData
-                //        {
-                //            FileName = $"{ecName}\\{rs.FileName}",
-                //            Bytes = rs.Bytes,
-                //            FolderName = string.Empty
-                //        };
-
-                //        entryFiles.Add(zipData);
-                //    });
             }
 
             return entryFiles;

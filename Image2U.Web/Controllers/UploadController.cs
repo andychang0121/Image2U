@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Drawing.Imaging;
+using System.Web.Mvc;
 
 namespace Image2U.Web.Controllers
 {

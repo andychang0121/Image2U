@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -169,22 +170,21 @@ namespace Image2U.Web.Controllers
 
                 int fileIdx = 0;
 
-                foreach (HttpPostedFile f in files)
+                foreach (HttpPostedFile file in files)
                 {
                     bool isPortait = isPortaits?[fileIdx] ?? false;
 
-                    ImageFile imageFile = new ImageFile(f, isPortait);
+                    ImageFile imageFile = new ImageFile(file, isPortait);
 
-                    ImageResult rs = GetZip(imageFile, ecSetting.Width, ecSetting.MaxHeight);
+                    byte[] bytes = imageFile.Resize(ecSetting.Width, ecSetting.MaxHeight, ImageFormat.Jpeg);
 
-                    ZipData zipData = new ZipData
-                    {
-                        FileName = $"{ecName}\\{rs.FileName}",
-                        Bytes = rs.Bytes,
-                        FolderName = string.Empty
-                    };
+                    string zipFileName =
+                        imageFile.GetZipFileName(ecSetting.Width, ecSetting.MaxHeight);
+
+                    ZipData zipData = new ZipData(bytes, zipFileName, ecName);
 
                     entryFiles.Add(zipData);
+
                     fileIdx++;
                 }
 
@@ -211,58 +211,5 @@ namespace Image2U.Web.Controllers
 
             return entryFiles;
         }
-
-        private static ImageResult GetZip(ImageFile imageFile, int ecWidth, int ecHeigth)
-        {
-            //string ext = formFile.Ext;
-
-            //string originalFileName = formFile.FileName.Split('.').FirstOrDefault();
-
-            //Stream fileStream = formFile.Stream;
-
-            //imageFile.Stream.Position = 0;
-
-            //using (MagickImage image = new MagickImage(fileStream))
-            //{
-            //    IExifProfile exif = image.GetExifProfile();
-
-            //    double ratio = GetRatio(isPortait, limitPx, image.Width, image.Height);
-
-            //    ImageDirection direction = isPortait ? ImageDirection.Portait : ImageDirection.LandScape;
-
-            //    ImageResult rs = await image.Resize(ratio, direction);
-
-            //    rs.FileName = GetFileName(originalFileName, rs.Width, rs.Height, ext);
-
-            //    return rs;
-            //}
-
-
-            using (Bitmap image = new Bitmap(Image.FromStream(imageFile.Stream)))
-            {
-                double ratio = GetRatio(imageFile.Direction, ecWidth, image.Width, image.Height);
-
-                Bitmap newImage = image.Resize(ratio, imageFile.Direction, ecWidth, ecHeigth);
-
-                string fileName = ImageHelper.GetFileName(imageFile.FileName, newImage.Width, newImage.Height, imageFile.Ext);
-
-                ImageFormat imageFormat = ImageFormat.Jpeg;
-
-                byte[] bytes = newImage.ImageToByteArray(ImageFormat.Jpeg);
-
-                ImageResult rs = new ImageResult
-                {
-                    FileName = fileName,
-                    Bytes = bytes
-                };
-
-                return rs;
-            }
-        }
-
-        private static double GetRatio(ImageDirection direction, int limitWidth, int width, int height)
-            => limitWidth == width ?
-                1 :
-                direction == ImageDirection.Portait ? limitWidth / (double)height : limitWidth / (double)width;
     }
 }
