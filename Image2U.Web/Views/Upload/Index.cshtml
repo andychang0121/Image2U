@@ -1,0 +1,54 @@
+﻿<div class="row">
+    <div class="btn-group" role="group" aria-label="button group" style="margin: 10px 0 10px 0;">
+        <button id="fileSelect" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+            選擇圖片
+        </button>
+        <button id="uploadFiles" type="button" class="btn btn-default" disabled="disabled">
+            <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>
+            上傳
+        </button>
+        <button id="resetFiles" type="button" class="btn btn-default" onclick="pageReload()">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            重新選擇
+        </button>
+
+        <div class="input-group clearfix col-lg-4">
+            <span class="input-group-addon">Width</span>
+            <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度">
+            <span class="input-group-addon">Heigth</span>
+            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度度">
+        </div>
+    </div>
+    <input id="fileElem"
+           type="file"
+           multiple
+           accept="image/*"
+           style="display: none" onchange="handleFiles(this.files)">
+    <h5>Shopee，PCHOME，MoMo</h5>
+    <div class="progress">
+        <div id="progress"
+             class="progress-bar progress-bar-striped active progress-bar-success"
+             role="progressbar"
+             aria-valuenow="0"
+             aria-valuemin="0"
+             aria-valuemax="100"
+             style="width: 0;">
+            <span class="glyphicon glyphicon-plus-sign" style="color: purple;"></span>
+        </div>
+    </div>
+    <table id="fileSelectResult" class="table table-hover">
+        <thead></thead>
+        <tbody>
+            <tr>
+                <td style="height: 120px; background-color: rgba(211, 211, 211, 0.6); color: navy; text-align: center; vertical-align: middle">
+                    <span>請選擇檔案</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script async src="~/Scripts/Image2U/Upload.index.js"></script>
+}
