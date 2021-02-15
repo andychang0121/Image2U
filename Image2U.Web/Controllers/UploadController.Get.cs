@@ -8,9 +8,10 @@ namespace Image2U.Web.Controllers
     public partial class UploadController
     {
         public ActionResult Get(string tempdataKey)
-        {
-            string encodeKey = Server.HtmlEncode(tempdataKey);
+        => GetTempData(Server.HtmlEncode(tempdataKey));
 
+        private ActionResult GetTempData(string encodeKey)
+        {
             string tempRs = (string)TempData[encodeKey];
 
             ResponseData jsonRs = tempRs.Deserialize<ResponseData>();

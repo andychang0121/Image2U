@@ -12,15 +12,6 @@ namespace Image2U.Web.Models.Image
         private string _fileName { get; set; }
         private Stream _stream { get; set; }
 
-        public ImageFile(HttpPostedFile formFile, bool isPortait)
-        {
-            _isPortait = isPortait;
-            _ext = formFile.FileName.Split('.').LastOrDefault();
-            _fileName = formFile.FileName.Split('.').FirstOrDefault();
-            _stream = formFile.InputStream;
-            _stream.Position = 0;
-        }
-
         public ImageFile(Stream stream, string fileName, bool isPortait)
         {
             _isPortait = isPortait;
@@ -30,12 +21,12 @@ namespace Image2U.Web.Models.Image
             _stream.Position = 0;
         }
 
+        public Stream Stream => _stream;
+
         public ImageDirection Direction => _isPortait ? ImageDirection.Portait : ImageDirection.LandScape;
 
         public string FileName => _fileName;
 
         public string Ext => _ext;
-
-        public Stream Stream => _stream;
     }
 }

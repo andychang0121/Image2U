@@ -1,6 +1,7 @@
 ﻿const _loader = document.getElementById("overlay");
 const _bsProgress = document.getElementById("progress");
 const API_ENDPOINT = "/upload/post";
+const API_ENDPOINT_ASYNC = "/upload/postdataAsync";
 
 const [fileSelect, fileElem, uploadFiles, customWidth, customHeight] = [
     document.getElementById("fileSelect")
@@ -83,7 +84,7 @@ function uploadFileHandler(requestData) {
     setProgress(true);
     setLoader(true);
     for (let request of requestData) {
-        uploadFile("POST", "/upload/postdata", request)(2000)
+        uploadFile("POST", "/upload/postdataAsync", request)(2000)
             .then(function (r) {
                 if (r.IsOk) {
                     const _url = `/upload/get?tempdataKey=${r.Data}`;
@@ -106,7 +107,7 @@ function uploadFile(method, url, requestData) {
                 request.addEventListener("error", errorHandler, false);
                 request.addEventListener("abort", abortHandler, false);
 
-                request.open(method, url, false);
+                request.open(method, url, true);
 
                 request.setRequestHeader("Cache-Control", "no-cache");
                 request.setRequestHeader('Content-type', 'application/json');
