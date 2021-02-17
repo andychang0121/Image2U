@@ -1,4 +1,4 @@
-﻿using Image2U.Web.Enum;
+﻿using Image2U.Service.Enum;
 using System.Drawing.Imaging;
 
 namespace Image2U.Web.Models.Image

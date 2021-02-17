@@ -1,20 +1,17 @@
-﻿using Image2U.Web.Models.Image;
+﻿using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Image2U.Service.ImageHandler;
 using Image2U.Service.Interface;
+using Image2U.Service.Models;
 using Image2U.Service.Models.Image;
-using Image2U.Service.Repository;
 
-namespace Image2U.Web.Controllers
+namespace Image2U.Service.Repository
 {
-    public partial class UploadController : Controller
+    public class ImageHandler : IImageHandler
     {
-        public const string _zipContentType = "application/zip";
-        public const string _downloadExtName = "zip";
-        
-        private readonly IImageHandler _imageHandler;
-
         private readonly Dictionary<string, ImageOutput> _ecDict =
             new Dictionary<string, ImageOutput>
             {
@@ -74,14 +71,21 @@ namespace Image2U.Web.Controllers
                 }}
             };
 
-        public UploadController()
+        private readonly IImageService _imageService;
+        private readonly IZipService _zipService;
+
+        public ImageHandler()
         {
-            _imageHandler = new ImageHandler();
+            _imageService = new ImageService();
+            _zipService = new ZipService();
         }
 
-        public ActionResult Index()
+
+        public async Task<ResponseData> ConvertAsync(RequestData requestData, Dictionary<string, ImageOutput> dict)
         {
-            return View();
+            Dictionary<string, ImageOutput> rs = await _imageService.SizingAsync(requestData, _ecDict);
+
+            return null;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Image2U.Web.Models
+﻿namespace Image2U.Service.Models
 {
     public struct RequestData
     {

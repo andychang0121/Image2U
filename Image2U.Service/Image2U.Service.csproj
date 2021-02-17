@@ -33,6 +33,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,12 +43,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enum\Enum.cs" />
+    <Compile Include="Helper\ImageHelper.cs" />
+    <Compile Include="Helper\IOHelper.cs" />
+    <Compile Include="Helper\ModelHelper.cs" />
+    <Compile Include="Helper\ZipHelper.cs" />
+    <Compile Include="ImageHandler\IImageHandler.cs" />
+    <Compile Include="Interface\IImageService.cs" />
+    <Compile Include="Interface\IZipService.cs" />
+    <Compile Include="Models\Image\ImageFile.cs" />
+    <Compile Include="Models\Image\ImageOutput.cs" />
+    <Compile Include="Models\Image\ImageProfile.cs" />
+    <Compile Include="Models\Image\ImageResult.cs" />
+    <Compile Include="Models\Image\ZipData.cs" />
+    <Compile Include="Models\RequestData.cs" />
+    <Compile Include="Models\ResponseData.cs" />
+    <Compile Include="Models\ResponseResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\ImageHandler.cs" />
+    <Compile Include="Repository\ImageService.cs" />
+    <Compile Include="Repository\ZipService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="Models\" />
-    <Folder Include="Repository\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Microsoft.Ajax.Utilities;
 
-namespace Image2U.Web.Helper
+namespace Image2U.Service.Helper
 {
     public static class IOHelper
     {

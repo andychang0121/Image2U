@@ -1,11 +1,13 @@
-﻿using Image2U.Web.Helper;
-using Image2U.Web.Models;
+﻿using Image2U.Service.Models;
+using Image2U.Web.Helper;
 using Image2U.Web.Models.Image;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
+using Image2U.Service.Helper;
+using Image2U.Service.Models.Image;
 
 namespace Image2U.Web.Controllers
 {

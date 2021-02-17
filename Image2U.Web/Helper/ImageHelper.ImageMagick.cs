@@ -1,5 +1,5 @@
-﻿using Image2U.Web.Enum;
-using Image2U.Web.Models.Image;
+﻿using Image2U.Service.Enum;
+using Image2U.Service.Models.Image;
 using ImageMagick;
 using System;
 using System.Threading.Tasks;

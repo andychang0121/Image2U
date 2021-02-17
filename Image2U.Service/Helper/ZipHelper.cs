@@ -1,10 +1,10 @@
-﻿using Image2U.Web.Models.Image;
+﻿using Image2U.Service.Models.Image;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace Image2U.Web.Helper
+namespace Image2U.Service.Helper
 {
     public class ZipHelper
     {

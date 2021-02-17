@@ -1,4 +1,4 @@
-﻿namespace Image2U.Web.Enum
+﻿namespace Image2U.Service.Enum
 {
     public enum ImageDirection
     {

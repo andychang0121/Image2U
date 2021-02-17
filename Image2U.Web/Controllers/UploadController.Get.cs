@@ -2,6 +2,7 @@
 using Image2U.Web.Helper;
 using Image2U.Web.Models.Image;
 using System.Web.Mvc;
+using Image2U.Service.Models.Image;
 
 namespace Image2U.Web.Controllers
 {
@@ -20,7 +21,7 @@ namespace Image2U.Web.Controllers
 
             string originalFileName = jsonRs.FileName.Split('.').FirstOrDefault();
 
-            string fileName = $"{originalFileName}.zip";
+            string fileName = $"{originalFileName}.{_downloadExtName}";
 
             FileContentResult rs = File(bytes, _zipContentType, fileName);
 

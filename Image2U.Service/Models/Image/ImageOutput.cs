@@ -1,4 +1,4 @@
-﻿namespace Image2U.Web.Models.Image
+﻿namespace Image2U.Service.Models.Image
 {
     public class ImageOutput
     {
@@ -15,5 +15,7 @@
         public int Resolution { get; set; }
 
         public int DPI { get; set; }
+
+        public byte[] Bytes { get; set; }
     }
 }
