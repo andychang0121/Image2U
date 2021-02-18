@@ -1,9 +1,14 @@
 ﻿using System.IO;
 using System.Linq;
-using Image2U.Service.Enum;
 
 namespace Image2U.Web.Models.Image
 {
+    public enum ImageDirection
+    {
+        Portait = 0,
+        LandScape = 1
+    }
+
     public struct ImageFile
     {
         private bool _isPortait { get; set; }

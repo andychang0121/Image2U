@@ -16,6 +16,8 @@
 
         public bool IsCustomSize => CustomWidth.HasValue && CustomHeight.HasValue;
 
+        public bool IsPortait => Height > Width;
+
         public int? CustomWidth { get; set; }
 
         public int? CustomHeight { get; set; }

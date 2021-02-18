@@ -99,6 +99,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Image2U.Service\Image2U.Service.csproj">
+      <Project>{d2d20350-c659-42f1-b42c-34a279d831a5}</Project>
+      <Name>Image2U.Service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Image2U.Web\Image2U.Web.csproj">
       <Project>{1EB2C843-763A-4DBC-B5EE-6FFA7C5CFC97}</Project>
       <Name>Image2U.Web</Name>
