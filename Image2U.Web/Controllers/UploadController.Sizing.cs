@@ -2,27 +2,23 @@
 using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Web;
+using Image2U.Service.Models;
+using Image2U.Service.Models.Image;
 
 namespace Image2U.Web.Controllers
 {
     public partial class UploadController
     {
-        public async Task<ResponseData> SizingAsync(RequestData request)
+        public async Task<ResponseData> SizingAsync(RequestData requestData)
         {
-            ResponseData rs = await SizingAsync(request, _ecDict);
+            Dictionary<string, ImageOutput> dict = _ecDict;
 
-            return rs;
-        }
-
-        public async Task<ResponseData> SizingAsync(RequestData requestData, Dictionary<string, ImageOutput> dict)
-        {
-            Dictionary<string, ImageOutput> refDict = dict;
-
-            if (requestData.IsCustomSize)
+            if (requestData.IsCustomSize && requestData.CustomWidth.HasValue && requestData.CustomHeight.HasValue)
             {
-                refDict = new Dictionary<string, ImageOutput>
+                dict = new Dictionary<string, ImageOutput>
                 {
                     {"自定義尺寸",new ImageOutput {
                         Width = requestData.CustomWidth.Value,
@@ -32,9 +28,42 @@ namespace Image2U.Web.Controllers
                 };
             }
 
-            IEnumerable<ZipData> entryFiles = await GetZip(requestData, refDict);
+            Stream stream = requestData.Base64.GetStream();
 
-            byte[] zipRs = ZipHelper.ZipData(entryFiles);
+            bool isPortait = requestData.Height > requestData.Width;
+
+            ProcessData processData =
+                new ProcessData(requestData.FileName, requestData.Size, requestData.Type, isPortait, requestData.Width, requestData.Height, dict);
+
+            ResponseData rs = await SizingAsync(stream, processData);
+
+            //ResponseData rs = await SizingAsync(requestData, dict);
+
+            return rs;
+        }
+
+        private async Task<ResponseData> SizingAsync(Stream stream, ProcessData processData)
+        {
+            IEnumerable<ZipData> zipDatas = await GetZipAsync(
+                stream, processData.FileName, processData.IsPortait, processData.OutputDict);
+
+            byte[] zipRs = ZipHelper.ZipData(zipDatas);
+
+            ResponseData response = new ResponseData
+            {
+                FileName = processData.FileName,
+                ContentType = processData.Type,
+                Result = zipRs
+            };
+
+            return response;
+        }
+
+        private async Task<ResponseData> SizingAsync(RequestData requestData, Dictionary<string, ImageOutput> dict)
+        {
+            IEnumerable<ZipData> zipDatas = await GetZip(requestData, dict);
+
+            byte[] zipRs = ZipHelper.ZipData(zipDatas);
 
             ResponseData response = new ResponseData
             {

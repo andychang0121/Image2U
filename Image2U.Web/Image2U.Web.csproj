@@ -222,6 +222,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\UploadController.Image.cs" />
     <Compile Include="Controllers\UploadController.Zip.cs" />
     <Compile Include="Controllers\UploadController.Sizing.cs" />
     <Compile Include="Controllers\UploadController.Get.cs" />
@@ -243,9 +244,6 @@
     <Compile Include="Helper\ZipHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\Image\ImageFile.cs" />
-    <Compile Include="Models\Image\ImageOutput.cs" />
-    <Compile Include="Models\Image\ImageProfile.cs" />
     <Compile Include="Models\Image\ImageResult.cs" />
     <Compile Include="Models\Image\ResponseData.cs" />
     <Compile Include="Models\Image\ZipData.cs" />

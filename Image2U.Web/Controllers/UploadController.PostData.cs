@@ -2,8 +2,6 @@
 using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 

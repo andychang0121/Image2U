@@ -8,6 +8,14 @@ namespace Image2U.Web.Helper
 {
     public class ZipHelper
     {
+        public static string GetZipFileName(string fileName, int width, int height, string folderName)
+        {
+            string firstSection = fileName.Split('.').FirstOrDefault();
+            string extSection = fileName.Split('.').LastOrDefault();
+
+            return $"{folderName}\\{firstSection}-{width}x{height}.{extSection}";
+        }
+
         public static byte[] ZipData(IEnumerable<ZipData> data)
         {
             using (MemoryStream zipStream = new MemoryStream())

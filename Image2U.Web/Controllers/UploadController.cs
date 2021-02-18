@@ -1,6 +1,7 @@
 ﻿using Image2U.Web.Models.Image;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using Image2U.Service.Models.Image;
 
 namespace Image2U.Web.Controllers
 {
