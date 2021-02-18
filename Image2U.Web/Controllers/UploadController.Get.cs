@@ -18,7 +18,7 @@ namespace Image2U.Web.Controllers
 
             byte[] bytes = jsonRs.Result;
 
-            string originalFileName = jsonRs.FileName.Split('.').FirstOrDefault();
+            string originalFileName = jsonRs.FileName?.Split('.').FirstOrDefault() ?? encodeKey;
 
             string fileName = $"{originalFileName}.zip";
 
