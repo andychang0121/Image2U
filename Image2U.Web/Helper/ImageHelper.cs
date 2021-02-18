@@ -10,8 +10,8 @@ namespace Image2U.Web.Helper
 {
     public static class ImageFileExtension
     {
-        public static string GetZipFileName(this ImageFile imageFile, int w, int h)
-            => $"{imageFile.FileName}-{w}x{h}.{imageFile.Ext}";
+        public static string GetZipFileName(this ImageFile imageFile,string folderName, int w, int h)
+            => $"{folderName}\\{imageFile.FileName}-{w}x{h}.{imageFile.Ext}";
 
         public static string GetZipFileName(this string fileName, string ext, int w, int h)
             => $"{fileName}-{w}x{h}.{ext}";

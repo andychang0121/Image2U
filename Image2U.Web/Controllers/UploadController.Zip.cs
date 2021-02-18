@@ -41,7 +41,7 @@ namespace Image2U.Web.Controllers
                 imageFile.Resize(width, height, ImageFormat.Jpeg));
 
             string zipFileName =
-                imageFile.GetZipFileName(width, height);
+                imageFile.GetZipFileName(ecName, width, height);
 
             ZipData rs = new ZipData(bytes, zipFileName, ecName);
 
@@ -84,7 +84,7 @@ namespace Image2U.Web.Controllers
             byte[] bytes = imageFile.Resize(width, height, ImageFormat.Jpeg);
 
             string zipFileName =
-                imageFile.GetZipFileName(width, height);
+                imageFile.GetZipFileName(ecName, width, height);
 
             ZipData rs = new ZipData(bytes, zipFileName, ecName);
 
