@@ -12,13 +12,20 @@ namespace Image2U.Service.Repository
 {
     public class ImageService : IImageService
     {
-        public async Task<byte[]> Resize(ImageFile imageFile, int reWidth, int reHeight, ImageFormat imageFormat)
+        public async Task<byte[]> GetImageBytesAsync(Stream stream, string fileName, bool isPortait, int width, int height, string ecName)
         {
-            using (Bitmap image = new Bitmap(imageFile.Stream))
-            {
-                double ratio = ImageHelper.GetRatio(imageFile.IsPortait, reWidth, image.Width, image.Height);
+            byte[] bytes = await ResizeAsync(stream, isPortait, width, height, ImageFormat.Jpeg);
 
-                Bitmap newImage = await Resize(image, ratio, imageFile.IsPortait, reWidth, reHeight);
+            return bytes;
+        }
+
+        public async Task<byte[]> ResizeAsync(Stream stream, bool isPortait, int reWidth, int reHeight, ImageFormat imageFormat)
+        {
+            using (Bitmap image = new Bitmap(stream))
+            {
+                double ratio = ImageHelper.GetRatio(isPortait, reWidth, image.Width, image.Height);
+
+                Bitmap newImage = await ResizeAsync(image, ratio, isPortait, reWidth, reHeight);
 
                 byte[] bytes = ImageHelper.ImageToBytes(newImage, imageFormat);
 
@@ -26,28 +33,14 @@ namespace Image2U.Service.Repository
             }
         }
 
-        public async Task<byte[]> ResizeAsync(ImageFile imageFile, int reWidth, int reHeight, ImageFormat imageFormat)
-        {
-            using (Bitmap image = new Bitmap(imageFile.Stream))
-            {
-                double ratio = ImageHelper.GetRatio(imageFile.IsPortait, reWidth, image.Width, image.Height);
-
-                Bitmap newImage = await Resize(image, ratio, imageFile.IsPortait, reWidth, reHeight);
-
-                byte[] bytes = ImageHelper.ImageToBytes(newImage, imageFormat);
-
-                return bytes;
-            }
-        }
-
-        public async Task<Bitmap> Resize(Image image, double ratio, bool isPortait, int width, int height)
+        private async Task<Bitmap> ResizeAsync(Image image, double ratio, bool isPortait, int width, int height)
         {
             if (isPortait)
             {
                 image.RotateFlip(RotateFlipType.Rotate90FlipX);
             }
 
-            Bitmap bitmapRs = await Resize(image, ratio, width, height);
+            Bitmap bitmapRs = await ResizeAsync(image, ratio, width, height);
 
             return bitmapRs;
         }
@@ -62,7 +55,7 @@ namespace Image2U.Service.Repository
         /// <param name="xDpi"></param>
         /// <param name="yDpi"></param>
         /// <returns></returns>
-        private async Task<Bitmap> Resize(Image image, double ratio, int width, int height, float xDpi = 72, float yDpi = 72)
+        private async Task<Bitmap> ResizeAsync(Image image, double ratio, int width, int height, float xDpi = 72, float yDpi = 72)
         {
             return await Task.Run(() =>
             {
@@ -95,15 +88,6 @@ namespace Image2U.Service.Repository
 
                 return thumbnail;
             });
-        }
-
-        public async Task<byte[]> GetImageBytesAsync(Stream stream, string fileName, bool isPortait, int width, int height, string ecName)
-        {
-            ImageFile imageFile = new ImageFile(stream, fileName, isPortait);
-
-            byte[] bytes = await Resize(imageFile, width, height, ImageFormat.Jpeg);
-
-            return bytes;
         }
     }
 }

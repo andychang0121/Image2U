@@ -9,6 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
+using Image2U.Service.Enum;
 using Image2U.Service.Models.Image;
 using Image2U.Web.Enum;
 

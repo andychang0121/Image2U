@@ -1,4 +1,5 @@
 ﻿using System.Drawing.Imaging;
+using Image2U.Service.Enum;
 
 namespace Image2U.Service.Models.Image
 {

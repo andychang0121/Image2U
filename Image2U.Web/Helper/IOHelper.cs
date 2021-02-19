@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Microsoft.Ajax.Utilities;
 
 namespace Image2U.Web.Helper
 {
@@ -15,7 +14,6 @@ namespace Image2U.Web.Helper
 
             return string.IsNullOrEmpty(base64Rs) ? null : Convert.FromBase64String(base64Rs);
         }
-            
 
         public static Stream GetStream(this string base64)
         {

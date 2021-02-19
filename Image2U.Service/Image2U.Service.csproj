@@ -43,12 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enum\ImageEnum.cs" />
     <Compile Include="Handler\IConvertHandler.cs" />
     <Compile Include="Helper\ImageHelper.cs" />
     <Compile Include="Helper\ZipHelper.cs" />
     <Compile Include="Interface\IImageService.cs" />
     <Compile Include="Interface\IZipService.cs" />
-    <Compile Include="Models\Image\ImageFile.cs" />
     <Compile Include="Models\Image\ImageOutput.cs" />
     <Compile Include="Models\Image\ImageProfile.cs" />
     <Compile Include="Models\ProcessData.cs" />

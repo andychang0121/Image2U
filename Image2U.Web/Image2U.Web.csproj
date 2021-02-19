@@ -243,6 +243,7 @@
     <Compile Include="Helper\ViewModelHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Image\ImageFile.cs" />
     <Compile Include="Models\Image\ImageResult.cs" />
     <Compile Include="Models\Image\ResponseData.cs" />
     <Compile Include="Models\ManageViewModels.cs" />

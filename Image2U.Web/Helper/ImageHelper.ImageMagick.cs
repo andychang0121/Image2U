@@ -3,6 +3,7 @@ using Image2U.Web.Models.Image;
 using ImageMagick;
 using System;
 using System.Threading.Tasks;
+using Image2U.Service.Enum;
 using Image2U.Service.Models.Image;
 
 namespace Image2U.Web.Helper
