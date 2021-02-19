@@ -10,6 +10,8 @@ namespace Image2U.Web.Controllers
     public partial class UploadController
     {
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> PostDataAsync(RequestData requestData)
         {
             if (!requestData.ValidRequestData()) return Json(new ResponseResult

@@ -38,12 +38,14 @@ uploadFiles.addEventListener("click", function (e) {
 }, false);
 
 function uploadFilesBase64Async(imgs, customWidth, customHeight) {
+
     for (let image of imgs) {
         const _file = image.file;
         const _requestData = {
             customWidth: customWidth,
             customHeight: customHeight
         };
+
         getBase64(_file).then(function (r) {
             _requestData.base64 = r;
         }).then(function () {
@@ -60,9 +62,14 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
 }
 
 function jUploadFile(url, data) {
+    const _token = $("[name*='__RequestVerificationToken']").val();
+    const _request = {
+        __RequestVerificationToken: _token,
+        requestData: data
+    }
     $.post({
         url: url,
-        data: { requestData: data },
+        data: _request,
         async: false,
         complete: function () {
             setLoader(false);

@@ -1,4 +1,5 @@
 ﻿<div class="row">
+    @Html.AntiForgeryToken()
     <div class="btn-group" role="group" aria-label="button group" style="margin: 10px 0 10px 0;">
         <button id="fileSelect" type="button" class="btn btn-default">
             <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
@@ -40,11 +41,11 @@
     <table id="fileSelectResult" class="table table-hover">
         <thead></thead>
         <tbody>
-            <tr>
-                <td style="height: 120px; background-color: rgba(211, 211, 211, 0.6); color: navy; text-align: center; vertical-align: middle">
-                    <span>請選擇檔案</span>
-                </td>
-            </tr>
+        <tr>
+            <td style="height: 120px; background-color: rgba(211, 211, 211, 0.6); color: navy; text-align: center; vertical-align: middle">
+                <span>請選擇檔案</span>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>
