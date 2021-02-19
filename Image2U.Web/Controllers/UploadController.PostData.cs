@@ -17,7 +17,7 @@ namespace Image2U.Web.Controllers
                 IsOk = false
             }, JsonRequestBehavior.AllowGet);
 
-            ResponseData response = await SizingAsync(requestData);
+            ResponseData response = await ConvertImageAsync(requestData);
 
             ActionResult rs =  await Task.Run(() => SetTempData(response));
 

@@ -1,20 +1,20 @@
-﻿using Image2U.Web.Helper;
+﻿using Image2U.Service.Helper;
+using Image2U.Service.Models;
+using Image2U.Service.Models.Image;
+using Image2U.Service.Models.Zip;
+using Image2U.Web.Helper;
 using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
-using Image2U.Service.Models;
-using Image2U.Service.Models.Image;
-using Image2U.Service.Models.Zip;
-using Image2U.Service.Helper;
 
 namespace Image2U.Web.Controllers
 {
     public partial class UploadController
     {
-        public async Task<ResponseData> SizingAsync(RequestData requestData)
+        public async Task<ResponseData> ConvertImageAsync(RequestData requestData)
         {
             Dictionary<string, ImageOutput> dict = _ecDict;
 
@@ -38,8 +38,6 @@ namespace Image2U.Web.Controllers
                 new ProcessData(requestData.FileName, requestData.Size, requestData.Type, isPortait, requestData.Width, requestData.Height, dict);
 
             ResponseData rs = await SizingAsync(stream, processData);
-
-            //ResponseData rs = await SizingAsync(requestData, dict);
 
             return rs;
         }
