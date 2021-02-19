@@ -39,13 +39,8 @@ uploadFiles.addEventListener("click", function (e) {
 
 function uploadFilesBase64Async(imgs, customWidth, customHeight) {
 
-    for (let image of imgs) {
+    const ajaxPost = function (image, _requestData, _url) {
         const _file = image.file;
-        const _requestData = {
-            customWidth: customWidth,
-            customHeight: customHeight
-        };
-
         getBase64(_file).then(function (r) {
             _requestData.base64 = r;
         }).then(function () {
@@ -56,8 +51,17 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
             _requestData.width = image.naturalWidth;
             _requestData.height = image.naturalHeight;
         }).then(function () {
-            jUploadFile(API_ENDPOINT_ASYNC, _requestData);
+            jUploadFile(_url, _requestData);
         });
+    };
+
+    for (let image of imgs) {
+        const _requestData = {
+            customWidth: customWidth,
+            customHeight: customHeight
+        };
+
+        ajaxPost(image, _requestData, API_ENDPOINT_ASYNC);
     }
 }
 
@@ -255,7 +259,8 @@ function setHTMLTRImage(file, i) {
     tr.appendChild(getTd(i + 1));
     tr.appendChild(getTd(file.name));
     tr.appendChild(getTd(""));
-    tr.appendChild(getTd(file.size.numberFormat(0, ".", ",")));
+    tr.appendChild(getTd(bytesToSize(file.size)));
+    //tr.appendChild(getTd(file.size.numberFormat(0, ".", ",")));
     //----
     const td = document.createElement("td");
     const img = document.createElement("img");
@@ -290,7 +295,7 @@ function getTd(v) {
     return td;
 }
 
-function handleFiles(files) {
+function setFilesToTable(files) {
     if (!files.length) return;
 
     const setHTMLTableImage = function (_tableBody, _fileLists) {
@@ -328,6 +333,7 @@ function handleFiles(files) {
     for (let i = 0; i < filesCount; i++) {
 
         const file = files[i];
+
         const fileObj = {
             idx: i,
             name: file.name,

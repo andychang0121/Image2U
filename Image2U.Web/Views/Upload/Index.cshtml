@@ -25,7 +25,7 @@
            type="file"
            multiple
            accept="image/*"
-           style="display: none" onchange="handleFiles(this.files)">
+           style="display: none" onchange="setFilesToTable(this.files)">
     <h5>Shopee，PCHOME，MoMo</h5>
     <div class="progress">
         <div id="progress"
@@ -38,14 +38,15 @@
             <span class="glyphicon glyphicon-plus-sign" style="color: purple;"></span>
         </div>
     </div>
+    
     <table id="fileSelectResult" class="table table-hover">
         <thead></thead>
         <tbody>
-        <tr>
-            <td style="height: 120px; background-color: rgba(211, 211, 211, 0.6); color: navy; text-align: center; vertical-align: middle">
-                <span>請選擇檔案</span>
-            </td>
-        </tr>
+            <tr>
+                <td style="height: 120px; background-color: rgba(211, 211, 211, 0.6); color: navy; text-align: center; vertical-align: middle">
+                    <span>請選擇檔案</span>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>
