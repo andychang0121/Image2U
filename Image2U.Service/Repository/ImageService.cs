@@ -19,7 +19,7 @@ namespace Image2U.Service.Repository
             return bytes;
         }
 
-        public async Task<byte[]> ResizeAsync(Stream stream, bool isPortait, int reWidth, int reHeight, ImageFormat imageFormat)
+        private async Task<byte[]> ResizeAsync(Stream stream, bool isPortait, int reWidth, int reHeight, ImageFormat imageFormat)
         {
             using (Bitmap image = new Bitmap(stream))
             {
@@ -85,6 +85,7 @@ namespace Image2U.Service.Repository
 
                 graphic.Clear(Color.Transparent);
                 graphic.DrawImage(image, 0, 0, newWidth, newHeight);
+                graphic.Dispose();
 
                 return thumbnail;
             });
