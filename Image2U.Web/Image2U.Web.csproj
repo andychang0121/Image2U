@@ -241,12 +241,10 @@
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\StringHelper.cs" />
     <Compile Include="Helper\ViewModelHelper.cs" />
-    <Compile Include="Helper\ZipHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Image\ImageResult.cs" />
     <Compile Include="Models\Image\ResponseData.cs" />
-    <Compile Include="Models\Image\ZipData.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\RequestData.cs" />
     <Compile Include="Models\RequestFormData.cs" />

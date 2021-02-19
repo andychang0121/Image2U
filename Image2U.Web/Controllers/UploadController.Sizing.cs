@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Image2U.Service.Models;
 using Image2U.Service.Models.Image;
+using Image2U.Service.Models.Zip;
+using Image2U.Service.Helper;
 
 namespace Image2U.Web.Controllers
 {
@@ -44,31 +46,12 @@ namespace Image2U.Web.Controllers
 
         private async Task<ResponseData> SizingAsync(Stream stream, ProcessData processData)
         {
-            IEnumerable<ZipData> zipDatas = await GetZipAsync(
-                stream, processData.FileName, processData.IsPortait, processData.OutputDict);
-
-            byte[] zipRs = ZipHelper.ZipData(zipDatas);
+            byte[] zipRs = await _IConvertHandler.ConvertProcessAsync(stream, processData);
 
             ResponseData response = new ResponseData
             {
                 FileName = processData.FileName,
                 ContentType = processData.Type,
-                Result = zipRs
-            };
-
-            return response;
-        }
-
-        private async Task<ResponseData> SizingAsync(RequestData requestData, Dictionary<string, ImageOutput> dict)
-        {
-            IEnumerable<ZipData> zipDatas = await GetZip(requestData, dict);
-
-            byte[] zipRs = ZipHelper.ZipData(zipDatas);
-
-            ResponseData response = new ResponseData
-            {
-                FileName = requestData.FileName,
-                ContentType = requestData.Type,
                 Result = zipRs
             };
 

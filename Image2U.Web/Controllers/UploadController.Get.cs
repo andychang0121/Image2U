@@ -20,9 +20,11 @@ namespace Image2U.Web.Controllers
 
             string originalFileName = jsonRs.FileName?.Split('.').FirstOrDefault() ?? encodeKey;
 
-            string fileName = $"{originalFileName}.zip";
+            string fileName = $"{originalFileName}.{_downloadExtName}";
 
-            FileContentResult rs = File(bytes, _zipContentType, fileName);
+            string encodeFileName = Url.Encode(fileName);
+
+            FileContentResult rs = File(bytes, _zipContentType, encodeFileName);
 
             return rs;
         }

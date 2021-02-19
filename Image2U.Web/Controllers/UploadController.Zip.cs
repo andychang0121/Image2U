@@ -9,14 +9,24 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
+using Image2U.Service.Helper;
 using Image2U.Service.Models.Image;
 using Image2U.Web.Enum;
+using Image2U.Service.Models.Zip;
 
 namespace Image2U.Web.Controllers
 {
     public partial class UploadController
     {
-        private async Task<IEnumerable<ZipData>> GetZipAsync(
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="fileName"></param>
+        /// <param name="isPortait"></param>
+        /// <param name="ecProfile"></param>
+        /// <returns></returns>
+        private async Task<IEnumerable<ZipData>> GetConvertZipAsync(
             Stream stream, string fileName, bool isPortait, Dictionary<string, ImageOutput> ecProfile)
         {
             List<ZipData> entryFiles = new List<ZipData>();
@@ -27,7 +37,7 @@ namespace Image2U.Web.Controllers
                 ImageOutput ecSetting = ec.Value;
 
                 byte[] bytes =
-                    await GetZipAsync(stream, fileName, isPortait, ecSetting.Width, ecSetting.MaxHeight, ecName);
+                    await GetImageBytesAsync(stream, fileName, isPortait, ecSetting.Width, ecSetting.MaxHeight, ecName);
 
                 string zipFileName = ZipHelper.GetZipFileName(fileName, ecSetting.Width, ecSetting.MaxHeight, ecName);
 
@@ -39,7 +49,7 @@ namespace Image2U.Web.Controllers
             return entryFiles;
         }
 
-        private async Task<byte[]> GetZipAsync(Stream stream, string fileName, bool isPortait, int width, int height, string ecName)
+        private async Task<byte[]> GetImageBytesAsync(Stream stream, string fileName, bool isPortait, int width, int height, string ecName)
         {
             ImageFile imageFile = new ImageFile(stream, fileName, isPortait);
 

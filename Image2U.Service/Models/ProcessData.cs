@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Image2U.Service.Models.Image;
+﻿using Image2U.Service.Models.Image;
+using System.Collections.Generic;
 
 namespace Image2U.Service.Models
 {
