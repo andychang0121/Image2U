@@ -33,6 +33,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,12 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enum\ImageEnum.cs" />
+    <Compile Include="Handler\IConvertHandler.cs" />
+    <Compile Include="Helper\ImageHelper.cs" />
+    <Compile Include="Helper\ZipHelper.cs" />
+    <Compile Include="Interface\IImageService.cs" />
+    <Compile Include="Interface\IZipService.cs" />
+    <Compile Include="Models\Image\ImageOutput.cs" />
+    <Compile Include="Models\Image\ImageProfile.cs" />
+    <Compile Include="Models\ProcessData.cs" />
+    <Compile Include="Models\Zip\ZipData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\ConvertHandler.cs" />
+    <Compile Include="Repository\ImageService.cs" />
+    <Compile Include="Repository\ZipService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="Models\" />
-    <Folder Include="Repository\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

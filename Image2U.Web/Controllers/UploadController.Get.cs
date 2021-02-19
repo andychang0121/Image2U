@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Image2U.Web.Helper;
 using Image2U.Web.Models.Image;
 using System.Web.Mvc;
@@ -7,8 +8,8 @@ namespace Image2U.Web.Controllers
 {
     public partial class UploadController
     {
-        public ActionResult Get(string tempdataKey)
-        => GetTempData(Server.HtmlEncode(tempdataKey));
+        public async Task<ActionResult> Get(string tempdataKey)
+            => await Task.Run(() => GetTempData(Server.HtmlEncode(tempdataKey)));
 
         private ActionResult GetTempData(string encodeKey)
         {
@@ -20,9 +21,11 @@ namespace Image2U.Web.Controllers
 
             string originalFileName = jsonRs.FileName?.Split('.').FirstOrDefault() ?? encodeKey;
 
-            string fileName = $"{originalFileName}.zip";
+            string fileName = $"{originalFileName}.{_downloadExtName}";
 
-            FileContentResult rs = File(bytes, _zipContentType, fileName);
+            string encodeFileName = Url.Encode(fileName);
+
+            FileContentResult rs = File(bytes, _zipContentType, encodeFileName);
 
             return rs;
         }

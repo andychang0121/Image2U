@@ -1,7 +1,6 @@
-﻿using Image2U.Web.Enum;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Web;
+using Image2U.Service.Enum;
 
 namespace Image2U.Web.Models.Image
 {
@@ -22,6 +21,8 @@ namespace Image2U.Web.Models.Image
         }
 
         public Stream Stream => _stream;
+
+        public bool IsPortait => _isPortait;
 
         public ImageDirection Direction => _isPortait ? ImageDirection.Portait : ImageDirection.LandScape;
 

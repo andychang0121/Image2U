@@ -1,4 +1,6 @@
-﻿using Image2U.Web.Models.Image;
+﻿using Image2U.Service.Handler;
+using Image2U.Service.Models.Image;
+using Image2U.Service.Repository;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -6,8 +8,14 @@ namespace Image2U.Web.Controllers
 {
     public partial class UploadController : Controller
     {
-        public const string _zipContentType = "application/zip";
+        public const string _zipContentType = "application/x-zip-compressed";
         public const string _downloadExtName = "zip";
+        public readonly IConvertHandler _IConvertHandler;
+
+        public UploadController()
+        {
+            _IConvertHandler = new ConvertHandler();
+        }
 
         private readonly Dictionary<string, ImageOutput> _ecDict =
             new Dictionary<string, ImageOutput>
@@ -67,9 +75,9 @@ namespace Image2U.Web.Controllers
                     MaxHeight = 2200
                 }}
             };
-        public ActionResult Index()
-        {
-            return View();
-        }
+
+        public ActionResult Index() => View();
+
+
     }
 }
