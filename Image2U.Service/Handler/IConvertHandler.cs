@@ -1,9 +1,6 @@
-﻿using Image2U.Service.Models.Image;
-using Image2U.Service.Models.Zip;
-using System.Collections.Generic;
+﻿using Image2U.Service.Models;
 using System.IO;
 using System.Threading.Tasks;
-using Image2U.Service.Models;
 
 namespace Image2U.Service.Handler
 {
