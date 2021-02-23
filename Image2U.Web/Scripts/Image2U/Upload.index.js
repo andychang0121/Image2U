@@ -85,7 +85,7 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
 
     console.log(__imgs);
 
-    for (let image of imgs) {
+    for (let image of __imgs) {
 
         const _requestData = {
             customWidth: customWidth,
@@ -410,4 +410,8 @@ function getImage(src) {
         img.crossOrigin = "Anonymous";
         img.src = src;
     });
+}
+
+const foo = async () => {
+    return 1;
 }
