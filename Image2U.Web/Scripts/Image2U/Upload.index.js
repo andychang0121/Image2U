@@ -33,7 +33,7 @@ uploadFiles.addEventListener("click", function (e) {
     //multiUploadFiles(imgs); -- ok
     //singleUploadFiles(imgs); -- ok
     setProgress(true);
-    setLoaderPromise(true).then(function () {
+    setLoaderAsync(true).then(function () {
         uploadFilesBase64Async(imgs, customWidth.value, customHeight.value);
     });
 
@@ -83,8 +83,6 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
 
     const __imgs = getUploadFiles(imgs);
 
-    console.log(__imgs);
-
     for (let image of __imgs) {
 
         const _requestData = {
@@ -118,14 +116,10 @@ function jUploadFile(url, data) {
     });
 }
 
-function setLoaderPromise(b, o) {
+function setLoaderAsync(b, o) {
     return new Promise((resolve, reject) => {
-        const _loader = o === undefined ? document.getElementById("overlay") : o;
-        _loader.style.display = b ? "block" : "none";
-
-        setTimeout(function () {
-            resolve(true);
-        }, 1000);
+        setLoader(b);
+        setTimeout(() => { resolve(true); }, 10);
     });
 
 }
@@ -143,83 +137,6 @@ function setProgress(b, o) {
     } else {
         _o.classList.value = "progress-bar progress-bar-info";
     }
-}
-
-function uploadFileHandler(requestData) {
-    setProgress(true);
-    setLoader(true);
-
-    uploadFile("POST", "/upload/postdataAsync", requestData)(2000)
-        .then(function (r) {
-            if (r.IsOk) {
-                const _url = `/upload/get?tempdataKey=${r.Data}`;
-                window.open(_url, "_blank");
-            }
-        }).then(function () {
-            setProgress(false);
-            setLoader(false);
-        });
-}
-
-function uploadFile(method, url, requestData) {
-    return function (ms) {
-        return new Promise(function (resolve, reject) {
-            setTimeout(function () {
-                const request = new XMLHttpRequest();
-                request.upload.addEventListener("progress", updateProgress, false);
-                request.addEventListener("load", completeHandler, false);
-                request.addEventListener("error", errorHandler, false);
-                request.addEventListener("abort", abortHandler, false);
-
-                request.open(method, url, false);
-
-                request.setRequestHeader("Cache-Control", "no-cache");
-                //request.setRequestHeader('Content-type', 'application/json');
-                request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-                request.onreadystatechange = function (e) {
-                    if (request.readyState === XMLHttpRequest.DONE) {
-                        if (request.status === 200) {
-                            resolve(JSON.parse(request.response));
-                        } else {
-                            reject(new Error(request.statusText));
-                        }
-                    }
-                };
-                request.send(JSON.stringify(requestData));
-            }, ms);
-        });
-    };
-}
-
-function singleUploadFiles(imgs) {
-    for (let image of imgs) {
-        const isPortaitList = [];
-        const form = new FormData();
-        const isPortait = image.clientHeight > image.clientWidth;
-        form.append("files", image.file);
-        isPortaitList.push(isPortait);
-        form.append("isPortaits", isPortaitList);
-        FileUpload(form);
-    }
-}
-
-function multiUploadFiles(imgs) {
-    const isPortaitList = [];
-
-    const form = new FormData();
-    form.append("customWidth", customWidth.value);
-    form.append("customHeight", customHeight.value);
-
-    for (let image of imgs) {
-        const isPortait = image.clientHeight > image.clientWidth;
-        form.append("files", image.file);
-        isPortaitList.push(isPortait);
-    }
-
-    form.append("isPortaits", isPortaitList);
-
-    FileUpload(form);
 }
 
 function pageReload() {
@@ -246,35 +163,6 @@ function completeHandler() { }
 function errorHandler() { }
 
 function abortHandler() { }
-
-function FileUpload(form) {
-    const request = new XMLHttpRequest();
-    request.upload.addEventListener("progress", updateProgress, false);
-    request.addEventListener("load", completeHandler, false);
-    request.addEventListener("error", errorHandler, false);
-    request.addEventListener("abort", abortHandler, false);
-    request.open("POST", API_ENDPOINT, false);
-    request.setRequestHeader("Cache-Control", "no-cache");
-    request.setRequestHeader("Accept", "multipart/form-data");
-    request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-    request.onreadystatechange = function (e) {
-        if (request.readyState === 4 && request.status === 200) {
-            _bsProgress.classList.value = "progress-bar progress-bar-info";
-            const _response = JSON.parse(request.response);
-
-            setLoader(false);
-
-            if (_response.IsOk) {
-                const _url = `/upload/get?tempdataKey=${_response.Data}`;
-                window.open(_url);
-            }
-        }
-    };
-    _bsProgress.style.width = "";
-    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
-    request.send(form);
-}
 
 function getElement(config) {
     const ele = document.createElement(config.type);
@@ -410,8 +298,4 @@ function getImage(src) {
         img.crossOrigin = "Anonymous";
         img.src = src;
     });
-}
-
-const foo = async () => {
-    return 1;
 }
