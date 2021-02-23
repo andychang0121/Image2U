@@ -33,29 +33,60 @@ uploadFiles.addEventListener("click", function (e) {
     //multiUploadFiles(imgs); -- ok
     //singleUploadFiles(imgs); -- ok
     setProgress(true);
-    setLoader(true);
-    uploadFilesBase64Async(imgs, customWidth.value, customHeight.value);
+    setLoaderPromise(true).then(function () {
+        uploadFilesBase64Async(imgs, customWidth.value, customHeight.value);
+    });
+
 }, false);
 
-function uploadFilesBase64Async(imgs, customWidth, customHeight) {
+function validFileSize(bytes) {
+    if (bytes === 0) return true;
+    const _getSize = function (_bytes) {
+        return _bytes / 1024 / 1024;
+    }
+    return _getSize(bytes) <= 2;
+}
 
+function getUploadFiles(imgs) {
+    const rs = [];
+    [].forEach.call(imgs, function (img) {
+        const _isUpload = validFileSize(img.file.size);
+        if (_isUpload) {
+            rs.push(img);
+        }
+    });
+    return rs;
+}
+
+function uploadFilesBase64Async(imgs, customWidth, customHeight) {
     const ajaxPost = function (image, _requestData, _url) {
+
         const _file = image.file;
-        getBase64(_file).then(function (r) {
+
+        getFileBase64(_file).then(function (r) {
             _requestData.base64 = r;
+
+            getImage(r).then(function (_r) {
+                _requestData.width = _r.width;
+                _requestData.height = _r.height;
+            });
+
         }).then(function () {
             _requestData.fileName = image.name;
             _requestData.type = _file.type;
             _requestData.size = _file.size;
             _requestData.fileName = _file.name;
-            _requestData.width = image.naturalWidth;
-            _requestData.height = image.naturalHeight;
         }).then(function () {
             jUploadFile(_url, _requestData);
         });
     };
 
+    const __imgs = getUploadFiles(imgs);
+
+    console.log(__imgs);
+
     for (let image of imgs) {
+
         const _requestData = {
             customWidth: customWidth,
             customHeight: customHeight
@@ -70,7 +101,7 @@ function jUploadFile(url, data) {
     const _request = {
         __RequestVerificationToken: _token,
         requestData: data
-    }
+    };
     $.post({
         url: url,
         data: _request,
@@ -85,6 +116,18 @@ function jUploadFile(url, data) {
             }
         }
     });
+}
+
+function setLoaderPromise(b, o) {
+    return new Promise((resolve, reject) => {
+        const _loader = o === undefined ? document.getElementById("overlay") : o;
+        _loader.style.display = b ? "block" : "none";
+
+        setTimeout(function () {
+            resolve(true);
+        }, 1000);
+    });
+
 }
 
 function setLoader(b, o) {
@@ -142,11 +185,11 @@ function uploadFile(method, url, requestData) {
                             reject(new Error(request.statusText));
                         }
                     }
-                }
+                };
                 request.send(JSON.stringify(requestData));
             }, ms);
         });
-    }
+    };
 }
 
 function singleUploadFiles(imgs) {
@@ -270,7 +313,7 @@ function setHTMLTRImage(file, i) {
 
     img.onload = function () {
         window.URL.revokeObjectURL(this.src);
-    }
+    };
     td.appendChild(img);
     tr.appendChild(td);
     return tr;
@@ -304,7 +347,7 @@ function setFilesToTable(files) {
             const _tr = setHTMLTRImage(file, i);
             _tableBody.appendChild(_tr);
         }
-    }
+    };
 
     const _uploadFiles = document.getElementById("uploadFiles");
     const _fileSelectResult = document.getElementById("fileSelectResult");
@@ -341,14 +384,14 @@ function setFilesToTable(files) {
             type: file.type.split("/").pop(),
             file: file,
             src: window.URL.createObjectURL(file)
-        }
+        };
 
         fileLists.push(fileObj);
     }
     setHTMLTableImage(tableBody, fileLists);
 }
 
-function getBase64(file) {
+function getFileBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
@@ -357,5 +400,14 @@ function getBase64(file) {
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
+    });
+}
+
+function getImage(src) {
+    return new Promise((resolve, revoke) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.crossOrigin = "Anonymous";
+        img.src = src;
     });
 }
