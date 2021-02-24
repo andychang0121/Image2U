@@ -29,33 +29,59 @@ uploadFiles.addEventListener("click", function (e) {
     const fileSelectResult = document.getElementById("fileSelectResult");
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
-
-    //multiUploadFiles(imgs); -- ok
-    //singleUploadFiles(imgs); -- ok
     setProgress(true);
-    setLoader(true);
-    uploadFilesBase64Async(imgs, customWidth.value, customHeight.value);
+    setLoaderAsync(true).then(function () {
+        uploadFilesBase64Async(imgs, customWidth.value, customHeight.value);
+    });
+
 }, false);
 
-function uploadFilesBase64Async(imgs, customWidth, customHeight) {
+function validFileSize(bytes) {
+    if (bytes === 0) return true;
+    const _getSize = function (_bytes) {
+        return _bytes / 1024 / 1024;
+    }
+    return _getSize(bytes) <= 2;
+}
 
+function getUploadFiles(imgs) {
+    const rs = [];
+    [].forEach.call(imgs, function (img) {
+        const _isUpload = validFileSize(img.file.size);
+        if (_isUpload) {
+            rs.push(img);
+        }
+    });
+    return rs;
+}
+
+function uploadFilesBase64Async(imgs, customWidth, customHeight) {
     const ajaxPost = function (image, _requestData, _url) {
+
         const _file = image.file;
-        getBase64(_file).then(function (r) {
+
+        getFileBase64(_file).then(function (r) {
             _requestData.base64 = r;
+
+            getImage(r).then(function (_r) {
+                _requestData.width = _r.width;
+                _requestData.height = _r.height;
+            });
+
         }).then(function () {
             _requestData.fileName = image.name;
             _requestData.type = _file.type;
             _requestData.size = _file.size;
             _requestData.fileName = _file.name;
-            _requestData.width = image.naturalWidth;
-            _requestData.height = image.naturalHeight;
         }).then(function () {
             jUploadFile(_url, _requestData);
         });
     };
 
-    for (let image of imgs) {
+    const __imgs = getUploadFiles(imgs);
+
+    for (let image of __imgs) {
+
         const _requestData = {
             customWidth: customWidth,
             customHeight: customHeight
@@ -70,7 +96,7 @@ function jUploadFile(url, data) {
     const _request = {
         __RequestVerificationToken: _token,
         requestData: data
-    }
+    };
     $.post({
         url: url,
         data: _request,
@@ -87,6 +113,14 @@ function jUploadFile(url, data) {
     });
 }
 
+function setLoaderAsync(b, o) {
+    return new Promise((resolve, reject) => {
+        setLoader(b);
+        setTimeout(() => { resolve(true); }, 10);
+    });
+
+}
+
 function setLoader(b, o) {
     const _loader = o === undefined ? document.getElementById("overlay") : o;
     _loader.style.display = b ? "block" : "none";
@@ -100,83 +134,6 @@ function setProgress(b, o) {
     } else {
         _o.classList.value = "progress-bar progress-bar-info";
     }
-}
-
-function uploadFileHandler(requestData) {
-    setProgress(true);
-    setLoader(true);
-
-    uploadFile("POST", "/upload/postdataAsync", requestData)(2000)
-        .then(function (r) {
-            if (r.IsOk) {
-                const _url = `/upload/get?tempdataKey=${r.Data}`;
-                window.open(_url, "_blank");
-            }
-        }).then(function () {
-            setProgress(false);
-            setLoader(false);
-        });
-}
-
-function uploadFile(method, url, requestData) {
-    return function (ms) {
-        return new Promise(function (resolve, reject) {
-            setTimeout(function () {
-                const request = new XMLHttpRequest();
-                request.upload.addEventListener("progress", updateProgress, false);
-                request.addEventListener("load", completeHandler, false);
-                request.addEventListener("error", errorHandler, false);
-                request.addEventListener("abort", abortHandler, false);
-
-                request.open(method, url, false);
-
-                request.setRequestHeader("Cache-Control", "no-cache");
-                //request.setRequestHeader('Content-type', 'application/json');
-                request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-                request.onreadystatechange = function (e) {
-                    if (request.readyState === XMLHttpRequest.DONE) {
-                        if (request.status === 200) {
-                            resolve(JSON.parse(request.response));
-                        } else {
-                            reject(new Error(request.statusText));
-                        }
-                    }
-                }
-                request.send(JSON.stringify(requestData));
-            }, ms);
-        });
-    }
-}
-
-function singleUploadFiles(imgs) {
-    for (let image of imgs) {
-        const isPortaitList = [];
-        const form = new FormData();
-        const isPortait = image.clientHeight > image.clientWidth;
-        form.append("files", image.file);
-        isPortaitList.push(isPortait);
-        form.append("isPortaits", isPortaitList);
-        FileUpload(form);
-    }
-}
-
-function multiUploadFiles(imgs) {
-    const isPortaitList = [];
-
-    const form = new FormData();
-    form.append("customWidth", customWidth.value);
-    form.append("customHeight", customHeight.value);
-
-    for (let image of imgs) {
-        const isPortait = image.clientHeight > image.clientWidth;
-        form.append("files", image.file);
-        isPortaitList.push(isPortait);
-    }
-
-    form.append("isPortaits", isPortaitList);
-
-    FileUpload(form);
 }
 
 function pageReload() {
@@ -203,35 +160,6 @@ function completeHandler() { }
 function errorHandler() { }
 
 function abortHandler() { }
-
-function FileUpload(form) {
-    const request = new XMLHttpRequest();
-    request.upload.addEventListener("progress", updateProgress, false);
-    request.addEventListener("load", completeHandler, false);
-    request.addEventListener("error", errorHandler, false);
-    request.addEventListener("abort", abortHandler, false);
-    request.open("POST", API_ENDPOINT, false);
-    request.setRequestHeader("Cache-Control", "no-cache");
-    request.setRequestHeader("Accept", "multipart/form-data");
-    request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-    request.onreadystatechange = function (e) {
-        if (request.readyState === 4 && request.status === 200) {
-            _bsProgress.classList.value = "progress-bar progress-bar-info";
-            const _response = JSON.parse(request.response);
-
-            setLoader(false);
-
-            if (_response.IsOk) {
-                const _url = `/upload/get?tempdataKey=${_response.Data}`;
-                window.open(_url);
-            }
-        }
-    };
-    _bsProgress.style.width = "";
-    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-success";
-    request.send(form);
-}
 
 function getElement(config) {
     const ele = document.createElement(config.type);
@@ -270,7 +198,7 @@ function setHTMLTRImage(file, i) {
 
     img.onload = function () {
         window.URL.revokeObjectURL(this.src);
-    }
+    };
     td.appendChild(img);
     tr.appendChild(td);
     return tr;
@@ -304,7 +232,7 @@ function setFilesToTable(files) {
             const _tr = setHTMLTRImage(file, i);
             _tableBody.appendChild(_tr);
         }
-    }
+    };
 
     const _uploadFiles = document.getElementById("uploadFiles");
     const _fileSelectResult = document.getElementById("fileSelectResult");
@@ -341,14 +269,14 @@ function setFilesToTable(files) {
             type: file.type.split("/").pop(),
             file: file,
             src: window.URL.createObjectURL(file)
-        }
+        };
 
         fileLists.push(fileObj);
     }
     setHTMLTableImage(tableBody, fileLists);
 }
 
-function getBase64(file) {
+function getFileBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
@@ -357,5 +285,14 @@ function getBase64(file) {
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
+    });
+}
+
+function getImage(src) {
+    return new Promise((resolve, revoke) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.crossOrigin = "Anonymous";
+        img.src = src;
     });
 }
