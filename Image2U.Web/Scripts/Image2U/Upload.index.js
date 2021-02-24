@@ -29,9 +29,6 @@ uploadFiles.addEventListener("click", function (e) {
     const fileSelectResult = document.getElementById("fileSelectResult");
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
-
-    //multiUploadFiles(imgs); -- ok
-    //singleUploadFiles(imgs); -- ok
     setProgress(true);
     setLoaderAsync(true).then(function () {
         uploadFilesBase64Async(imgs, customWidth.value, customHeight.value);
