@@ -1,13 +1,23 @@
-﻿using Image2U.Web.Models.Image;
+﻿using Image2U.Service.Models.Zip;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace Image2U.Web.Helper
+namespace Image2U.Service.Helper
 {
     public class ZipHelper
     {
+        public static string GetZipFileName(string fileName, int width, int height, string folderName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return string.Empty;
+
+            string firstSection = fileName.Split('.').FirstOrDefault();
+            string extSection = fileName.Split('.').LastOrDefault();
+
+            return $"{folderName}\\{firstSection}-{width}x{height}.{extSection}";
+        }
+
         public static byte[] ZipData(IEnumerable<ZipData> data)
         {
             using (MemoryStream zipStream = new MemoryStream())

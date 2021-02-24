@@ -1,4 +1,5 @@
-﻿using Image2U.Web.Enum;
+﻿using Image2U.Service.Enum;
+using Image2U.Service.Models.Image;
 using Image2U.Web.Models.Image;
 using System;
 using System.Drawing;
@@ -10,8 +11,8 @@ namespace Image2U.Web.Helper
 {
     public static class ImageFileExtension
     {
-        public static string GetZipFileName(this ImageFile imageFile, int w, int h)
-            => $"{imageFile.FileName}-{w}x{h}.{imageFile.Ext}";
+        public static string GetZipFileName(this ImageFile imageFile, string folderName, int w, int h)
+            => $"{folderName}\\{imageFile.FileName}-{w}x{h}.{imageFile.Ext}";
 
         public static string GetZipFileName(this string fileName, string ext, int w, int h)
             => $"{fileName}-{w}x{h}.{ext}";

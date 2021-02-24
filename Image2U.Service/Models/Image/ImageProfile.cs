@@ -1,7 +1,7 @@
-﻿using Image2U.Web.Enum;
-using System.Drawing.Imaging;
+﻿using System.Drawing.Imaging;
+using Image2U.Service.Enum;
 
-namespace Image2U.Web.Models.Image
+namespace Image2U.Service.Models.Image
 {
     public struct ImageProfile
     {
