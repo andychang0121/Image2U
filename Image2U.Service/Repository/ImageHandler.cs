@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Image2U.Service.ImageHandler;
+﻿using Image2U.Service.ImageHandler;
 using Image2U.Service.Interface;
 using Image2U.Service.Models;
 using Image2U.Service.Models.Image;
+using Image2U.Service.Models.Process;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Image2U.Service.Repository
 {
@@ -81,11 +79,35 @@ namespace Image2U.Service.Repository
         }
 
 
-        public async Task<ResponseData> ConvertAsync(RequestData requestData, Dictionary<string, ImageOutput> dict)
+        public async Task<ProcessData> ConvertAsync(RequestData requestData, Dictionary<string, ImageOutput> dict = null)
         {
-            Dictionary<string, ImageOutput> rs = await _imageService.SizingAsync(requestData, _ecDict);
+            dict = dict ?? _ecDict;
 
-            return null;
+            Dictionary<string, ImageOutput> refDict =
+                ConvertAsync(requestData.IsCustomSize, requestData, dict);
+
+            Dictionary<string, ImageOutput> convertRs = await _imageService.SizingAsync(requestData, refDict);
+
+            ProcessData processData = new ProcessData(requestData.FileName, requestData.Type, convertRs);
+
+            return processData;
+        }
+
+        private Dictionary<string, ImageOutput> ConvertAsync(bool isCustomSize, RequestData requestData, Dictionary<string, ImageOutput> dict)
+        {
+            if (!isCustomSize
+                || !requestData.CustomHeight.HasValue
+                || !requestData.CustomWidth.HasValue) return dict;
+
+            return new Dictionary<string, ImageOutput>
+                {
+                    {"自定義尺寸",new ImageOutput {
+                        Width = requestData.CustomWidth.Value,
+                        MaxHeight = requestData.CustomHeight.Value,
+                        DPI = 72
+                    }},
+                };
+
         }
     }
 }

@@ -1,16 +1,15 @@
-﻿using System;
-using Image2U.Service.Helper;
+﻿using Image2U.Service.Helper;
 using Image2U.Service.Interface;
 using Image2U.Service.Models;
 using Image2U.Service.Models.Image;
 using Image2U.Web.Models.Image;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
-using Image2U.Service.Enum;
 
 namespace Image2U.Service.Repository
 {
@@ -43,7 +42,7 @@ namespace Image2U.Service.Repository
             {
                 ImageOutput ecSetting = ec.Value;
 
-                bool isPortait = requestData.IsPortsait();
+                bool isPortait = requestData.IsPortait;
 
                 Stream stream = requestData.Base64.GetStream();
 
@@ -89,11 +88,9 @@ namespace Image2U.Service.Repository
 
         private Bitmap Resize(Image image, double ratio, int width, int height, float xDpi = 72, float yDpi = 72)
         {
-            ImageProfile originalImageProfile = new ImageProfile(image);
-
             // now we can get the new height and width
-            int newWidth = Convert.ToInt32(originalImageProfile.Width * ratio);
-            int newHeight = Convert.ToInt32(originalImageProfile.Height * ratio);
+            int newWidth = Convert.ToInt32(image.Width * ratio);
+            int newHeight = Convert.ToInt32(image.Height * ratio);
 
             if ((int)ratio == 1)
             {
@@ -123,6 +120,11 @@ namespace Image2U.Service.Repository
             => limitWidth == width ?
                 1 :
                 imageFile.Direction == ImageDirection.Portait ? limitWidth / (double)height : limitWidth / (double)width;
+
+        private static float GetRatio(bool isPortait, int limitWidth, int width, int height)
+            => limitWidth == width ?
+                1 :
+                isPortait ? limitWidth / (float)height : limitWidth / (float)width;
 
         private static byte[] ImageToBytes(Image image, ImageFormat imageFormat)
         {
