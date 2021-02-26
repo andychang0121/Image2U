@@ -53,7 +53,7 @@ namespace Image2U.Service.Repository
                     Resize(imageFile, ecSetting.Width, ecSetting.MaxHeight, ImageFormat.Jpeg));
 
                 //ZipData zipData =
-                //    await GetZipAsync(stream, requestData.FileName, isPortait, ecSetting.Width, ecSetting.MaxHeight, ecName);
+                //    await GetZipAsync(stream, requestData.FileName, isPortait, ecSetting.Width, ecSetting.MaxHeight, ec.Key);
 
                 ec.Value.Bytes = bytesRs;
             }
