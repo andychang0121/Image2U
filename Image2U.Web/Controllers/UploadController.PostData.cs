@@ -2,6 +2,7 @@
 using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -21,9 +22,16 @@ namespace Image2U.Web.Controllers
 
             ResponseData response = await ConvertImageAsync(requestData);
 
-            ActionResult rs =  await Task.Run(() => SetTempData(response));
+            //ActionResult rs =  await Task.Run(() => SetTempData(response));
 
-            return rs;
+            ResponseData rs = new ResponseData
+            {
+                Result = await ((byte[])response.Result).GetBase64(),
+                FileName = response.FileName.Split('.').FirstOrDefault() + ".zip",
+                ContentType = response.ContentType
+            };
+
+            return Json(rs);
         }
 
         public ActionResult SetTempData(ResponseData data)
