@@ -17,7 +17,7 @@ namespace Image2U.Web.Controllers
 
             ResponseData jsonRs = tempRs.Deserialize<ResponseData>();
 
-            byte[] bytes = jsonRs.Result;
+            byte[] bytes = (byte[])jsonRs.Result;
 
             string originalFileName = jsonRs.FileName?.Split('.').FirstOrDefault() ?? encodeKey;
 

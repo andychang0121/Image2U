@@ -11,6 +11,7 @@ const [fileSelect, fileElem, uploadFiles, customWidth, customHeight] = [
     , document.getElementById("customHeight")];
 
 let _width = 0;
+let _process = { idx: 0, total: 0 };
 
 fileElem.addEventListener("change", function () {
     _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
@@ -80,6 +81,9 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
 
     const __imgs = getUploadFiles(imgs);
 
+    _process.idx = __imgs.length;
+    _process.total = __imgs.length;
+
     for (let image of __imgs) {
 
         const _requestData = {
@@ -100,15 +104,24 @@ function jUploadFile(url, data) {
     $.post({
         url: url,
         data: _request,
-        async: false,
+        async: true,
+        beforeSend: function () {
+            _process.idx--;
+            setProgressBar(_process);
+        },
         complete: function () {
-            setLoader(false);
+            if (_process.idx === 0) {
+                setLoader(false);
+            }
         },
         success: function (r) {
-            if (r.IsOk) {
-                const _url = `/upload/get?tempdataKey=${r.Data}`;
-                window.open(_url, "_blank");
-            }
+            //https://www.itread01.com/content/1535390541.html
+            console.log(r);
+            getDownloadFile(r.FileName, r.Result);
+            //if (r.IsOk) {
+            //    const _url = `/upload/get?tempdataKey=${r.Data}`;
+            //    window.open(_url, "_blank");
+            //}
         }
     });
 }
@@ -138,6 +151,29 @@ function setProgress(b, o) {
 
 function pageReload() {
     location.reload();
+}
+
+function setProgressBar(__process) {
+
+    //if (event.lengthComputable) {
+
+    //    const percentComplete = (event.loaded / event.total) * 100;
+
+    //    const pc = Math.round(percentComplete);
+    const idx = __process.total - __process.idx;
+    const percentAge = 100 / __process.total;
+    const start = idx - 1;
+    const end = idx;
+
+    console.log("total:", __process.total, "idx:", idx, "start:", start, "end:", end, "%", percentAge * end + "%");
+
+    for (let i = (start - 1) * 100; i < (end - 1) * 100; i++) {
+
+        _bsProgress.style.width = i + 1 + "%";
+
+        _bsProgress.innerHTML = `${i + 1}% (complete)`;
+        console.log();
+    }
 }
 
 function updateProgress(event) {
@@ -294,5 +330,25 @@ function getImage(src) {
         img.onload = () => resolve(img);
         img.crossOrigin = "Anonymous";
         img.src = src;
+    });
+}
+
+function getDownloadFile(fileName, blob) {
+    return new window.Promise((resolve, reject) => {
+        const binaryString = window.atob(blob);
+        const binaryLen = binaryString.length;
+        const bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+            const ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+
+        const url = window.URL.createObjectURL(new Blob([bytes], { type: "application/zip" }));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        resolve();
     });
 }
