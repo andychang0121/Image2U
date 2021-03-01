@@ -1,5 +1,6 @@
 ﻿const _loader = document.getElementById("overlay");
 const _bsProgress = document.getElementById("progress");
+
 const API_ENDPOINT = "/upload/post";
 const API_ENDPOINT_ASYNC = "/upload/postdataAsync";
 
@@ -102,6 +103,10 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
     }
 }
 
+function resetProgress(o) {
+    o.style.width = o.style.width === "100%" ? "" : o.style.width;
+}
+
 function jUploadFile(url, data) {
 
     const _token = $("[name*='__RequestVerificationToken']").val();
@@ -109,17 +114,42 @@ function jUploadFile(url, data) {
         __RequestVerificationToken: _token,
         requestData: data
     };
+
     $.post({
         xhr: function () {
+            const setProgressbar = function (o, i) {
+                resetProgress(o);
+                const _width = (i + 1) * 10;
+                o.style.width = _width + "%";
+                o.innerHTML = `${_width}% (complete)`;
+            }
             const xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", function (evt) { }, false);
+            xhr.upload.addEventListener("progress", function (event) {
+                if (event.lengthComputable) {
+                    _bsProgress.style.width = "0%";
+                    for (let i = 0; i < 10; i++) {
+                        setProgressbar(_bsProgress, i);
+                    }
+                }
+            }, false);
+
             return xhr;
         },
         xhrFields: {
             onprogress: function (event) {
                 //Download progress
                 if (event.lengthComputable) {
-                    console.log(event);
+                    if (event.lengthComputable) {
+
+                        const percentComplete = (event.loaded / event.total) * 100;
+
+                        const pc = (Math.round(percentComplete));
+
+                        resetProgress(_bsProgress);
+
+                        _bsProgress.style.width = `${pc}%`;
+                        _bsProgress.innerHTML = `${pc}% (download...)`;
+                    }
                 }
             }
         },
@@ -130,7 +160,9 @@ function jUploadFile(url, data) {
         },
         complete: function () {
             if (_process.idx === 0) {
+                _width = 0;
                 setLoader(false);
+                _bsProgress.classList.value = "progress-bar active";
             }
         },
         success: function (r, textStatus, jqXHR) {
@@ -164,22 +196,6 @@ function setProgress(b, o) {
 
 function pageReload() {
     location.reload();
-}
-
-function updateProgress(event) {
-    if (event.lengthComputable) {
-
-        const percentComplete = (event.loaded / event.total) * 100;
-
-        const pc = Math.round(percentComplete);
-
-        for (let i = _width; i < pc; i++) {
-
-            _bsProgress.style.width = i + 1 + "%";
-            _bsProgress.innerHTML = `${i + 1}% (complete)`;
-        }
-        _width = pc;
-    }
 }
 
 function completeHandler() { }
@@ -304,11 +320,8 @@ function setFilesToTable(files) {
 }
 
 function getFileBase64(file) {
-    return new Promise((resolve, reject) => {
+    return new window.Promise((resolve, reject) => {
         const reader = new FileReader();
-
-        reader.addEventListener("progress", updateProgress, false);
-
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
@@ -316,7 +329,7 @@ function getFileBase64(file) {
 }
 
 function getImage(src) {
-    return new Promise((resolve, revoke) => {
+    return new window.Promise((resolve, revoke) => {
         const img = new Image();
         img.onload = () => resolve(img);
         img.crossOrigin = "Anonymous";
