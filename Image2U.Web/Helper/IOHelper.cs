@@ -28,5 +28,12 @@ namespace Image2U.Web.Helper
             return stream;
         }
 
+        public static async Task<string> GetBase64(this object obj)
+        {
+            if (obj == null) return string.Empty;
+
+            return await ((byte[])obj).GetBase64();
+        }
+
     }
 }

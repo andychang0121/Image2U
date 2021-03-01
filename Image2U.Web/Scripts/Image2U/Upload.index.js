@@ -32,7 +32,7 @@ uploadFiles.addEventListener("click", function (e) {
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
     setProgress(true);
-    setLoaderAsync(true).then(function () {
+    setLoaderAsync(true).then(() => {
         uploadFilesBase64Async(imgs, customWidth.value, customHeight.value);
     });
 
@@ -66,7 +66,7 @@ function getUploadFilesSize(imgs) {
 }
 
 function uploadFilesBase64Async(imgs, customWidth, customHeight) {
-    const ajaxPost = function (image, _requestData, _url, _totalSize) {
+    const ajaxPost = function (image, _requestData, _url) {
 
         const _file = image.file;
 
@@ -84,30 +84,26 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
             _requestData.size = _file.size;
             _requestData.fileName = _file.name;
         }).then(function () {
-            const _size = _file.size;
-            jUploadFile(_url, _requestData, _size, _totalSize);
+            jUploadFile(_url, _requestData);
         });
     };
 
     const __imgs = getUploadFiles(imgs);
-    const __imgsSize = getUploadFilesSize(imgs);
 
     _process.idx = __imgs.length;
     _process.total = __imgs.length;
 
     for (let image of __imgs) {
-
         const _requestData = {
             customWidth: customWidth,
             customHeight: customHeight
         };
-
-        ajaxPost(image, _requestData, API_ENDPOINT_ASYNC, __imgsSize);
+        ajaxPost(image, _requestData, API_ENDPOINT_ASYNC);
     }
 }
 
-function jUploadFile(url, data, size, totalSize) {
-    _processSize += size;
+function jUploadFile(url, data) {
+
     const _token = $("[name*='__RequestVerificationToken']").val();
     const _request = {
         __RequestVerificationToken: _token,
@@ -119,20 +115,25 @@ function jUploadFile(url, data, size, totalSize) {
             xhr.upload.addEventListener("progress", function (evt) { }, false);
             return xhr;
         },
-
+        xhrFields: {
+            onprogress: function (event) {
+                //Download progress
+                if (event.lengthComputable) {
+                    console.log(event);
+                }
+            }
+        },
         url: url,
         data: _request,
         beforeSend: function () {
             _process.idx--;
-            setProgressBar(_process);
         },
         complete: function () {
             if (_process.idx === 0) {
                 setLoader(false);
             }
         },
-        success: function (r) {
-            //https://www.itread01.com/content/1535390541.html
+        success: function (r, textStatus, jqXHR) {
             getDownloadFile(r.FileName, r.Result);
         }
     });
@@ -165,29 +166,6 @@ function pageReload() {
     location.reload();
 }
 
-function setProgressBar(__process) {
-
-    //if (event.lengthComputable) {
-
-    //    const percentComplete = (event.loaded / event.total) * 100;
-
-    //    const pc = Math.round(percentComplete);
-    const idx = __process.total - __process.idx;
-    const percentAge = 100 / __process.total;
-    const start = idx - 1;
-    const end = idx;
-
-    //console.log("total:", __process.total, "idx:", idx, "start:", start, "end:", end, "%", percentAge * end + "%");
-
-    //for (let i = (start - 1) * 100; i < (end - 1) * 100; i++) {
-
-    //    _bsProgress.style.width = i + 1 + "%";
-
-    //    _bsProgress.innerHTML = `${i + 1}% (complete)`;
-    //    console.log();
-    //}
-}
-
 function updateProgress(event) {
     if (event.lengthComputable) {
 
@@ -196,6 +174,7 @@ function updateProgress(event) {
         const pc = Math.round(percentComplete);
 
         for (let i = _width; i < pc; i++) {
+
             _bsProgress.style.width = i + 1 + "%";
             _bsProgress.innerHTML = `${i + 1}% (complete)`;
         }

@@ -1,6 +1,7 @@
-﻿using System.Linq;
-using Image2U.Web.Models;
+﻿using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
+using System;
+using System.Linq;
 
 namespace Image2U.Web.Helper
 {
@@ -24,6 +25,13 @@ namespace Image2U.Web.Helper
                 ContentType = responseData.ContentType
             };
             return rs;
+        }
+
+        public static string SetDownloadFileName(this string fileName, string ext)
+        {
+            fileName = string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.xxx" : fileName;
+
+            return $"{fileName.Split('.').FirstOrDefault()}{ext}";
         }
 
     }

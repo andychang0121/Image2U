@@ -1,4 +1,6 @@
 ﻿body {
+    padding-left: 10px;
+    padding-right: 10px;
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -91,4 +93,13 @@ td img {
 
 .is-hide {
     display: none;
+}
+
+#tableText {
+    height: 120px;
+    background-color: #d3d3d3;
+    background-color: rgba(211, 211, 211, 0.6);
+    color: navy;
+    text-align: center;
+    vertical-align: middle
 }
