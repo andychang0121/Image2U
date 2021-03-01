@@ -227,11 +227,19 @@ function setHTMLTRImage(file, i) {
 
     //const input = getElement(_config);
     //tr.appendChild(getTd(input));
+
+    const removeBtn = document.createElement("span");
+    removeBtn.classList.value = "btn btn-default btn-xs glyphicon glyphicon-trash removeImage";
+    removeBtn.style.color = "red";
+    removeBtn.addEventListener("click", function () {
+        const _tr = getParentNode(this, "tr");
+        _tr.remove();
+    });
+
+    tr.appendChild(getTd(removeBtn));
     tr.appendChild(getTd(i + 1));
     tr.appendChild(getTd(file.name));
-    tr.appendChild(getTd(""));
     tr.appendChild(getTd(bytesToSize(file.size)));
-    //tr.appendChild(getTd(file.size.numberFormat(0, ".", ",")));
     //----
     const td = document.createElement("td");
     const img = document.createElement("img");
@@ -245,6 +253,12 @@ function setHTMLTRImage(file, i) {
     td.appendChild(img);
     tr.appendChild(td);
     return tr;
+}
+
+function getParentNode(o, name) {
+    const _tagName = o.tagName.toLowerCase();
+    if (_tagName === name) return o;
+    return getParentNode(o.parentNode, name);
 }
 
 function getTh(v) {
