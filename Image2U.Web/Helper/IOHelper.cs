@@ -1,11 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Image2U.Web.Helper
 {
     public static class IOHelper
     {
+        public static async Task<string> GetBase64(this byte[] bytes)
+            => await Task.Run(() => Convert.ToBase64String(bytes));
+
         public static byte[] GetBytes(this string base64)
         {
             if (string.IsNullOrEmpty(base64)) return null;
@@ -19,9 +23,16 @@ namespace Image2U.Web.Helper
         {
             byte[] bytes = base64.GetBytes();
 
-            Stream stream = new MemoryStream(bytes); 
+            Stream stream = new MemoryStream(bytes);
 
-            return stream; 
+            return stream;
+        }
+
+        public static async Task<string> GetBase64(this object obj)
+        {
+            if (obj == null) return string.Empty;
+
+            return await ((byte[])obj).GetBase64();
         }
 
     }

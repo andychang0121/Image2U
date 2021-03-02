@@ -42,6 +42,49 @@ namespace Image2U.Web.Controllers
             return rs;
         }
 
+        public async Task<ResponseData> ConvertImageBase64Async(RequestData requestData)
+        {
+            Dictionary<string, ImageOutput> dict = _ecDict;
+
+            if (requestData.IsCustomSize && requestData.CustomWidth.HasValue && requestData.CustomHeight.HasValue)
+            {
+                dict = new Dictionary<string, ImageOutput>
+                {
+                    {"自定義尺寸",new ImageOutput {
+                        Width = requestData.CustomWidth.Value,
+                        MaxHeight = requestData.CustomHeight.Value,
+                        DPI = 72
+                    }},
+                };
+            }
+
+            Stream stream = requestData.Base64.GetStream();
+
+            bool isPortait = requestData.Height > requestData.Width;
+
+            ProcessData processData =
+                new ProcessData(requestData.FileName, requestData.Size, requestData.Type, isPortait, requestData.Width, requestData.Height, dict);
+
+            ResponseData rs = await SizingAsync(stream, processData);
+
+            return rs;
+        }
+
+        private async Task<ResponseData> SizingAsync(Stream stream, ProcessData processData, bool isBase64)
+        {
+            byte[] zipRs = await _IConvertHandler.ConvertProcessAsync(stream, processData);
+
+            ResponseData response = new ResponseData
+            {
+                FileName = processData.FileName,
+                ContentType = processData.Type,
+                Result = zipRs
+            };
+
+            return response;
+        }
+
+
         private async Task<ResponseData> SizingAsync(Stream stream, ProcessData processData)
         {
             byte[] zipRs = await _IConvertHandler.ConvertProcessAsync(stream, processData);

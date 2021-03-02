@@ -21,9 +21,14 @@ namespace Image2U.Web.Controllers
 
             ResponseData response = await ConvertImageAsync(requestData);
 
-            ActionResult rs =  await Task.Run(() => SetTempData(response));
+            ResponseData rs = new ResponseData
+            {
+                Result = await response.Result.GetBase64(),
+                FileName = response.FileName.SetDownloadFileName("zip"),
+                ContentType = response.ContentType
+            };
 
-            return rs;
+            return Json(rs);
         }
 
         public ActionResult SetTempData(ResponseData data)
