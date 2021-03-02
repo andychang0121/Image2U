@@ -15,10 +15,6 @@ let _width = 0;
 let _processSize = 0;
 let _process = { idx: 0, total: 0 };
 
-fileElem.addEventListener("change", function () {
-    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
-});
-
 fileSelect.addEventListener("click", function (e) {
     if (fileElem) {
         fileElem.click();
@@ -108,10 +104,9 @@ function resetProgress(o) {
 }
 
 function jUploadFile(url, data) {
-
-    const _token = $("[name*='__RequestVerificationToken']").val();
+    const _requestToken = document.getElementsByName("__RequestVerificationToken");
     const _request = {
-        __RequestVerificationToken: _token,
+        __RequestVerificationToken: _requestToken[0].value,
         requestData: data
     };
 
@@ -172,7 +167,7 @@ function jUploadFile(url, data) {
 }
 
 function setLoaderAsync(b, o) {
-    return new Promise((resolve, reject) => {
+    return new window.Promise((resolve, reject) => {
         setLoader(b);
         setTimeout(() => { resolve(true); }, 10);
     });
@@ -197,12 +192,6 @@ function setProgress(b, o) {
 function pageReload() {
     location.reload();
 }
-
-function completeHandler() { }
-
-function errorHandler() { }
-
-function abortHandler() { }
 
 function getElement(config) {
     const ele = document.createElement(config.type);
@@ -282,7 +271,7 @@ function getTd(v) {
 
 function setFilesToTable(files) {
     if (!files.length) return;
-
+    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
     const setHTMLTableImage = function (_tableBody, _fileLists) {
         for (let i = 0; i < _fileLists.length; i++) {
             const file = _fileLists[i];
