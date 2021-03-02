@@ -5,13 +5,10 @@
         padding-right: 5px;
     }
 
-    #fileArea {
+    #fileArea, #dropArea {
         padding: 0;
     }
 
-    #dropArea {
-        padding: 0;
-    }
 
     #fileResult {
         padding: 2px 2px 2px 2px;
@@ -24,7 +21,8 @@
         height: 320px;
         line-height: 320px;
         border-radius: 16px;
-        border: 2px dashed rgba(128, 128, 128, 0.46);
+        border: 1px dashed #808080;
+        border: 1px dashed rgba(128, 128, 128, 0.7);
         background-color: rgba(239, 239, 239, 0.46);
         text-align: center;
         /*vertical-align: middle;*/
@@ -50,7 +48,9 @@
         padding-bottom: 5px;
         padding-left: 5px;
         padding-right: 10px;
-        border-bottom: 0.1em solid rgba(128, 128, 128, 0.3);
+        border-width: thin;
+        border-bottom: 1px solid #808080;
+        border-bottom: 1px solid rgba(128, 128, 128, 0.3);
     }
 
     [data-file-info] {
@@ -108,7 +108,7 @@
             <span class="input-group-addon">Width</span>
             <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度">
             <span class="input-group-addon">Heigth</span>
-            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度度">
+            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度">
         </div>
     </div>
     <div id="fileArea" class="col-lg-7">
