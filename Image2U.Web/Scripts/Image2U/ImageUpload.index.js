@@ -20,7 +20,7 @@ function preventDefaults(e) {
 dropZone.addEventListener("drop", function (e) {
     const dt = e.dataTransfer;
     const files = dt.files;
-    console.log(files);
+    setDropFilesToTable(files);
 });
 
 function highlight(e) {
@@ -31,6 +31,153 @@ function unhighlight(e) {
     dropZone.classList.remove("highlight");
 }
 
+function setUploadFiles(b) {
+    const btn = document.getElementById("uploadFiles");
+    btn.removeAttribute("disabled");
+}
+
 function setDropFilesToTable(files) {
-    console.log(files);
+    const setNode = function (o) {
+        o.removeAttribute("data-fileResult-template");
+        o.removeAttribute("style");
+        o.setAttribute("data-fileResult", "");
+        return o;
+    }
+    const setFileInfo = function (o, file) {
+        const _name = o.querySelector("[data-file-name]");
+        const _size = o.querySelector("[data-file-size]");
+        _name.innerHTML = file.name;
+        _size.innerHTML = bytesToSize(file.size);
+        return o;
+    }
+    const setImage = function (o, src, file) {
+        const _img = o.querySelector("[data-img]").getElementsByTagName("img");
+        _img[0].src = src;
+        _img[0].file = file;
+        return o;
+    }
+
+    const _fileResult = document.getElementById("fileResult");
+    const _template = document.querySelector("[data-fileResult-template]");
+
+    [].forEach.call(files, (_file) => {
+        getFileBase64(_file).then(function (r) {
+            let _fileRow = setNode(_template.cloneNode(true));
+            _fileRow = setFileInfo(_fileRow, _file);
+            _fileRow = setImage(_fileRow, r, _file);
+
+            _fileResult.appendChild(_fileRow);
+        });
+    });
+
+    //for (let i = 0; i < _fileCount; i++) {
+    //    const _file = files[i];
+
+    //    getFileBase64(_file).then(function (r) {
+    //        let _fileRow = setNode(_template.cloneNode(true));
+    //        _fileRow = setFileInfo(_fileRow, _file);
+    //        _fileRow = setImage(_fileRow, r, _file);
+
+    //        _fileResult.appendChild(_fileRow);
+    //    });
+    //}
+    setUploadFiles();
+}
+
+function uploadFilesHandler() {
+    return window.promise((resolve, revoke) => {
+        resolve(true);
+    });
+}
+
+function uploadFilesAction() {
+    const _fileRs = document.querySelectorAll("[data-fileResult]");
+
+    [].forEach.call(_fileRs, function (_rs) {
+        const _progress = _rs.querySelector("[data-progress]");
+        const _image = _rs.getElementsByTagName("img")[0];
+        const _file = _image.file;
+
+        if (validFileSize(_file.size)) {
+            const _request = {
+                fileName: _file.name,
+                size: _file.size,
+                type: _file.type,
+                base64: _image.src
+            };
+            getImage(_image.src).then(function (_r) {
+                _request.width = _r.width;
+                _request.height = _r.height;
+            }).then(() => {
+                _progress.style.display = "";
+                const _progressbar = _progress.querySelector("[data-progress-bar]");
+                const _requestToken = document.getElementsByName("__RequestVerificationToken");
+                const _requestData = {
+                    __RequestVerificationToken: _requestToken[0].value,
+                    requestData: _request
+                };
+
+                postUploadFile("/upload/postdataAsync", _requestData, _progressbar)
+                    .then(function (r) {
+                        getDownloadFile(r.FileName, r.Result);
+                    });
+            });
+        }
+    });
+}
+
+function setAjaxLoader(b) {
+    const _loader = document.getElementById("overlay");
+    _loader.style.display = b ? "block" : "none";
+}
+
+function postUploadFile(url, data, progressbar) {
+    return new window.Promise((resolve, revoke) => {
+        $.post({
+            xhr: function () {
+                const xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (event) {
+                    if (event.lengthComputable) {
+                        const percentComplete = (event.loaded / event.total) * 100;
+                        const pc = (Math.round(percentComplete));
+
+                        progressbar.style.width = `${pc}%`;
+                    }
+                }, false);
+                return xhr;
+            },
+            xhrFields: {
+                onprogress: function (event) {
+                    if (event.lengthComputable) {
+                        if (event.lengthComputable) {
+
+                            const percentComplete = (event.loaded / event.total) * 100;
+
+                            const pc = (Math.round(percentComplete));
+
+                            progressbar.classList.remove("progress-bar-danger");
+
+                            progressbar.style.width = progressbar.style.width === "100%"
+                                ? "0%" : progressbar.style.width;
+
+                            setTimeout(function () {
+                                progressbar.style.width = pc + "%";
+                            }, 1000);
+                        }
+                    }
+                }
+            },
+            url: url,
+            data: data,
+            beforeSend: function () {
+                setAjaxLoader(true);
+            },
+            success: function (r, textStatus, jqXHR) {
+                resolve(r);
+            },
+            complete: function () {
+                setAjaxLoader(false);
+            }
+        });
+    });
 }

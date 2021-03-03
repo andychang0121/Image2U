@@ -1,8 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-Number.prototype.numberFormat = function (c, d, t) {
+﻿Number.prototype.numberFormat = function (c, d, t) {
     var n = this,
         c = isNaN(c = Math.abs(c)) ? 2 : c,
         d = d == undefined ? "." : d,
@@ -20,5 +16,75 @@ function bytesToSize(bytes) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
     const rs = (bytes / Math.pow(k, i)).toPrecision(3) + " " + sizes[i];
+    return rs;
+}
+
+function validFileSize(bytes) {
+    if (bytes === 0) return true;
+    const _getSize = function (_bytes) {
+        return _bytes / 1024 / 1024;
+    }
+    return _getSize(bytes) <= 2;
+}
+
+function getFileBase64(file) {
+    return new window.Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
+function getImage(src) {
+    return new window.Promise((resolve, revoke) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.crossOrigin = "Anonymous";
+        img.src = src;
+    });
+}
+
+function getDownloadFile(fileName, blob, type) {
+    return new window.Promise((resolve, reject) => {
+        const _type = type === undefined ? "application/zip" : type;
+        const binaryString = window.atob(blob);
+        const binaryLen = binaryString.length;
+        const bytes = new Uint8Array(binaryLen);
+
+        for (let i = 0; i < binaryLen; i++) {
+            const ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+        }
+
+        const url = window.URL.createObjectURL(new Blob([bytes], { type: _type }));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        resolve();
+    });
+}
+
+function getUploadFiles(imgs) {
+    const rs = [];
+    [].forEach.call(imgs, function (img) {
+        const _isUpload = validFileSize(img.file.size);
+        if (_isUpload) {
+            rs.push(img);
+        }
+    });
+    return rs;
+}
+
+function getUploadFilesFromObject(obj) {
+    const rs = [];
+    [].forEach.call(obj, function (o) {
+        const _isUpload = validFileSize(o.image.file.size);
+        if (_isUpload) {
+            rs.push(o);
+        }
+    });
     return rs;
 }

@@ -25,6 +25,12 @@ textarea {
     max-width: 280px;
 }
 
+    input::placeholder,
+    input::-webkit-input-placeholder,
+    input::-moz-placeholder {
+        font-size: 85%;
+    }
+
 table tbody tr td {
     vertical-align: middle !important;
 }
@@ -102,4 +108,8 @@ td img {
     color: navy;
     text-align: center;
     vertical-align: middle
+}
+
+#fileActionBtn {
+    margin: 10px 0 10px 0;
 }

@@ -26,6 +26,9 @@ uploadFiles.addEventListener("click", function (e) {
     e.preventDefault();
 
     const fileSelectResult = document.getElementById("fileSelectResult");
+
+    if (fileSelectResult === undefined || fileSelectResult == null) return;
+
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
     setProgress(true);
@@ -34,25 +37,6 @@ uploadFiles.addEventListener("click", function (e) {
     });
 
 }, false);
-
-function validFileSize(bytes) {
-    if (bytes === 0) return true;
-    const _getSize = function (_bytes) {
-        return _bytes / 1024 / 1024;
-    }
-    return _getSize(bytes) <= 2;
-}
-
-function getUploadFiles(imgs) {
-    const rs = [];
-    [].forEach.call(imgs, function (img) {
-        const _isUpload = validFileSize(img.file.size);
-        if (_isUpload) {
-            rs.push(img);
-        }
-    });
-    return rs;
-}
 
 function getUploadFilesSize(imgs) {
     let _rs = 0;
@@ -76,7 +60,6 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
             });
 
         }).then(function () {
-            _requestData.fileName = image.name;
             _requestData.type = _file.type;
             _requestData.size = _file.size;
             _requestData.fileName = _file.name;
@@ -320,42 +303,4 @@ function setFilesToTable(files) {
         fileLists.push(fileObj);
     }
     setHTMLTableImage(tableBody, fileLists);
-}
-
-function getFileBase64(file) {
-    return new window.Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
-}
-
-function getImage(src) {
-    return new window.Promise((resolve, revoke) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.crossOrigin = "Anonymous";
-        img.src = src;
-    });
-}
-
-function getDownloadFile(fileName, blob) {
-    return new window.Promise((resolve, reject) => {
-        const binaryString = window.atob(blob);
-        const binaryLen = binaryString.length;
-        const bytes = new Uint8Array(binaryLen);
-        for (let i = 0; i < binaryLen; i++) {
-            const ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-        }
-
-        const url = window.URL.createObjectURL(new Blob([bytes], { type: "application/zip" }));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", fileName);
-        document.body.appendChild(link);
-        link.click();
-        resolve();
-    });
 }

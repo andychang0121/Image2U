@@ -31,7 +31,7 @@ namespace Image2U.Web.Helper
         {
             fileName = string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.xxx" : fileName;
 
-            return $"{fileName.Split('.').FirstOrDefault()}{ext}";
+            return $"{fileName.Split('.').FirstOrDefault()}.{ext}";
         }
 
     }
