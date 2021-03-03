@@ -117,10 +117,7 @@ function uploadFilesAction() {
                     requestData: _request
                 };
 
-                postUploadFile("/upload/postdataAsync", _requestData, _progressbar)
-                    .then(function (r) {
-                        getDownloadFile(r.FileName, r.Result);
-                    });
+                postUploadFile("/upload/postdataAsync", _requestData, _progressbar);
             });
         }
     });
@@ -132,52 +129,44 @@ function setAjaxLoader(b) {
 }
 
 function postUploadFile(url, data, progressbar) {
-    return new window.Promise((resolve, revoke) => {
-        $.post({
-            xhr: function () {
-                const xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function (event) {
+    $.post({
+        xhr: function () {
+            const xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (event) {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    const pc = (Math.round(percentComplete));
+                    progressbar.style.width = `${pc}%`;
+                }
+            }, false);
+            return xhr;
+        },
+        xhrFields: {
+            onprogress: function (event) {
+                if (event.lengthComputable) {
                     if (event.lengthComputable) {
                         const percentComplete = (event.loaded / event.total) * 100;
                         const pc = (Math.round(percentComplete));
 
-                        progressbar.style.width = `${pc}%`;
-                    }
-                }, false);
-                return xhr;
-            },
-            xhrFields: {
-                onprogress: function (event) {
-                    if (event.lengthComputable) {
-                        if (event.lengthComputable) {
+                        progressbar.classList.remove("progress-bar-danger");
+                        progressbar.style.width = progressbar.style.width === "100%"
+                            ? "0%" : progressbar.style.width;
 
-                            const percentComplete = (event.loaded / event.total) * 100;
-
-                            const pc = (Math.round(percentComplete));
-
-                            progressbar.classList.remove("progress-bar-danger");
-
-                            progressbar.style.width = progressbar.style.width === "100%"
-                                ? "0%" : progressbar.style.width;
-
-                            setTimeout(function () {
-                                progressbar.style.width = pc + "%";
-                            }, 1000);
-                        }
+                        progressbar.style.width = pc + "%";
                     }
                 }
-            },
-            url: url,
-            data: data,
-            beforeSend: function () {
-                setAjaxLoader(true);
-            },
-            success: function (r, textStatus, jqXHR) {
-                resolve(r);
-            },
-            complete: function () {
-                setAjaxLoader(false);
             }
-        });
+        },
+        url: url,
+        data: data,
+        beforeSend: function () {
+            setAjaxLoader(true);
+        },
+        success: function (r, textStatus, jqXHR) {
+            getDownloadFile(r.FileName, r.Result);
+        },
+        complete: function () {
+            setAjaxLoader(false);
+        }
     });
 }
