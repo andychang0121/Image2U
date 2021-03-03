@@ -19,12 +19,11 @@ function bytesToSize(bytes) {
     return rs;
 }
 
-function validFileSize(bytes) {
+function validFileSize(bytes, limited) {
+    const _getSize = (_bytes) => { return _bytes / 1024 / 1024 };
     if (bytes === 0) return true;
-    const _getSize = function (_bytes) {
-        return _bytes / 1024 / 1024;
-    }
-    return _getSize(bytes) <= 2;
+    limited = limited === undefined || limited === null ? 1.5 : limited;
+    return _getSize(bytes) <= limited;
 }
 
 function getFileBase64(file) {
@@ -63,7 +62,7 @@ function getDownloadFile(fileName, blob, type) {
         link.setAttribute("download", fileName);
         document.body.appendChild(link);
         link.click();
-        resolve();
+        resolve(link);
     });
 }
 
@@ -78,13 +77,10 @@ function getUploadFiles(imgs) {
     return rs;
 }
 
-function getUploadFilesFromObject(obj) {
-    const rs = [];
-    [].forEach.call(obj, function (o) {
-        const _isUpload = validFileSize(o.image.file.size);
-        if (_isUpload) {
-            rs.push(o);
-        }
-    });
+function getCustomSize() {
+    const rs = {
+        customWidth: document.getElementById("customWidth").value,
+        customHeight: document.getElementById("customHeight").value
+    }
     return rs;
 }

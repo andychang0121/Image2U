@@ -56,41 +56,37 @@ function setDropFilesToTable(files) {
         _img[0].file = file;
         return o;
     }
-
     const _fileResult = document.getElementById("fileResult");
     const _template = document.querySelector("[data-fileResult-template]");
 
     [].forEach.call(files, (_file) => {
         getFileBase64(_file).then(function (r) {
             let _fileRow = setNode(_template.cloneNode(true));
+            _fileRow.isUpload = validFileSize(_file.size);
             _fileRow = setFileInfo(_fileRow, _file);
             _fileRow = setImage(_fileRow, r, _file);
 
+            setAlert(_fileRow, _fileRow.isUpload);
             _fileResult.appendChild(_fileRow);
         });
     });
-
-    //for (let i = 0; i < _fileCount; i++) {
-    //    const _file = files[i];
-
-    //    getFileBase64(_file).then(function (r) {
-    //        let _fileRow = setNode(_template.cloneNode(true));
-    //        _fileRow = setFileInfo(_fileRow, _file);
-    //        _fileRow = setImage(_fileRow, r, _file);
-
-    //        _fileResult.appendChild(_fileRow);
-    //    });
-    //}
     setUploadFiles();
 }
 
-function uploadFilesHandler() {
-    return window.promise((resolve, revoke) => {
-        resolve(true);
-    });
+function setAlert(o, isUpload) {
+    const _alert = o.querySelector("[data-alert]");
+    if (isUpload) {
+        _alert.remove();
+        return;
+    }
+    o.querySelector("[data-progress]").remove();
+    _alert.removeAttribute("style");
+    return;
 }
 
+
 function uploadFilesAction() {
+    const customSize = getCustomSize();
     const _fileRs = document.querySelectorAll("[data-fileResult]");
 
     [].forEach.call(_fileRs, function (_rs) {
@@ -103,13 +99,16 @@ function uploadFilesAction() {
                 fileName: _file.name,
                 size: _file.size,
                 type: _file.type,
-                base64: _image.src
+                base64: _image.src,
+                customWidth: customSize.customWidth,
+                customHeight: customSize.customHeight
             };
             getImage(_image.src).then(function (_r) {
                 _request.width = _r.width;
                 _request.height = _r.height;
             }).then(() => {
                 _progress.style.display = "";
+
                 const _progressbar = _progress.querySelector("[data-progress-bar]");
                 const _requestToken = document.getElementsByName("__RequestVerificationToken");
                 const _requestData = {
@@ -163,7 +162,9 @@ function postUploadFile(url, data, progressbar) {
             setAjaxLoader(true);
         },
         success: function (r, textStatus, jqXHR) {
-            getDownloadFile(r.FileName, r.Result);
+            getDownloadFile(r.FileName, r.Result).then(function (link) {
+                link.remove();
+            });
         },
         complete: function () {
             setAjaxLoader(false);
