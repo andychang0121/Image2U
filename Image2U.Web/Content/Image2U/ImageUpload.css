@@ -1,0 +1,86 @@
+﻿#fileContainer {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#fileArea, #dropArea {
+    padding: 0;
+}
+
+
+#fileResult {
+    padding: 2px 2px 2px 2px;
+    margin-top: 5px;
+    height: 60px;
+}
+
+#dropbox {
+    margin: 5px;
+    height: 320px;
+    line-height: 320px;
+    border-radius: 16px;
+    border: 1px dashed #808080;
+    border: 1px dashed rgba(128, 128, 128, 0.7);
+    background-color: rgba(239, 239, 239, 0.46);
+    text-align: center;
+    /*vertical-align: middle;*/
+    cursor: pointer;
+}
+
+    #dropbox span {
+        color: lightgray;
+        font-weight: bold;
+        font-size: 140%;
+        display: inline-block;
+        height: auto;
+        line-height: 1px;
+        vertical-align: middle
+    }
+
+    #dropbox.highlight {
+        border-color: purple;
+    }
+
+[data-file] {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 10px;
+    border-width: thin;
+    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+[data-file-info] {
+    padding: 5px 0 5px 0;
+}
+
+[data-file-info] {
+    padding: 5px 0 10px 0;
+}
+
+[data-file-size] {
+    color: gray;
+    padding-left: 10px;
+    font-size: 90%
+}
+
+[data-progress], [data-alert] {
+    margin-bottom: 5px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+[data-progress] {
+    height: 10px !important;
+}
+
+[data-img] {
+    padding-left: 0;
+}
+
+[data-fileResult] {
+    padding-bottom: 20px;
+    padding-left: 0;
+    padding-right: 0;
+}

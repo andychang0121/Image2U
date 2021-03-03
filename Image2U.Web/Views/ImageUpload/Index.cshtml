@@ -1,101 +1,46 @@
-﻿<style>
-    #fileContainer {
-        margin: 5px;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
+﻿<link rel="stylesheet" href="~/Content/Image2U/ImageUpload.css" />
+@Html.AntiForgeryToken()
+<input id="fileElem"
+       type="file"
+       multiple
+       accept="image/*"
+       style="display: none"
+       onchange="setDropFilesToTable(this.files)">
 
-    #fileArea, #dropArea {
-        padding: 0;
-    }
-
-
-    #fileResult {
-        padding: 2px 2px 2px 2px;
-        margin-top: 5px;
-        height: 60px;
-    }
-
-    #dropbox {
-        margin: 5px;
-        height: 320px;
-        line-height: 320px;
-        border-radius: 16px;
-        border: 1px dashed #808080;
-        border: 1px dashed rgba(128, 128, 128, 0.7);
-        background-color: rgba(239, 239, 239, 0.46);
-        text-align: center;
-        /*vertical-align: middle;*/
-        cursor: pointer;
-    }
-
-        #dropbox span {
-            color: lightgray;
-            font-weight: bold;
-            font-size: 140%;
-            display: inline-block;
-            height: auto;
-            line-height: 1px;
-            vertical-align: middle
-        }
-
-        #dropbox.highlight {
-            border-color: purple;
-        }
-
-    [data-file] {
-        padding-top: 5px;
-        padding-bottom: 5px;
-        padding-left: 5px;
-        padding-right: 10px;
-        border-width: thin;
-        border-bottom: 1px solid #808080;
-        border-bottom: 1px solid rgba(128, 128, 128, 0.3);
-    }
-
-    [data-file-info] {
-        padding: 5px 0 5px 0;
-    }
-
-    [data-file-info] {
-        padding: 5px 0 10px 0;
-    }
-
-    [data-file-size] {
-        color: gray;
-        padding-left: 10px;
-        font-size: 90%
-    }
-
-    [data-progress] {
-        margin-bottom: 5px;
-        padding-left: 0;
-        height: 10px !important;
-    }
-
-    [data-img] {
-        padding-left: 0;
-    }
-
-    [data-fileResult] {
-        padding-bottom: 20px;
-        padding-left: 0;
-        padding-right: 0;
-    }
-</style>
+<div class="col-lg-12" data-fileResult-template style="display: none;">
+    <div class="col-lg-12" data-file>
+        <div class="col-lg-2" data-img>
+            <img src="" width="80" alt="sample" />
+        </div>
+        <div class="col-lg-10">
+            <div class="col-lg-12" data-file-info>
+                <span data-file-name></span>
+                <span data-file-size></span>
+            </div><!-- File Info-->
+            <div class="col-lg-12 progress" data-progress style="display: none;">
+                <div class="progress-bar progress-bar-danger"
+                     role="progressbar"
+                     data-progress-bar
+                     aria-valuenow="0"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     style="width: 0;">
+                </div>
+            </div><!-- Progress bar-->
+            <div class="col-lg-12" data-alert style="display: none;">
+                <span class="label label-danger">size over 1.5MB</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="fileContainer" class="col-lg-12">
-    <input id="fileElem"
-           type="file"
-           multiple
-           accept="image/*"
-           style="display: none" onchange="setDropFilesToTable(this.files)">
-    <div class="btn-group" role="group" aria-label="button group" style="margin: 10px 0 10px 0;">
+    <div id="fileActionBtn" class="btn-group" role="group" aria-label="button group">
         <button id="fileSelect" type="button" class="btn btn-default">
             <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
             選擇圖片
         </button>
-        <button id="uploadFiles" type="button" class="btn btn-default" disabled="disabled">
+        <button id="uploadFiles" type="button" class="btn btn-default" disabled="disabled" onclick="uploadFilesAction()">
             <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>
             上傳
         </button>
@@ -104,7 +49,7 @@
             重新選擇
         </button>
 
-        <div class="input-group clearfix col-lg-4">
+        <div class="input-group col-lg-4 clearfix">
             <span class="input-group-addon">Width</span>
             <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度">
             <span class="input-group-addon">Heigth</span>
@@ -112,60 +57,11 @@
         </div>
     </div>
     <div id="fileArea" class="col-lg-7">
-        <div id="fileResult" class="col-lg-12">
-            <div class="col-lg-12" data-fileResult>
-                <div class="col-lg-12" data-file>
-                    <div class="col-lg-2" data-img>
-                        <img src="~/Content/images/mango.jpg" width="80" alt="sample" />
-                    </div>
-                    <div class="col-lg-10">
-                        <div class="col-lg-12" data-file-info>
-                            <span data-file-name>sample.jpg</span>
-                            <span data-file-size>1.2M</span>
-                        </div><!-- File Info-->
-                        <div class="col-lg-12 progress"
-                             data-progress>
-                            <div class="progress-bar progress-bar-danger"
-                                 role="progressbar"
-                                 data-progress-bar
-                                 aria-valuenow="70"
-                                 aria-valuemin="0" aria-valuemax="100"
-                                 style="width: 70%;">
-                                <span class="sr-only">70% Complete</span>
-                            </div>
-                        </div><!-- Progress bar-->
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-12" data-fileResult>
-                <div class="col-lg-12" data-file>
-                    <div class="col-lg-2" data-img>
-                        <img src="~/Content/images/mango.jpg" width="80" alt="sample" />
-                    </div>
-                    <div class="col-lg-10">
-                        <div class="col-lg-12" data-file-info>
-                            <span data-file-name>sample.jpg</span>
-                            <span data-file-size>1.2M</span>
-                        </div>
-                        <div class="col-lg-12 progress"
-                             data-progress>
-                            <div class="progress-bar progress-bar-danger"
-                                 role="progressbar"
-                                 data-progress-bar
-                                 aria-valuenow="70"
-                                 aria-valuemin="0" aria-valuemax="100"
-                                 style="width: 70%;">
-                                <span class="sr-only">70% Complete</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="fileResult" class="col-lg-12"></div>
     </div>
     <div id="dropArea" class="col-lg-5">
         <div id="dropbox">
-            <span>Drag & drop</span>
+            <span>Drag & drop your files (<=1.5 MB ) </span>
         </div>
     </div>
 </div>
