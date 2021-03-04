@@ -28,7 +28,6 @@ function preventDefaults(e) {
     dropZone.addEventListener(eventName, unhighlight, false);
 });
 
-
 dropZone.addEventListener("drop", function (e) {
     const dt = e.dataTransfer;
     const files = dt.files;

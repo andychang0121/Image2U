@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
-    <meta name="description" content="crop image,轉圖，後台上架，後台，電商">
+    <meta name="description" content="crop image,轉圖,後台上架,後台,電商">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image2U</title>
     @Styles.Render("~/Content/css")
@@ -25,21 +25,8 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>*@
                 @Html.ActionLink("Image2U", "Index", "ImageUpload", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            @*<div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("首頁", "Index", "Home")</li>
-                        <li>@Html.ActionLink("關於", "About", "Home")</li>
-                        <li>@Html.ActionLink("連絡人", "Contact", "Home")</li>
-                    </ul>
-                    @Html.Partial("_LoginPartial")
-                </div>*@
         </div>
         <div id="overlay" class="container">
             <div class="cv-spinner">
@@ -49,10 +36,6 @@
     </div>
     <div class="container body-content">
         @RenderBody()
-        @*<hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Image2U</p>
-        </footer>*@
     </div>
 
     @Scripts.Render("~/bundles/jquery")

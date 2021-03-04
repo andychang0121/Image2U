@@ -18,6 +18,9 @@
     white-space: normal;
 }
 
+.navbar-brand {
+    color: rgba(128, 128, 128, 0.51) !important;
+}
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
@@ -63,6 +66,14 @@ td img {
 .btn span.glyphicon {
     margin-right: 5px !important;
 }
+
+#uploadFiles:disabled {
+    color: rgba(0, 0, 0, 0.40) !important;
+}
+
+    #uploadFiles:disabled span {
+        color: rgba(0, 0, 0, 0.40) !important;
+    }
 
 #overlay {
     position: fixed;
@@ -113,3 +124,17 @@ td img {
 #fileActionBtn {
     margin: 10px 0 10px 0;
 }
+
+/*button::before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fa541c;
+    transform-origin: center bottom;
+    transform: scaleY(0);
+    transition: transform 0.4s ease-in-out;
+}*/

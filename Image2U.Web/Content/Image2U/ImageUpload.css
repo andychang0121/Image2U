@@ -17,29 +17,40 @@
 #dropbox {
     margin: 5px;
     height: 320px;
+    width: 100%;
     line-height: 320px;
     border-radius: 16px;
     border: 1px dashed #808080;
-    border: 1px dashed rgba(128, 128, 128, 0.7);
+    border: 1px dashed rgba(128, 128, 128, 0.6);
     background-color: rgba(239, 239, 239, 0.46);
     text-align: center;
     /*vertical-align: middle;*/
     cursor: pointer;
 }
 
-    #dropbox span {
-        color: lightgray;
-        font-weight: bold;
-        font-size: 140%;
-        display: inline-block;
-        height: auto;
-        line-height: 1px;
-        vertical-align: middle
-    }
+#qrcode {
+    width: 320px;
+    height: 320px;
+    background: url("../images/lineqrcode.jpg");
+    background-repeat: no-repeat;
+    background-size: 95% 95%;
+    opacity: 0.1;
+    margin: auto;
+}
 
-    #dropbox.highlight {
-        border-color: purple;
-    }
+#dropbox span {
+    color: lightgray;
+    font-weight: bold;
+    font-size: 140%;
+    display: inline-block;
+    height: auto;
+    line-height: 1px;
+    vertical-align: middle
+}
+
+#dropbox.highlight {
+    border-color: purple;
+}
 
 [data-file] {
     padding-top: 5px;
