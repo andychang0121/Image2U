@@ -84,3 +84,12 @@
     padding-left: 0;
     padding-right: 0;
 }
+
+[data-remove] {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+    [data-remove] span.btn:hover {
+        color: red;
+    }

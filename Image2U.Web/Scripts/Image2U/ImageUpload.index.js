@@ -1,4 +1,5 @@
 ﻿const dropZone = document.getElementById("dropbox");
+const fileContainer = document.getElementById("fileContainer");
 
 ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
     dropZone.addEventListener(eventName, preventDefaults, false);
@@ -10,12 +11,23 @@ function preventDefaults(e) {
 }
 
 ["dragenter", "dragover"].forEach(eventName => {
+    fileContainer.addEventListener(eventName, function (e) {
+        preventDefaults(e);
+
+        const dt = e.dataTransfer;
+        dt.effectAllowed = "none";
+        dt.dropEffect = "none";
+    }, false);
+});
+
+["dragenter", "dragover"].forEach(eventName => {
     dropZone.addEventListener(eventName, highlight, false);
 });
 
 ["dragleave", "drop"].forEach(eventName => {
     dropZone.addEventListener(eventName, unhighlight, false);
 });
+
 
 dropZone.addEventListener("drop", function (e) {
     const dt = e.dataTransfer;
@@ -37,6 +49,7 @@ function setUploadFiles(b) {
 }
 
 function setDropFilesToTable(files) {
+    removeFileResult();
     const setNode = function (o) {
         o.removeAttribute("data-fileResult-template");
         o.removeAttribute("style");
@@ -83,7 +96,6 @@ function setAlert(o, isUpload) {
     _alert.removeAttribute("style");
     return;
 }
-
 
 function uploadFilesAction() {
     const customSize = getCustomSize();
@@ -170,4 +182,17 @@ function postUploadFile(url, data, progressbar) {
             setAjaxLoader(false);
         }
     });
+}
+
+function removeFileResult() {
+    const _f1 = document.querySelectorAll("[data-fileResult]");
+    [].forEach.call(_f1, (fs) => {
+        fs.remove();
+    });
+    return;
+}
+
+function removeSelected(o) {
+    const _fileResult = getParentNodeBySelector(o.parentNode, "[data-fileResult]");
+    if (_fileResult) _fileResult.remove();
 }

@@ -84,3 +84,22 @@ function getCustomSize() {
     }
     return rs;
 }
+
+function getParentNode(o, name) {
+    const _tagName = o.tagName.toLowerCase();
+    if (_tagName === name) return o;
+    return getParentNode(o.parentNode, name);
+}
+
+function findArray(a, v) {
+    if (!Array.isArray(a)) return false;
+    return a.indexOf(v) >= 0;
+}
+
+function getParentNodeBySelector(o, name) {
+    name = name.replace("[", "").replace("]", "").replace("data", "").replace("-", "").toLowerCase();
+    if (o === null || o === undefined || o.dataset === undefined) return undefined;
+    const _dataSet = Object.keys(o.dataset);
+    if (findArray(_dataSet, name)) return o;
+    return getParentNodeBySelector(o.parentNode, name);
+}

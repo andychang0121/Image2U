@@ -227,12 +227,6 @@ function setHTMLTRImage(file, i) {
     return tr;
 }
 
-function getParentNode(o, name) {
-    const _tagName = o.tagName.toLowerCase();
-    if (_tagName === name) return o;
-    return getParentNode(o.parentNode, name);
-}
-
 function getTh(v) {
     const th = document.createElement("th");
     th.innerHTML = v;
