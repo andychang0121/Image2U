@@ -125,6 +125,7 @@
 ol {
     list-style: none;
     counter-reset: my-awesome-counter;
+    padding-left: 0;
 }
 
 li {
@@ -135,8 +136,8 @@ li {
 
     li::before {
         content: counter(my-awesome-counter);
-        /*background: #662974;*/
-        background: gray;
+        font-size: 70%;
+        background: rgba(102, 41, 116, 0.8);
         width: 2rem;
         height: 2rem;
         border-radius: 50%;
@@ -155,6 +156,6 @@ ol ol ol li::before {
     background: #EE9EFF;
 }
 
-body {
+/*body {
     font-family: 'PT Serif', serif;
-}
+}*/

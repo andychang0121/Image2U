@@ -29,6 +29,10 @@ dropZone.addEventListener("drop", function (e) {
     setDropFilesToTable(files);
 });
 
+function uploadFilesAction() {
+
+}
+
 function highlight(e) {
     dropZone.classList.add("highlight");
 }
