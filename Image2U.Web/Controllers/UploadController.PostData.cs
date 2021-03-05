@@ -25,10 +25,14 @@ namespace Image2U.Web.Controllers
             {
                 Result = await response.Result.GetBase64(),
                 FileName = response.FileName.SetDownloadFileName("zip"),
-                ContentType = response.ContentType
+                ContentType = response.ContentType,
             };
 
-            return Json(rs);
+            return new JsonResult
+            {
+                Data = rs,
+                MaxJsonLength = int.MaxValue,
+            };
         }
 
         public ActionResult SetTempData(ResponseData data)
