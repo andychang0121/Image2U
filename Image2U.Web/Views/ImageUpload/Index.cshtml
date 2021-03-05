@@ -68,11 +68,12 @@
             <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
             選擇圖片
         </button>
-        <button id="uploadFiles" type="button" class="btn btn-default btn-sm" disabled="disabled" onclick="uploadFilesAction()">
+        <button id="uploadFiles" type="button" class="btn btn-default btn-sm" disabled="disabled"
+                onclick="uploadFilesHandler()">
             <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>
             上傳
         </button>
-        <button id="resetFiles" type="button" class="btn btn-default btn-sm" onclick="pageReload()">
+        <button id="resetFiles" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             重新選擇
         </button>
@@ -82,6 +83,6 @@
 @section scripts
 {
     <script async src="~/Scripts/Image2U/ImageUpload.index.js"></script>
-    <script async src="~/Scripts/Image2U/Upload.index.js"></script>
+    @*<script async src="~/Scripts/Image2U/Upload.index.js"></script>*@
 }
 

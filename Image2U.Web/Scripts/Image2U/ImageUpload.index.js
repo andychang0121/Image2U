@@ -1,15 +1,9 @@
 ﻿const dropZone = document.getElementById("dropbox");
 const fileContainer = document.getElementById("fileContainer");
-setDescription("[data-description]", true);
 
-["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
-    dropZone.addEventListener(eventName, preventDefaults, false);
+["dragenter", "dragover", "dragleave", "drop"].forEach(e => {
+    dropZone.addEventListener(e, preventDefaults, false);
 });
-
-function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-}
 
 ["dragenter", "dragover"].forEach(eventName => {
     fileContainer.addEventListener(eventName, function (e) {
@@ -44,8 +38,8 @@ function unhighlight(e) {
 }
 
 function setUploadFiles(b) {
-    const btn = document.getElementById("uploadFiles");
-    btn.disabled = b;
+    const _o = document.getElementById("uploadFiles");
+    _o.disabled = b;
 }
 
 function setDropFilesToTable(files) {
@@ -99,7 +93,7 @@ function setAlert(o, isUpload) {
     return;
 }
 
-function uploadFilesAction() {
+function uploadFilesHandler() {
     const customSize = getCustomSize();
     const _fileRs = document.querySelectorAll("[data-fileResult]");
 
@@ -195,9 +189,17 @@ function removeFileResult() {
 }
 
 function removeSelected(o) {
-    const _fileResult = getParentNodeBySelector(o.parentNode, "[data-fileResult]");
-    if (_fileResult) _fileResult.remove();
-    getFileResult();
+    const _o = function (_s) {
+        return new window.Promise((resolve, reject) => {
+            const _fileResult = getParentNodeBySelector(o.parentNode, _s);
+            if (!_fileResult) reject();
+            _fileResult.remove();
+            return resolve();
+        });
+    }
+    _o("[data-fileResult]").then(function () {
+        getFileResult();
+    });
 }
 
 function getFileResult() {

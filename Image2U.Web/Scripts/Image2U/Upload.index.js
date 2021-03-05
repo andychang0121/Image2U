@@ -172,10 +172,6 @@ function setProgress(b, o) {
     }
 }
 
-function pageReload() {
-    location.reload();
-}
-
 function getElement(config) {
     const ele = document.createElement(config.type);
     ele.setAttribute("class", config.className);

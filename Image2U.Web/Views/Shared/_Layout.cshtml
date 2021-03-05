@@ -8,7 +8,7 @@
     <title>Image2U</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    <script async src="~/Scripts/Image2U/site.js"></script>
+    @*<script async src="~/Scripts/Image2U/site.js"></script>*@
     <!-- Google Tag Manager -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CZ0PGMFBMT"></script>
@@ -38,6 +38,7 @@
         @RenderBody()
     </div>
 
+    @Scripts.Render("~/bundles/site")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

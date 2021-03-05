@@ -278,6 +278,7 @@
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\FileSaver.js" />
     <Content Include="Scripts\FileSaver.min.js" />
+    <Content Include="Scripts\Image2U\site.common.js" />
     <Content Include="Scripts\Image2U\site.js" />
     <Content Include="Scripts\Image2U\Upload.index.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />

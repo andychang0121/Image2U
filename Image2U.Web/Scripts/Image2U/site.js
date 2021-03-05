@@ -103,3 +103,13 @@ function getParentNodeBySelector(o, name) {
     if (findArray(_dataSet, name)) return o;
     return getParentNodeBySelector(o.parentNode, name);
 }
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+function pageReload() {
+    location.reload();
+    window.scrollTo(0, 0);
+}
