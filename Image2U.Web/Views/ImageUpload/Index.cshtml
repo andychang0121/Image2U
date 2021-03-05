@@ -38,36 +38,46 @@
 </div>
 
 <div id="fileContainer" class="col-lg-12">
-    <div id="fileActionBtn" class="btn-group" role="group" aria-label="button group">
-        <button id="fileSelect" type="button" class="btn btn-default">
+    <div id="fileArea" class="col-lg-7">
+        <div id="fileResult" class="col-lg-12">
+            <div class="col-lg-12" data-description>
+                <ol>
+                    <li>裁切 shopee，pchome，yahoo，momo 商品上架圖片</li>
+                    <li>可以將圖片拖拉到右邊拖拉區</li>
+                    <li>使用選擇圖片按鍵</li>
+                    <li>可以輸入自定義 寬(width) 與 高(height)</li>
+                    <li>圖片限制是 1.5 MB</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 p0">
+        <div id="dropArea" class="col-lg-12">
+            <div id="dropbox" class="col-lg-12">
+                Drag & drop your files (<=1.5 MB )
+                @*<span>Drag & drop your files (<=1.5 MB ) </span>*@
+            </div>
+        </div>
+        <div id="customSizes" class="input-group col-lg-12 clearfix input-group-sm">
+            <span class="input-group-addon">寬度</span>
+            <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度 px">
+            <span class="input-group-addon">高度</span>
+            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度 px">
+        </div>
+        <button id="fileSelect" type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
             選擇圖片
         </button>
-        <button id="uploadFiles" type="button" class="btn btn-default" disabled="disabled" onclick="uploadFilesAction()">
+        <button id="uploadFiles" type="button" class="btn btn-default btn-sm" disabled="disabled" onclick="uploadFilesAction()">
             <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>
             上傳
         </button>
-        <button id="resetFiles" type="button" class="btn btn-default" onclick="pageReload()">
+        <button id="resetFiles" type="button" class="btn btn-default btn-sm" onclick="pageReload()">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             重新選擇
         </button>
+    </div>
 
-        <div id="customSizes" class="input-group col-lg-4 clearfix">
-            <span class="input-group-addon">寬度</span>
-            <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度">
-            <span class="input-group-addon">高度</span>
-            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度">
-        </div>
-    </div>
-    <div id="fileArea" class="col-lg-7">
-        <div id="fileResult" class="col-lg-12"></div>
-    </div>
-    <div id="dropArea" class="col-lg-5">
-        <div id="dropbox" class="col-lg-12">
-            Drag & drop your files (<=1.5 MB )
-            @*<span>Drag & drop your files (<=1.5 MB ) </span>*@
-        </div>
-    </div>
 </div>
 @section scripts
 {

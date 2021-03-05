@@ -1,8 +1,13 @@
-﻿body {
+﻿:root {
+    --backgroundcolorDefault: rgba(211, 211, 211, 0.31);
+}
+
+body {
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 50px;
     padding-bottom: 20px;
+    background-color: var(--backgroundcolorDefault);
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -19,7 +24,7 @@
 }
 
 .navbar-brand {
-    color: rgba(128, 128, 128, 0.51) !important;
+    color: yellowgreen !important;
 }
 /* Set width on the form input elements since they're 100% wide by default */
 input,
@@ -138,3 +143,7 @@ td img {
     transform: scaleY(0);
     transition: transform 0.4s ease-in-out;
 }*/
+
+.p0 {
+    padding: 0;
+}

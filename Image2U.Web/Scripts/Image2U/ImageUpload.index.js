@@ -1,5 +1,6 @@
 ﻿const dropZone = document.getElementById("dropbox");
 const fileContainer = document.getElementById("fileContainer");
+setDescription("[data-description]", true);
 
 ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
     dropZone.addEventListener(eventName, preventDefaults, false);
@@ -44,11 +45,13 @@ function unhighlight(e) {
 
 function setUploadFiles(b) {
     const btn = document.getElementById("uploadFiles");
-    btn.removeAttribute("disabled");
+    btn.disabled = b;
 }
 
 function setDropFilesToTable(files) {
     removeFileResult();
+    setDescription("[data-description]", false);
+
     const setNode = function (o) {
         o.removeAttribute("data-fileResult-template");
         o.removeAttribute("style");
@@ -82,7 +85,7 @@ function setDropFilesToTable(files) {
             _fileResult.appendChild(_fileRow);
         });
     });
-    setUploadFiles();
+    setUploadFiles(false);
 }
 
 function setAlert(o, isUpload) {
@@ -184,8 +187,8 @@ function postUploadFile(url, data, progressbar) {
 }
 
 function removeFileResult() {
-    const _f1 = document.querySelectorAll("[data-fileResult]");
-    [].forEach.call(_f1, (fs) => {
+    const _fileResult = document.querySelectorAll("[data-fileResult]");
+    [].forEach.call(_fileResult, (fs) => {
         fs.remove();
     });
     return;
@@ -194,4 +197,17 @@ function removeFileResult() {
 function removeSelected(o) {
     const _fileResult = getParentNodeBySelector(o.parentNode, "[data-fileResult]");
     if (_fileResult) _fileResult.remove();
+    getFileResult();
+}
+
+function getFileResult() {
+    const _fileResults = document.querySelectorAll("[data-fileResult]");
+    if (_fileResults.length === 0) {
+        setDescription("[data-description]", true);
+    };
+}
+
+function setDescription(s, b) {
+    const _description = document.querySelector(s);
+    _description.style.display = b ? "block" : "none";
 }
