@@ -10,8 +10,8 @@
 
 
 #fileResult {
-    padding: 2px 30px 2px 2px;
-    height: 320px;
+    padding: 2px 2px 2px 2px;
+    /*height: 320px;*/
 }
 
 #dropArea {
@@ -19,6 +19,11 @@
     border-radius: 16px;
     /*border: 0 dashed #808080;
     border: 0 dashed rgba(128, 128, 128, 0.6);*/
+}
+
+#uploadBtn {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 #dropbox {
@@ -101,26 +106,10 @@
     }
 
 [data-description] {
-    /*height: 200px;
-    line-height: 200px;
-    vertical-align: middle;*/
-    padding-top: 10px;
-    padding-left: 0px;
+    padding-top: 20px;
+    padding-left: 0;
     padding-bottom: 20px;
 }
-
-/*[data-description] ul {
-        padding-left: 2px;
-    }
-
-    [data-description] ul li {
-        list-style-type: none;
-        padding-top: 5px;
-        color: #4f4f4f;
-        font-weight: lighter;
-        font-size: 110%;
-        color: gray;
-    }*/
 
 ol {
     list-style: none;
@@ -146,6 +135,9 @@ li {
         color: white;
         text-align: center;
         margin-right: 1rem;
+        /*text-indent: -2rem;
+        margin-left: -2rem;
+        padding-left: 2rem;*/
     }
 
 ol ol li::before {
@@ -155,7 +147,3 @@ ol ol li::before {
 ol ol ol li::before {
     background: #EE9EFF;
 }
-
-/*body {
-    font-family: 'PT Serif', serif;
-}*/
