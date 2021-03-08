@@ -201,8 +201,9 @@ function removeSelected(o) {
             return resolve();
         });
     }
-    _o("[data-fileResult]").then(function () {
+    _o("[data-fileResult]").then(() => {
         getFileResult();
+        setUploadFiles(true);
     });
 }
 
