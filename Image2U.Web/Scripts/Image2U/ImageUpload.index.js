@@ -8,19 +8,18 @@ const fileContainer = document.getElementById("fileContainer");
 ["dragenter", "dragover"].forEach(eventName => {
     fileContainer.addEventListener(eventName, function (e) {
         preventDefaults(e);
-
         const dt = e.dataTransfer;
         dt.effectAllowed = "none";
         dt.dropEffect = "none";
     }, false);
 });
 
-["dragenter", "dragover"].forEach(eventName => {
-    dropZone.addEventListener(eventName, highlight, false);
+["dragenter", "dragover"].forEach(e => {
+    dropZone.addEventListener(e, highlight, false);
 });
 
-["dragleave", "drop"].forEach(eventName => {
-    dropZone.addEventListener(eventName, unhighlight, false);
+["dragleave", "drop"].forEach(e => {
+    dropZone.addEventListener(e, unhighlight, false);
 });
 
 dropZone.addEventListener("drop", function (e) {
