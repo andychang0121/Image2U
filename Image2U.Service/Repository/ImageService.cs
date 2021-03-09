@@ -40,12 +40,14 @@ namespace Image2U.Service.Repository
             return bitmapRs;
         }
 
-        private Bitmap ResizeAsync(Bitmap src, int width, int height)
+        private Bitmap ResizeAsync(Image src, int width, int height)
         {
             Rectangle cropRect = new Rectangle(0, 0, width, height);
             Bitmap target = new Bitmap(cropRect.Width, cropRect.Height);
 
-            using (Graphics g = Graphics.FromImage(target))
+            Graphics graphics = Graphics.FromImage(target);
+
+            using (Graphics g = graphics)
             {
                 g.DrawImage(src, new Rectangle(0, 0, target.Width, target.Height),
                     cropRect,
@@ -54,16 +56,6 @@ namespace Image2U.Service.Repository
             return target;
         }
 
-        /// <summary>
-        /// Todo:
-        /// </summary>
-        /// <param name="image"></param>
-        /// <param name="ratio"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="xDpi"></param>
-        /// <param name="yDpi"></param>
-        /// <returns></returns>
         private async Task<Bitmap> ResizeAsync(Image image, double ratio, int width, int height, float xDpi = 72.0f, float yDpi = 72.0f)
         {
             return await Task.Run(() =>
