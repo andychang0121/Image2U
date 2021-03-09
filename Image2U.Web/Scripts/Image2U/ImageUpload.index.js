@@ -27,14 +27,12 @@ dropZone.addEventListener("drop", function (e) {
     const files = dt.files;
     setDropFilesToTable(files);
 });
-
 function uploadFilesAction() {
 
 }
 
 function highlight(e) {
     dropZone.classList.add("highlight");
-    console.log(dropZone.classList);
 }
 
 function unhighlight(e) {
@@ -209,10 +207,12 @@ function removeSelected(o) {
 
 function getFileResult() {
     const _fileResults = document.querySelectorAll("[data-fileResult]");
-    setDescription("[data-description]", _fileResults.length === 0);
+    const _isEmpty = _fileResults.length === 0;
+    setDescription("[data-description]", !_isEmpty);
 }
 
 function setDescription(s, b) {
     const _description = document.querySelector(s);
+
     _description.style.display = b ? "block" : "none";
 }
