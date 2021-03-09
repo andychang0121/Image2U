@@ -40,6 +40,20 @@ namespace Image2U.Service.Repository
             return bitmapRs;
         }
 
+        private Bitmap ResizeAsync(Bitmap src, int width, int height)
+        {
+            Rectangle cropRect = new Rectangle(0, 0, width, height);
+            Bitmap target = new Bitmap(cropRect.Width, cropRect.Height);
+
+            using (Graphics g = Graphics.FromImage(target))
+            {
+                g.DrawImage(src, new Rectangle(0, 0, target.Width, target.Height),
+                    cropRect,
+                    GraphicsUnit.Pixel);
+            }
+            return target;
+        }
+
         /// <summary>
         /// Todo:
         /// </summary>
@@ -55,7 +69,7 @@ namespace Image2U.Service.Repository
             return await Task.Run(() =>
             {
                 ImageProfile originalImageProfile = new ImageProfile(image);
-                
+
                 int newWidth = Convert.ToInt32(originalImageProfile.Width * ratio);
                 int newHeight = Convert.ToInt32(originalImageProfile.Height * ratio);
 
@@ -66,6 +80,9 @@ namespace Image2U.Service.Repository
                 }
                 // -----
                 Bitmap thumbnail = new Bitmap(newWidth, newHeight);
+
+                thumbnail.SetResolution(xDpi, yDpi);
+
                 Graphics graphic = Graphics.FromImage(thumbnail);
 
                 graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -77,7 +94,8 @@ namespace Image2U.Service.Repository
                 graphic.DrawImage(image, 0, 0, newWidth, newHeight);
                 graphic.Dispose();
 
-                thumbnail.SetResolution(xDpi, yDpi);
+                //Bitmap rs = crop(thumbnail, thumbnail.Width, height);
+                //return rs;
                 return thumbnail;
             });
         }
