@@ -221,6 +221,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImageUploadController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\UploadController.Image.cs" />
     <Compile Include="Controllers\UploadController.Zip.cs" />
@@ -258,19 +259,30 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Image2U\ImageUpload.css" />
+    <Content Include="Content\images\android-chrome-192x192.png" />
+    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\lineqrcode.jpg" />
     <Content Include="Content\newSite.css" />
+    <Content Include="Content\site.mobile.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include=".bin\git.cmd" />
     <None Include=".bin\node.cmd" />
     <None Include=".bin\npm.cmd" />
+    <None Include="Properties\PublishProfiles\Gear Host.pubxml" />
     <None Include="Properties\PublishProfiles\image2u - FTP.pubxml" />
+    <Content Include="Scripts\Image2U\ImageUpload.index.js" />
     <None Include="Properties\PublishProfiles\image2u - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\SmartASP.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\FileSaver.js" />
+    <Content Include="Scripts\FileSaver.min.js" />
+    <Content Include="Scripts\Image2U\site.common.js" />
     <Content Include="Scripts\Image2U\site.js" />
     <Content Include="Scripts\Image2U\Upload.index.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -318,6 +330,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Upload\Index.cshtml" />
+    <Content Include="Views\ImageUpload\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

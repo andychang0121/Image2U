@@ -1,0 +1,90 @@
+﻿<link rel="stylesheet" href="~/Content/Image2U/ImageUpload.css" />
+@Html.AntiForgeryToken()
+<input id="fileElem"
+       type="file"
+       multiple
+       accept="image/*"
+       style="display: none"
+       onchange="setDropFilesToTable(this.files)">
+
+<div class="col-lg-12 col-sm-12" data-fileResult-template style="display: none;">
+    <div class="col-lg-12 col-sm-12" data-file>
+        <div class="col-lg-1" data-remove>
+            <span class="glyphicon glyphicon-trash" onclick="removeSelected(this)"></span>
+        </div>
+        <div class="col-lg-2" data-img>
+            <img src="" width="80" alt="sample" />
+        </div>
+        <div class="col-lg-9">
+            <div class="col-lg-12 col-sm-12" data-file-info>
+                <span data-file-name></span>
+                <span data-file-size></span>
+            </div><!-- File Info-->
+            <div class="col-lg-12  col-sm-12 progress" data-progress style="display: none;">
+                <div class="progress-bar progress-bar-danger"
+                     role="progressbar"
+                     data-progress-bar
+                     aria-valuenow="0"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     style="width: 0;">
+                </div>
+            </div><!-- Progress bar-->
+            <div class="col-lg-12 col-sm-12" data-alert style="display: none;">
+                <span class="label label-danger">size over 1.5MB</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="fileContainer" class="col-lg-12  col-sm-12">
+    <div id="fileArea" class="col-lg-7">
+        <div id="fileResult" class="col-lg-12 col-sm-12">
+            <div class="col-lg-12" data-description>
+                <ol>
+                    <li>提供電商上架圖片</li>
+                    <li>Shopee，PCHome，MoMo</li>
+                    <li>可以將圖片拖拉到拖拉區</li>
+                    <li>或是使用選擇圖片按鍵</li>
+                    <li>自定義 寬(width) 與 高(height)</li>
+                    <li>圖片限制是 1.5 MB</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 p0">
+        <div id="dropArea" class="col-lg-12 col-sm-12">
+            <div id="dropbox" class="col-lg-12 col-sm-12">
+                Drag & drop your files (<=1.5 MB )
+            </div>
+        </div>
+        <div id="customSizes" class="input-group col-lg-12 col-sm-12 clearfix">
+            <span class="input-group-addon">寬度</span>
+            <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度 px">
+            <span class="input-group-addon">高度</span>
+            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度 px">
+        </div>
+        <div id="uploadBtn" class="btn-group col-lg-12 col-sm-12" role="group" aria-label="uploadBtns">
+            <button id="fileSelect" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                選擇圖片
+            </button>
+            <button id="uploadFiles" type="button" class="btn btn-default" disabled="disabled"
+                    onclick="uploadFilesHandler()">
+                <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>
+                開始轉換
+            </button>
+            <button id="resetFiles" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                重新選擇
+            </button>
+        </div>
+    </div>
+
+</div>
+@section scripts
+{
+    <script async src="~/Scripts/Image2U/ImageUpload.index.js"></script>
+    <script async src="~/Scripts/Image2U/Upload.index.js"></script>
+}
+

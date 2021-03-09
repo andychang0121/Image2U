@@ -18,14 +18,15 @@
             <span class="input-group-addon">Width</span>
             <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度">
             <span class="input-group-addon">Heigth</span>
-            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度度">
+            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度">
         </div>
     </div>
     <input id="fileElem"
            type="file"
            multiple
            accept="image/*"
-           style="display: none" onchange="setFilesToTable(this.files)">
+           style="display: none"
+           onchange="setFilesToTable(this.files)">
     <h5>Shopee，PCHOME，MoMo</h5>
     <div class="progress">
         <div id="progress"
@@ -33,17 +34,16 @@
              role="progressbar"
              aria-valuenow="0"
              aria-valuemin="0"
-             aria-valuemax="100"
-             style="width: 0;">
+             aria-valuemax="100">
             <span class="glyphicon glyphicon-plus-sign" style="color: purple;"></span>
         </div>
     </div>
-    
+
     <table id="fileSelectResult" class="table table-hover">
         <thead></thead>
         <tbody>
             <tr>
-                <td style="height: 120px; background-color: rgba(211, 211, 211, 0.6); color: navy; text-align: center; vertical-align: middle">
+                <td id="tableText">
                     <span>請選擇檔案</span>
                 </td>
             </tr>

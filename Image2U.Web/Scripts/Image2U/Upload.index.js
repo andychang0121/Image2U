@@ -1,5 +1,6 @@
 ﻿const _loader = document.getElementById("overlay");
 const _bsProgress = document.getElementById("progress");
+
 const API_ENDPOINT = "/upload/post";
 const API_ENDPOINT_ASYNC = "/upload/postdataAsync";
 
@@ -11,11 +12,8 @@ const [fileSelect, fileElem, uploadFiles, customWidth, customHeight] = [
     , document.getElementById("customHeight")];
 
 let _width = 0;
+let _processSize = 0;
 let _process = { idx: 0, total: 0 };
-
-fileElem.addEventListener("change", function () {
-    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
-});
 
 fileSelect.addEventListener("click", function (e) {
     if (fileElem) {
@@ -28,32 +26,24 @@ uploadFiles.addEventListener("click", function (e) {
     e.preventDefault();
 
     const fileSelectResult = document.getElementById("fileSelectResult");
+
+    if (fileSelectResult === undefined || fileSelectResult == null) return;
+
     const tableBody = fileSelectResult.querySelector("tbody");
     const imgs = tableBody.getElementsByTagName("img");
     setProgress(true);
-    setLoaderAsync(true).then(function () {
+    setLoaderAsync(true).then(() => {
         uploadFilesBase64Async(imgs, customWidth.value, customHeight.value);
     });
 
 }, false);
 
-function validFileSize(bytes) {
-    if (bytes === 0) return true;
-    const _getSize = function (_bytes) {
-        return _bytes / 1024 / 1024;
-    }
-    return _getSize(bytes) <= 2;
-}
-
-function getUploadFiles(imgs) {
-    const rs = [];
+function getUploadFilesSize(imgs) {
+    let _rs = 0;
     [].forEach.call(imgs, function (img) {
-        const _isUpload = validFileSize(img.file.size);
-        if (_isUpload) {
-            rs.push(img);
-        }
+        _rs += img.file.size;
     });
-    return rs;
+    return _rs;
 }
 
 function uploadFilesBase64Async(imgs, customWidth, customHeight) {
@@ -70,7 +60,6 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
             });
 
         }).then(function () {
-            _requestData.fileName = image.name;
             _requestData.type = _file.type;
             _requestData.size = _file.size;
             _requestData.fileName = _file.name;
@@ -85,49 +74,83 @@ function uploadFilesBase64Async(imgs, customWidth, customHeight) {
     _process.total = __imgs.length;
 
     for (let image of __imgs) {
-
         const _requestData = {
             customWidth: customWidth,
             customHeight: customHeight
         };
-
         ajaxPost(image, _requestData, API_ENDPOINT_ASYNC);
     }
 }
 
+function resetProgress(o) {
+    o.style.width = o.style.width === "100%" ? "" : o.style.width;
+}
+
 function jUploadFile(url, data) {
-    const _token = $("[name*='__RequestVerificationToken']").val();
+    const _requestToken = document.getElementsByName("__RequestVerificationToken");
     const _request = {
-        __RequestVerificationToken: _token,
+        __RequestVerificationToken: _requestToken[0].value,
         requestData: data
     };
+
     $.post({
+        xhr: function () {
+            const setProgressbar = function (o, i) {
+                resetProgress(o);
+                const _width = (i + 1) * 10;
+                o.style.width = _width + "%";
+                o.innerHTML = `${_width}% (complete)`;
+            }
+            const xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (event) {
+                if (event.lengthComputable) {
+                    _bsProgress.style.width = "0%";
+                    for (let i = 0; i < 10; i++) {
+                        setProgressbar(_bsProgress, i);
+                    }
+                }
+            }, false);
+
+            return xhr;
+        },
+        xhrFields: {
+            onprogress: function (event) {
+                //Download progress
+                if (event.lengthComputable) {
+                    if (event.lengthComputable) {
+
+                        const percentComplete = (event.loaded / event.total) * 100;
+
+                        const pc = (Math.round(percentComplete));
+
+                        resetProgress(_bsProgress);
+
+                        _bsProgress.style.width = `${pc}%`;
+                        _bsProgress.innerHTML = `${pc}% (download...)`;
+                    }
+                }
+            }
+        },
         url: url,
         data: _request,
-        async: true,
         beforeSend: function () {
             _process.idx--;
-            setProgressBar(_process);
         },
         complete: function () {
             if (_process.idx === 0) {
+                _width = 0;
                 setLoader(false);
+                _bsProgress.classList.value = "progress-bar active";
             }
         },
-        success: function (r) {
-            //https://www.itread01.com/content/1535390541.html
-            console.log(r);
+        success: function (r, textStatus, jqXHR) {
             getDownloadFile(r.FileName, r.Result);
-            //if (r.IsOk) {
-            //    const _url = `/upload/get?tempdataKey=${r.Data}`;
-            //    window.open(_url, "_blank");
-            //}
         }
     });
 }
 
 function setLoaderAsync(b, o) {
-    return new Promise((resolve, reject) => {
+    return new window.Promise((resolve, reject) => {
         setLoader(b);
         setTimeout(() => { resolve(true); }, 10);
     });
@@ -148,54 +171,6 @@ function setProgress(b, o) {
         _o.classList.value = "progress-bar progress-bar-info";
     }
 }
-
-function pageReload() {
-    location.reload();
-}
-
-function setProgressBar(__process) {
-
-    //if (event.lengthComputable) {
-
-    //    const percentComplete = (event.loaded / event.total) * 100;
-
-    //    const pc = Math.round(percentComplete);
-    const idx = __process.total - __process.idx;
-    const percentAge = 100 / __process.total;
-    const start = idx - 1;
-    const end = idx;
-
-    console.log("total:", __process.total, "idx:", idx, "start:", start, "end:", end, "%", percentAge * end + "%");
-
-    for (let i = (start - 1) * 100; i < (end - 1) * 100; i++) {
-
-        _bsProgress.style.width = i + 1 + "%";
-
-        _bsProgress.innerHTML = `${i + 1}% (complete)`;
-        console.log();
-    }
-}
-
-function updateProgress(event) {
-    if (event.lengthComputable) {
-
-        const percentComplete = (event.loaded / event.total) * 100;
-
-        const pc = Math.round(percentComplete);
-
-        for (let i = _width; i < pc; i++) {
-            _bsProgress.style.width = i + 1 + "%";
-            _bsProgress.innerHTML = `${i + 1}% (complete)`;
-        }
-        _width = pc;
-    }
-}
-
-function completeHandler() { }
-
-function errorHandler() { }
-
-function abortHandler() { }
 
 function getElement(config) {
     const ele = document.createElement(config.type);
@@ -220,11 +195,19 @@ function setHTMLTRImage(file, i) {
 
     //const input = getElement(_config);
     //tr.appendChild(getTd(input));
+
+    const removeBtn = document.createElement("span");
+    removeBtn.classList.value = "btn btn-default btn-xs glyphicon glyphicon-trash removeImage";
+    removeBtn.style.color = "red";
+    removeBtn.addEventListener("click", function () {
+        const _tr = getParentNode(this, "tr");
+        _tr.remove();
+    });
+
+    tr.appendChild(getTd(removeBtn));
     tr.appendChild(getTd(i + 1));
     tr.appendChild(getTd(file.name));
-    tr.appendChild(getTd(""));
     tr.appendChild(getTd(bytesToSize(file.size)));
-    //tr.appendChild(getTd(file.size.numberFormat(0, ".", ",")));
     //----
     const td = document.createElement("td");
     const img = document.createElement("img");
@@ -261,7 +244,7 @@ function getTd(v) {
 
 function setFilesToTable(files) {
     if (!files.length) return;
-
+    _bsProgress.classList.value = "progress-bar progress-bar-striped active progress-bar-warning";
     const setHTMLTableImage = function (_tableBody, _fileLists) {
         for (let i = 0; i < _fileLists.length; i++) {
             const file = _fileLists[i];
@@ -310,45 +293,4 @@ function setFilesToTable(files) {
         fileLists.push(fileObj);
     }
     setHTMLTableImage(tableBody, fileLists);
-}
-
-function getFileBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.addEventListener("progress", updateProgress, false);
-
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
-}
-
-function getImage(src) {
-    return new Promise((resolve, revoke) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.crossOrigin = "Anonymous";
-        img.src = src;
-    });
-}
-
-function getDownloadFile(fileName, blob) {
-    return new window.Promise((resolve, reject) => {
-        const binaryString = window.atob(blob);
-        const binaryLen = binaryString.length;
-        const bytes = new Uint8Array(binaryLen);
-        for (let i = 0; i < binaryLen; i++) {
-            const ascii = binaryString.charCodeAt(i);
-            bytes[i] = ascii;
-        }
-
-        const url = window.URL.createObjectURL(new Blob([bytes], { type: "application/zip" }));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", fileName);
-        document.body.appendChild(link);
-        link.click();
-        resolve();
-    });
 }
