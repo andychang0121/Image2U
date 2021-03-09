@@ -172,10 +172,6 @@ function setProgress(b, o) {
     }
 }
 
-function pageReload() {
-    location.reload();
-}
-
 function getElement(config) {
     const ele = document.createElement(config.type);
     ele.setAttribute("class", config.className);
@@ -225,12 +221,6 @@ function setHTMLTRImage(file, i) {
     td.appendChild(img);
     tr.appendChild(td);
     return tr;
-}
-
-function getParentNode(o, name) {
-    const _tagName = o.tagName.toLowerCase();
-    if (_tagName === name) return o;
-    return getParentNode(o.parentNode, name);
 }
 
 function getTh(v) {

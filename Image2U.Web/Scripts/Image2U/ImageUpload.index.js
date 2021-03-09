@@ -1,20 +1,25 @@
-﻿const dropZone = document.getElementById("dropbox");
+﻿const fileContainer = document.getElementById("fileContainer");
+const dropZone = document.getElementById("dropbox");
 
-["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
-    dropZone.addEventListener(eventName, preventDefaults, false);
+["dragenter", "dragover", "dragleave", "drop"].forEach(e => {
+    dropZone.addEventListener(e, preventDefaults, false);
 });
-
-function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-}
 
 ["dragenter", "dragover"].forEach(eventName => {
-    dropZone.addEventListener(eventName, highlight, false);
+    fileContainer.addEventListener(eventName, function (e) {
+        preventDefaults(e);
+        const dt = e.dataTransfer;
+        dt.effectAllowed = "none";
+        dt.dropEffect = "none";
+    }, false);
 });
 
-["dragleave", "drop"].forEach(eventName => {
-    dropZone.addEventListener(eventName, unhighlight, false);
+["dragenter", "dragover"].forEach(e => {
+    dropZone.addEventListener(e, highlight, false);
+});
+
+["dragleave", "drop"].forEach(e => {
+    dropZone.addEventListener(e, unhighlight, false);
 });
 
 dropZone.addEventListener("drop", function (e) {
@@ -22,6 +27,9 @@ dropZone.addEventListener("drop", function (e) {
     const files = dt.files;
     setDropFilesToTable(files);
 });
+function uploadFilesAction() {
+
+}
 
 function highlight(e) {
     dropZone.classList.add("highlight");
@@ -32,11 +40,14 @@ function unhighlight(e) {
 }
 
 function setUploadFiles(b) {
-    const btn = document.getElementById("uploadFiles");
-    btn.removeAttribute("disabled");
+    const _o = document.getElementById("uploadFiles");
+    _o.disabled = b;
 }
 
 function setDropFilesToTable(files) {
+    removeFileResult();
+    setDescription("[data-description]", false);
+
     const setNode = function (o) {
         o.removeAttribute("data-fileResult-template");
         o.removeAttribute("style");
@@ -70,7 +81,7 @@ function setDropFilesToTable(files) {
             _fileResult.appendChild(_fileRow);
         });
     });
-    setUploadFiles();
+    setUploadFiles(false);
 }
 
 function setAlert(o, isUpload) {
@@ -84,8 +95,7 @@ function setAlert(o, isUpload) {
     return;
 }
 
-
-function uploadFilesAction() {
+function uploadFilesHandler() {
     const customSize = getCustomSize();
     const _fileRs = document.querySelectorAll("[data-fileResult]");
 
@@ -170,4 +180,39 @@ function postUploadFile(url, data, progressbar) {
             setAjaxLoader(false);
         }
     });
+}
+
+function removeFileResult() {
+    const _fileResult = document.querySelectorAll("[data-fileResult]");
+    [].forEach.call(_fileResult, (fs) => {
+        fs.remove();
+    });
+    return;
+}
+
+function removeSelected(o) {
+    const _o = function (_s) {
+        return new window.Promise((resolve, reject) => {
+            const _fileResult = getParentNodeBySelector(o.parentNode, _s);
+            if (!_fileResult) reject();
+            _fileResult.remove();
+            return resolve();
+        });
+    }
+    _o("[data-fileResult]").then(() => {
+        getFileResult();
+        setUploadFiles(true);
+    });
+}
+
+function getFileResult() {
+    const _fileResults = document.querySelectorAll("[data-fileResult]");
+    const _isEmpty = _fileResults.length === 0;
+    setDescription("[data-description]", !_isEmpty);
+}
+
+function setDescription(s, b) {
+    const _description = document.querySelector(s);
+
+    _description.style.display = b ? "block" : "none";
 }
