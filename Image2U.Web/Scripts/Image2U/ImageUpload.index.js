@@ -1,4 +1,5 @@
-﻿const fileContainer = document.getElementById("fileContainer");
+﻿const _sizeLimited = 1.5;
+const fileContainer = document.getElementById("fileContainer");
 const dropZone = document.getElementById("dropbox");
 
 ["dragenter", "dragover", "dragleave", "drop"].forEach(e => {
@@ -6,7 +7,7 @@ const dropZone = document.getElementById("dropbox");
 });
 
 ["dragenter", "dragover"].forEach(eventName => {
-    fileContainer.addEventListener(eventName, function (e) {
+    window.fileContainer.addEventListener(eventName, function (e) {
         preventDefaults(e);
         const dt = e.dataTransfer;
         dt.effectAllowed = "none";
@@ -73,7 +74,7 @@ function setDropFilesToTable(files) {
     [].forEach.call(files, (_file) => {
         getFileBase64(_file).then(function (r) {
             let _fileRow = setNode(_template.cloneNode(true));
-            _fileRow.isUpload = validFileSize(_file.size);
+            _fileRow.isUpload = validFileSize(_file.size, _sizeLimited);
             _fileRow = setFileInfo(_fileRow, _file);
             _fileRow = setImage(_fileRow, r, _file);
 
@@ -104,7 +105,7 @@ function uploadFilesHandler() {
         const _image = _rs.getElementsByTagName("img")[0];
         const _file = _image.file;
 
-        if (validFileSize(_file.size)) {
+        if (validFileSize(_file.size, _sizeLimited)) {
             const _request = {
                 fileName: _file.name,
                 size: _file.size,
