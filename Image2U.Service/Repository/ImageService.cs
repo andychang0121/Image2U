@@ -35,10 +35,10 @@ namespace Image2U.Service.Repository
 
         private async Task<Bitmap> ResizeAsync(Image image, double ratio, bool isPortait, int width, int height)
         {
-            if (isPortait)
-            {
-                image.RotateFlip(RotateFlipType.Rotate90FlipX);
-            }
+            //if (isPortait)
+            //{
+            //    image.RotateFlip(RotateFlipType.Rotate90FlipX);
+            //}
 
             Bitmap bitmapRs = await ResizeAsync(image, ratio, width, height);
 
