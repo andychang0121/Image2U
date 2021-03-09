@@ -50,27 +50,22 @@ namespace Image2U.Service.Repository
         /// <param name="xDpi"></param>
         /// <param name="yDpi"></param>
         /// <returns></returns>
-        private async Task<Bitmap> ResizeAsync(Image image, double ratio, int width, int height, float xDpi = 72, float yDpi = 72)
+        private async Task<Bitmap> ResizeAsync(Image image, double ratio, int width, int height, float xDpi = 72.0f, float yDpi = 72.0f)
         {
             return await Task.Run(() =>
             {
                 ImageProfile originalImageProfile = new ImageProfile(image);
-
-                // now we can get the new height and width
+                
                 int newWidth = Convert.ToInt32(originalImageProfile.Width * ratio);
                 int newHeight = Convert.ToInt32(originalImageProfile.Height * ratio);
 
-                if ((int)ratio == 1)
+                if (Math.Abs(ratio - 1) == 0)
                 {
-                    newWidth = width;
-                    newHeight = height;
+                    newWidth = originalImageProfile.Width;
+                    newHeight = originalImageProfile.Height;
                 }
-
                 // -----
                 Bitmap thumbnail = new Bitmap(newWidth, newHeight);
-
-                thumbnail.SetResolution(xDpi, yDpi);
-
                 Graphics graphic = Graphics.FromImage(thumbnail);
 
                 graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -82,6 +77,7 @@ namespace Image2U.Service.Repository
                 graphic.DrawImage(image, 0, 0, newWidth, newHeight);
                 graphic.Dispose();
 
+                thumbnail.SetResolution(xDpi, yDpi);
                 return thumbnail;
             });
         }

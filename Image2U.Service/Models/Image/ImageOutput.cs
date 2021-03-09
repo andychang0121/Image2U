@@ -9,7 +9,6 @@
         public int MinHeight { get; set; }
     }
 
-
     public class ImageOutput : OutputSize
     {
         public string EcName { get; set; }
