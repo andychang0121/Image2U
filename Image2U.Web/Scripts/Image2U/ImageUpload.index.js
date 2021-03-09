@@ -1,5 +1,5 @@
-﻿const dropZone = document.getElementById("dropbox");
-const fileContainer = document.getElementById("fileContainer");
+﻿const fileContainer = document.getElementById("fileContainer");
+const dropZone = document.getElementById("dropbox");
 
 ["dragenter", "dragover", "dragleave", "drop"].forEach(e => {
     dropZone.addEventListener(e, preventDefaults, false);
@@ -34,6 +34,7 @@ function uploadFilesAction() {
 
 function highlight(e) {
     dropZone.classList.add("highlight");
+    console.log(dropZone.classList);
 }
 
 function unhighlight(e) {
@@ -208,9 +209,7 @@ function removeSelected(o) {
 
 function getFileResult() {
     const _fileResults = document.querySelectorAll("[data-fileResult]");
-    if (_fileResults.length === 0) {
-        setDescription("[data-description]", true);
-    };
+    setDescription("[data-description]", _fileResults.length === 0);
 }
 
 function setDescription(s, b) {
