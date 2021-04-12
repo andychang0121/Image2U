@@ -83,8 +83,7 @@ namespace Image2U.Web.Controllers
 
             return response;
         }
-
-
+        
         private async Task<ResponseData> SizingAsync(Stream stream, ProcessData processData)
         {
             byte[] zipRs = await _IConvertHandler.ConvertProcessAsync(stream, processData);

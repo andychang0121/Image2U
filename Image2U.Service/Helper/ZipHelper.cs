@@ -8,14 +8,16 @@ namespace Image2U.Service.Helper
 {
     public class ZipHelper
     {
-        public static string GetZipFileName(string fileName, int width, int height, string folderName)
+        public static string GetZipFileName(string fileName, int width, int height, string folderName, bool incldeFolder = true)
         {
             if (string.IsNullOrEmpty(fileName)) return string.Empty;
 
             string firstSection = fileName.Split('.').FirstOrDefault();
             string extSection = fileName.Split('.').LastOrDefault();
 
-            return $"{folderName}\\{firstSection}-{width}x{height}.{extSection}";
+            return !incldeFolder
+                ? $"({folderName})-{firstSection}-{width}x{height}.{extSection}"
+                : $"{folderName}\\{firstSection}-{width}x{height}.{extSection}";
         }
 
         public static byte[] ZipData(IEnumerable<ZipData> data)
