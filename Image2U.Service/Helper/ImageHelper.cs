@@ -25,8 +25,13 @@ namespace Image2U.Service.Helper
         }
 
         internal static double GetRatio(bool isPortait, int assignWidth, int width, int height)
-            => assignWidth == width ?
-                1 :
-                isPortait ? assignWidth / (double)height : assignWidth / (double)width;
+        {
+            if (assignWidth == width) return 1;
+
+            return assignWidth / (double)width;
+        }
+        //=> assignWidth == width ?
+        //    1 :
+        //    isPortait ? assignWidth / (double)height : assignWidth / (double)width;
     }
 }
