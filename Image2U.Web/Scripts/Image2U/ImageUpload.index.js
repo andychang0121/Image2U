@@ -85,7 +85,9 @@ function setUploadFiles(b) {
 }
 
 function setDropFilesToTable(files) {
-    removeFileResult();
+    console.log(files);
+
+    removeFileResult("[data-fileResult]");
     setDescription("[data-description]", false);
 
     const setNode = function (o) {
@@ -222,8 +224,9 @@ function postUploadFile(url, data, progressbar) {
     });
 }
 
-function removeFileResult() {
-    const _fileResult = document.querySelectorAll("[data-fileResult]");
+function removeFileResult(s) {
+    const _fileResult = document.querySelectorAll(s);
+    if (_fileResult === undefined || !_fileResult) return;
     [].forEach.call(_fileResult, (fs) => {
         fs.remove();
     });
@@ -240,13 +243,13 @@ function removeSelected(o) {
         });
     }
     _o("[data-fileResult]").then(() => {
-        getFileResult();
+        getFileResult("[data-fileResult]");
         setUploadFiles(true);
     });
 }
 
-function getFileResult() {
-    const _fileResults = document.querySelectorAll("[data-fileResult]");
+function getFileResult(t) {
+    const _fileResults = document.querySelectorAll(t);
     const _isEmpty = _fileResults.length === 0;
     setDescription("[data-description]", !_isEmpty);
 }
