@@ -25,7 +25,7 @@ namespace Image2U.Web.Controllers
             {
                 Result = await response.Result.GetBase64(),
                 FileName = response.FileName.SetDownloadFileName("zip"),
-                ContentType = response.ContentType,
+                ContentType = response.ContentType
             };
 
             return new JsonResult
