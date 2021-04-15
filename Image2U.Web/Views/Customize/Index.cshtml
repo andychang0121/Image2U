@@ -1,2 +1,39 @@
-﻿<h5>Customize Size</h5>
+﻿<h5>自定義轉換處理</h5>
+<input id="fileElem"
+       type="file"
+       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+       style="display: none"
+       onchange="setCustomizeFile(this.files)">
 
+<div class="row">
+    <div class="col-lg-6" style="padding-right: 1px;">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <a id="samplefile"
+                   href="~/Content/Files/image2U.sample.xlsx"
+                   class="btn btn-default" data-upload>範本</a>
+            </span>
+            <input id="uploadcustomizefile"
+                   type="text"
+                   class="form-control"
+                   placeholder="這裡是檔案名稱...."
+                   style="width: 100%; max-width: 100%;"
+                   readonly="readonly">
+            <span class="input-group-btn">
+                <a id="selectcustomfile"
+                   class="btn btn-default"
+                   data-upload>上傳自定義檔案</a>
+            </span>
+            <span class="input-group-btn">
+                <button id="executeCustomize"
+                        class="btn btn-default"
+                        disabled="disabled"
+                        data-upload>轉換</button>
+            </span>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/Image2U/Customize.index.js"></script>
+}
