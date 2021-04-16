@@ -113,6 +113,16 @@ function resetCustomizeUploadFile() {
     const _display = document.getElementById("uploadcustomizefile");
     _i.value = "";
     _display.value = "";
+    const _dataset = _display.dataset;
+    for (let key in _dataset) {
+        if (Object.prototype.hasOwnProperty.call(_dataset, key)) {
+            _display.removeAttribute(`data-${key.split(/(?=[A-Z])/).join("-").toLowerCase()}`);
+        }
+    }
+}
+
+function removeDateSet() {
+
 }
 
 function setCustomizeFile(o) {
@@ -121,6 +131,14 @@ function setCustomizeFile(o) {
     const _name = _f.name;
     const _input = document.getElementById("uploadcustomizefile");
     _input.value = _name;
+    Array.from(o).forEach(file => {
+        _input.dataset.name = file.name;
+        _input.dataset.size = file.size;
+        _input.dataset.type = file.type;
+        getFileBase64(file).then(r => {
+            _input.dataset.base64 = r;
+        });
+    });
 }
 
 function highlight(o) {
@@ -190,18 +208,6 @@ function setAlert(o, isUpload) {
 function uploadFilesHandler() {
     const customSize = getCustomSize();
     const _fileRs = document.querySelectorAll("[data-fileResult]");
-
-    const _customizeFiles = Array.from(document.getElementById("sizefileElem").files);
-
-    //if (_customizeFiles.length === 0) {
-    //    postUploadFile("/upload/postdataAsync", _requestData, _progressbar);
-    //    return;
-    //}
-
-    getCustomizeFileInfo(_customizeFiles).then(_r => {
-        console.log(_r);
-    });
-
 
     [].forEach.call(_fileRs, function (_rs) {
         const _progress = _rs.querySelector("[data-progress]");
