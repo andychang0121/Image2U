@@ -16,6 +16,7 @@
 #dropArea {
     background-color: var(--backgroundcolorDefault);
     border-radius: 16px;
+    margin-bottom: 5px;
 }
 
 #uploadBtn {
@@ -41,8 +42,26 @@
         border-color: rgba(128, 128, 128, 0.9) !important;
     }
 
-#customSizes {
-    padding: 5px 0 5px 0;
+#uploadFiles:disabled i {
+    display: none;
+}
+
+#uploadcustomizefile {
+    max-width: 100%;
+}
+
+#customSizes, #customSizeFiles {
+    padding: 0 0 5px 0;
+}
+
+    #customSizes span,
+    #customSizeFiles span {
+        font-weight: bold;
+    }
+
+.fa {
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 [data-file] {

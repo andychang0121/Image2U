@@ -59,7 +59,7 @@ const dropZone = document.getElementById("dropbox");
 
 })("fileSelect", "fileElem");
 
-((t, s) => {
+((t, s, c) => {
     const _target = document.getElementById(t);
     const _result = document.getElementById(s);
 
@@ -69,7 +69,59 @@ const dropZone = document.getElementById("dropbox");
         preventDefaults(e);
         uploadFilesHandler();
     }, false);
-})("uploadFiles", "fileResult");
+})("uploadFiles", "fileResult", "sizefileElem");
+
+((t, o) => {
+    const _target = document.getElementById(t);
+    const _result = document.getElementById(o);
+
+    if (!_target || !_result) return;
+
+    _target.addEventListener("click", function (e) {
+        if (_result) {
+            _result.click();
+        };
+        preventDefaults(e);
+    }, false);
+
+})("selectcustomfile", "sizefileElem");
+
+((s) => {
+    const _o = document.getElementById(s);
+    _o.addEventListener("click", function () {
+        resetCustomizeUploadFile();
+    }, false);
+
+})("resetCustomize");
+
+((o) => {
+    const _o = document.getElementById(o);
+
+    if (!_o) return;
+
+    _o.addEventListener("click", function (e) {
+        preventDefaults(e);
+        setUploadFiles(true);
+        removeFileResult("[data-fileResult]");
+        setDescription("[data-description]", true);
+    });
+})("resetFiles");
+
+
+function resetCustomizeUploadFile() {
+    const _i = document.getElementById("sizefileElem");
+    const _display = document.getElementById("uploadcustomizefile");
+    _i.value = "";
+    _display.value = "";
+}
+
+function setCustomizeFile(o) {
+    const _f = o ? o[0] : undefined;
+    if (!_f) return;
+    const _name = _f.name;
+    const _input = document.getElementById("uploadcustomizefile");
+    _input.value = _name;
+}
 
 function highlight(o) {
     o.classList.add("highlight");
@@ -85,8 +137,6 @@ function setUploadFiles(b) {
 }
 
 function setDropFilesToTable(files) {
-    console.log(files);
-
     removeFileResult("[data-fileResult]");
     setDescription("[data-description]", false);
 
@@ -141,6 +191,18 @@ function uploadFilesHandler() {
     const customSize = getCustomSize();
     const _fileRs = document.querySelectorAll("[data-fileResult]");
 
+    const _customizeFiles = Array.from(document.getElementById("sizefileElem").files);
+
+    //if (_customizeFiles.length === 0) {
+    //    postUploadFile("/upload/postdataAsync", _requestData, _progressbar);
+    //    return;
+    //}
+
+    getCustomizeFileInfo(_customizeFiles).then(_r => {
+        console.log(_r);
+    });
+
+
     [].forEach.call(_fileRs, function (_rs) {
         const _progress = _rs.querySelector("[data-progress]");
         const _image = _rs.getElementsByTagName("img")[0];
@@ -167,10 +229,26 @@ function uploadFilesHandler() {
                     __RequestVerificationToken: _requestToken[0].value,
                     requestData: _request
                 };
-
-                postUploadFile("/upload/postdataAsync", _requestData, _progressbar);
+                //postUploadFile("/upload/postdataAsync", _requestData, _progressbar);
             });
         }
+    });
+}
+
+function getCustomizeFileInfo(files) {
+    return new window.Promise((resolve, reject) => {
+        if (files.length === 0) {
+            resolve([]);
+        }
+        const rs = [];
+        [].forEach.call(files, (_f) => {
+            const _r = { name: _f.name, type: _f.type, size: _f.size };
+            getFileBase64(_f).then(function (r) {
+                _r.base64 = r;
+                rs.push(_r);
+            });
+        });
+        resolve(rs);
     });
 }
 

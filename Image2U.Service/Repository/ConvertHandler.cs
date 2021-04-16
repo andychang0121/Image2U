@@ -13,11 +13,13 @@ namespace Image2U.Service.Repository
     public class ConvertHandler : IConvertHandler
     {
         private readonly IImageService _imageService;
+        private readonly IExcelService _iexcelService;
         private readonly IZipService _izipService;
 
         public ConvertHandler()
         {
             _imageService = new ImageService();
+            _iexcelService = new ExcelService();
             _izipService = new ZipService();
         }
 
@@ -30,6 +32,9 @@ namespace Image2U.Service.Repository
 
             return bytes;
         }
+
+        public Task<byte[]> ConvertProcessAsync(string base64)
+            => _iexcelService.GetExcel(base64);
 
         private async Task<IEnumerable<ZipData>> ConvertProcessAsync(Stream stream, string fileName, bool isPortait, Dictionary<string, ImageOutput> outputProfile)
         {

@@ -7,6 +7,12 @@
        style="display: none"
        onchange="setDropFilesToTable(this.files)">
 
+<input id="sizefileElem"
+       type="file"
+       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+       style="display: none"
+       onchange="setCustomizeFile(this.files)">
+
 <div class="col-lg-12 col-sm-12" data-fileResult-template style="display: none;">
     <div class="col-lg-12 col-sm-12" data-file>
         <div class="col-lg-1" data-remove>
@@ -59,25 +65,53 @@
             </div>
         </div>
         <div id="customSizes" class="input-group col-lg-12 col-sm-12 clearfix">
-            <a href="@Url.Action("Index","Customize")" class="btn btn-default">自定義格式</a>
-            @*<span class="input-group-addon">寬度</span>
-            <input id="customWidth" type="text" class="form-control" placeholder="自定義寬度 px">
-            <span class="input-group-addon">高度</span>
-            <input id="customHeight" type="text" class="form-control" placeholder="自定義高度 px">*@
+            @*<a href="@Url.Action("Index","Customize")" class="btn btn-default">自定義格式</a>*@
+            <span class="input-group-addon">單一尺寸設定</span>
+            <span class="input-group-addon">寬</span>
+            <input id="customWidth" type="text" class="form-control" placeholder="px">
+            <span class="input-group-addon">高</span>
+            <input id="customHeight" type="text" class="form-control" placeholder="px">
         </div>
-        <div id="uploadBtn" class="btn-group col-lg-12 col-sm-12" role="group" aria-label="uploadBtns">
+        <div id="customSizeFiles" class="input-group col-lg-12 col-sm-12 clearfix">
+            <span class="input-group-addon">多種尺寸設定清單</span>
+            <span class="input-group-btn">
+                <a id="samplefile"
+                   href="~/Content/Files/image2U.sample.xlsx"
+                   class="btn btn-default" data-upload>範本</a>
+            </span>
+            <input id="uploadcustomizefile"
+                   type="text"
+                   class="form-control"
+                   placeholder="這裡是檔案名稱...."
+                   readonly="readonly">
+            <span class="input-group-btn">
+                <a id="selectcustomfile"
+                   class="btn btn-default">選擇</a>
+            </span>
+            <span class="input-group-btn">
+                <a id="resetCustomize"
+                        class="btn btn-default">
+                    重置<i class="fa fa-times-circle" aria-hidden="true"></i>
+                </a>
+            </span>
+        </div>
+        <div id="uploadBtn" class="btn-group col-lg-12 col-sm-12"
+             role="group"
+             aria-label="uploadBtns">
             <button id="fileSelect" type="button" class="btn btn-default">
-                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                <i class="fa fa-file-image-o" aria-hidden="true"></i>
                 選擇圖片
             </button>
-            <button id="uploadFiles" type="button" class="btn btn-default" disabled="disabled">
-                <span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>
-                開始轉換
+            <button id="uploadFiles"
+                    type="button"
+                    class="btn btn-default"
+                    disabled="disabled">
+                <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i>轉換
             </button>
-            <button id="resetFiles" type="button" class="btn btn-default">
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                重新選擇
-            </button>
+            <a id="resetFiles"
+               class="btn btn-default">
+                重置<i class="fa fa-times-circle" aria-hidden="true"></i>
+            </a>
         </div>
     </div>
 
