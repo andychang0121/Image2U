@@ -2,7 +2,7 @@
 
 namespace Image2U.Web.Controllers
 {
-    public class ImageUploadController : Controller
+    public partial class CustomizeController : Controller
     {
         public ActionResult Index() => View();
     }

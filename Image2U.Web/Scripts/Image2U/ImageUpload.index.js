@@ -1,43 +1,82 @@
 ﻿const _sizeLimited = 1.5;
-const fileContainer = document.getElementById("fileContainer");
 const dropZone = document.getElementById("dropbox");
 
-["dragenter", "dragover", "dragleave", "drop"].forEach(e => {
-    dropZone.addEventListener(e, preventDefaults, false);
-});
+(fc => {
+    const _fileContainer = document.getElementById(fc);
 
-["dragenter", "dragover"].forEach(eventName => {
-    window.fileContainer.addEventListener(eventName, function (e) {
-        preventDefaults(e);
+    ["dragenter", "dragover"].forEach(eventName => {
+        _fileContainer.addEventListener(eventName, function (e) {
+            preventDefaults(e);
+            const dt = e.dataTransfer;
+            dt.effectAllowed = "none";
+            dt.dropEffect = "none";
+        }, false);
+    });
+
+})("fileContainer");
+
+(s => {
+    const _dropZone = document.getElementById(s);
+
+    if (!_dropZone) return;
+
+    ["dragenter", "dragover", "dragleave", "drop"].forEach(e => {
+        _dropZone.addEventListener(e, preventDefaults, false);
+    });
+
+    ["dragenter", "dragover"].forEach(e => {
+        _dropZone.addEventListener(e, function () {
+            highlight(_dropZone);
+        }, false);
+    });
+
+    ["dragleave", "drop"].forEach(e => {
+        _dropZone.addEventListener(e, function () {
+            unhighlight(_dropZone);
+        }, false);
+    });
+
+    _dropZone.addEventListener("drop", function (e) {
         const dt = e.dataTransfer;
-        dt.effectAllowed = "none";
-        dt.dropEffect = "none";
+        const files = dt.files;
+        setDropFilesToTable(files);
+    });
+
+})("dropbox");
+
+((t, o) => {
+    const _target = document.getElementById(t);
+    const _result = document.getElementById(o);
+
+    if (!_target || !_result) return;
+
+    _target.addEventListener("click", function (e) {
+        if (_result) {
+            _result.click();
+        };
+        preventDefaults(e);
     }, false);
-});
 
-["dragenter", "dragover"].forEach(e => {
-    dropZone.addEventListener(e, highlight, false);
-});
+})("fileSelect", "fileElem");
 
-["dragleave", "drop"].forEach(e => {
-    dropZone.addEventListener(e, unhighlight, false);
-});
+((t, s) => {
+    const _target = document.getElementById(t);
+    const _result = document.getElementById(s);
 
-dropZone.addEventListener("drop", function (e) {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    setDropFilesToTable(files);
-});
-function uploadFilesAction() {
+    if (!_target || !_result || _result.length === 0) return;
 
+    _target.addEventListener("click", function (e) {
+        preventDefaults(e);
+        uploadFilesHandler();
+    }, false);
+})("uploadFiles", "fileResult");
+
+function highlight(o) {
+    o.classList.add("highlight");
 }
 
-function highlight(e) {
-    dropZone.classList.add("highlight");
-}
-
-function unhighlight(e) {
-    dropZone.classList.remove("highlight");
+function unhighlight(o) {
+    o.classList.remove("highlight");
 }
 
 function setUploadFiles(b) {
@@ -46,7 +85,9 @@ function setUploadFiles(b) {
 }
 
 function setDropFilesToTable(files) {
-    removeFileResult();
+    console.log(files);
+
+    removeFileResult("[data-fileResult]");
     setDescription("[data-description]", false);
 
     const setNode = function (o) {
@@ -183,8 +224,9 @@ function postUploadFile(url, data, progressbar) {
     });
 }
 
-function removeFileResult() {
-    const _fileResult = document.querySelectorAll("[data-fileResult]");
+function removeFileResult(s) {
+    const _fileResult = document.querySelectorAll(s);
+    if (_fileResult === undefined || !_fileResult) return;
     [].forEach.call(_fileResult, (fs) => {
         fs.remove();
     });
@@ -201,13 +243,13 @@ function removeSelected(o) {
         });
     }
     _o("[data-fileResult]").then(() => {
-        getFileResult();
+        getFileResult("[data-fileResult]");
         setUploadFiles(true);
     });
 }
 
-function getFileResult() {
-    const _fileResults = document.querySelectorAll("[data-fileResult]");
+function getFileResult(t) {
+    const _fileResults = document.querySelectorAll(t);
     const _isEmpty = _fileResults.length === 0;
     setDescription("[data-description]", !_isEmpty);
 }

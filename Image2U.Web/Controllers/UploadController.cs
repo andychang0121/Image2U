@@ -84,9 +84,5 @@ namespace Image2U.Web.Controllers
                     MaxHeight = 2200
                 }}
             };
-
-        public ActionResult Index() => View();
-
-
     }
 }
