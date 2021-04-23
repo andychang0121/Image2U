@@ -223,8 +223,12 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CustomizeController.ImportSizes.cs" />
+    <Compile Include="Controllers\CustomizeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImageUploadController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\UploadController.Image.cs" />
     <Compile Include="Controllers\UploadController.Zip.cs" />
     <Compile Include="Controllers\UploadController.Sizing.cs" />
     <Compile Include="Controllers\UploadController.Get.cs" />
@@ -243,15 +247,11 @@
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\StringHelper.cs" />
     <Compile Include="Helper\ViewModelHelper.cs" />
-    <Compile Include="Helper\ZipHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Image\ImageFile.cs" />
-    <Compile Include="Models\Image\ImageOutput.cs" />
-    <Compile Include="Models\Image\ImageProfile.cs" />
     <Compile Include="Models\Image\ImageResult.cs" />
     <Compile Include="Models\Image\ResponseData.cs" />
-    <Compile Include="Models\Image\ZipData.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\RequestData.cs" />
     <Compile Include="Models\RequestFormData.cs" />
@@ -264,11 +264,16 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Image2U\ImageUpload.css" />
+    <Content Include="Content\images\android-chrome-192x192.png" />
+    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\lineqrcode.jpg" />
     <Content Include="Content\newSite.css" />
+    <Content Include="Content\site.mobile.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include=".bin\git.cmd" />
@@ -279,10 +284,14 @@
       <DependentUpon>Dockerfile</DependentUpon>
     </None>
     <None Include="Properties\PublishProfiles\image2u - FTP.pubxml" />
+    <Content Include="Scripts\Image2U\ImageUpload.index.js" />
     <None Include="Properties\PublishProfiles\image2u - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\registry.hub.docker.com_andyta24.pubxml" />
     <None Include="Properties\PublishProfiles\SmartASP.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\FileSaver.js" />
+    <Content Include="Scripts\FileSaver.min.js" />
+    <Content Include="Scripts\Image2U\site.common.js" />
     <Content Include="Scripts\Image2U\site.js" />
     <Content Include="Scripts\Image2U\Upload.index.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -329,7 +338,8 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Upload\Index.cshtml" />
+    <Content Include="Views\ImageUpload\Index.cshtml" />
+    <Content Include="Views\Customize\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -366,6 +376,13 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <Target Name="CopyRoslynFiles" AfterTargets="AfterBuild" Condition="!$(Disable_CopyWebApplication) And '$(OutDir)' != '$(OutputPath)'">
+    <ItemGroup>
+      <RoslynFiles Include="$(CscToolPath)\*" />
+    </ItemGroup>
+    <MakeDir Directories="$(WebProjectOutputDir)\bin\roslyn" />
+    <Copy SourceFiles="@(RoslynFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" SkipUnchangedFiles="true" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" />
   </Target>
   <ProjectExtensions>
     <VisualStudio>
