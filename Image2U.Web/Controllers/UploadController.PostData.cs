@@ -2,8 +2,6 @@
 using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -12,6 +10,8 @@ namespace Image2U.Web.Controllers
     public partial class UploadController
     {
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> PostDataAsync(RequestData requestData)
         {
             if (!requestData.ValidRequestData()) return Json(new ResponseResult
@@ -19,11 +19,20 @@ namespace Image2U.Web.Controllers
                 IsOk = false
             }, JsonRequestBehavior.AllowGet);
 
-            ResponseData response = await SizingAsync(requestData);
+            ResponseData response = await ConvertImageAsync(requestData);
 
-            ActionResult rs =  await Task.Run(() => SetTempData(response));
+            ResponseData rs = new ResponseData
+            {
+                Result = await response.Result.GetBase64(),
+                FileName = response.FileName.SetDownloadFileName("zip"),
+                ContentType = response.ContentType
+            };
 
-            return rs;
+            return new JsonResult
+            {
+                Data = rs,
+                MaxJsonLength = int.MaxValue,
+            };
         }
 
         public ActionResult SetTempData(ResponseData data)
@@ -39,5 +48,6 @@ namespace Image2U.Web.Controllers
             };
             return Json(rs, JsonRequestBehavior.AllowGet);
         }
+
     }
 }

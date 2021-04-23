@@ -1,59 +1,67 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    @*<script data-ad-client="ca-pub-3119609940333122" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>*@
+    <title>Image2U</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
+    <meta name="description" content="轉圖,後台上架,後台,電商,切版">
+    <link rel="canonical" href="http://www.image2u.tk/ImageUpload/Index" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image2U</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/images/favicon.ico" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="轉圖,後台上架,後台,電商,切版" />
+    <meta property="og:description" content="轉圖,後台上架,後台,電商,切版" />
+    <meta property="og:url" content="http://www.image2u.tk" />
+    <meta property="og:site_name" content="Image2U" />
+    <meta property="og:image" content="~/Content/images/android-chrome-192x192.png" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    <script async src="~/Scripts/Image2U/site.js"></script>
-    <!-- Google Tag Manager -->
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CZ0PGMFBMT"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
 
-        gtag('config', 'G-CZ0PGMFBMT');
-    </script>
+    <!-- Google Tag Manager -->
+    @*<script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start':
+                    new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NT3MZPJ');
+    </script>*@
     <!-- End Google Tag Manager -->
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    @*<noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NT3MZPJ"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>*@
+    <!-- End Google Tag Manager (noscript) -->
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>*@
-                @Html.ActionLink("Image2U", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Image2U", "Index", "ImageUpload", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            @*<div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("首頁", "Index", "Home")</li>
-                        <li>@Html.ActionLink("關於", "About", "Home")</li>
-                        <li>@Html.ActionLink("連絡人", "Contact", "Home")</li>
-                    </ul>
-                    @Html.Partial("_LoginPartial")
-                </div>*@
         </div>
         <div id="overlay" class="container">
             <div class="cv-spinner">
-                <span class="spinner">Image2U</span>
+                <span class="spinner"></span>
             </div>
         </div>
     </div>
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Image2U</p>
-        </footer>
     </div>
 
+    @Scripts.Render("~/bundles/site")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
