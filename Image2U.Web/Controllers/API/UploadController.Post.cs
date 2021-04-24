@@ -1,7 +1,11 @@
-﻿using Image2U.Web.Helper;
+﻿using Image2U.Service.Enum;
+using Image2U.Service.Helper;
+using Image2U.Service.Models.Image;
+using Image2U.Service.Models.Zip;
+using Image2U.Web.Helper;
 using Image2U.Web.Models;
 using Image2U.Web.Models.Image;
-using Microsoft.Extensions.Primitives;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,9 +16,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
-using Image2U.Web.Enum;
-using Microsoft.Ajax.Utilities;
 
 namespace Image2U.Web.Controllers.API
 {
