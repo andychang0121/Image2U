@@ -1,5 +1,5 @@
-﻿document.body.addEventListener("touchstart", function(e){ e.preventDefault(); });
-document.body.addEventListener("touchmove", function(e){ e.preventDefault(); });
+﻿document.body.addEventListener("touchstart", function (e) { e.preventDefault(); });
+document.body.addEventListener("touchmove", function (e) { e.preventDefault(); });
 
 Number.prototype.numberFormat = function (c, d, t) {
     var n = this,
@@ -26,7 +26,8 @@ function validFileSize(bytes, limited) {
     const _getSize = (_bytes) => { return _bytes / 1024 / 1024 };
     if (bytes === 0) return true;
     limited = limited === undefined || limited === null ? 1.5 : limited;
-    return _getSize(bytes) <= limited;
+    const _size = _getSize(bytes);
+    return _size <= limited;
 }
 
 function getFileBase64(file) {
@@ -105,14 +106,4 @@ function getParentNodeBySelector(o, name) {
     const _dataSet = Object.keys(o.dataset);
     if (findArray(_dataSet, name)) return o;
     return getParentNodeBySelector(o.parentNode, name);
-}
-
-function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-}
-
-function pageReload() {
-    location.reload();
-    window.scrollTo(0, 0);
 }

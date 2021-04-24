@@ -11,14 +11,11 @@
 
 #fileResult {
     padding: 2px 2px 2px 2px;
-    /*height: 320px;*/
 }
 
 #dropArea {
     background-color: var(--backgroundcolorDefault);
     border-radius: 16px;
-    /*border: 0 dashed #808080;
-    border: 0 dashed rgba(128, 128, 128, 0.6);*/
 }
 
 #uploadBtn {
@@ -37,13 +34,11 @@
     font-weight: bold;
     font-size: 140%;
     color: lightgray;
-    /*vertical-align: middle;
-    cursor: pointer;*/
 }
 
     #dropbox.highlight {
-        border: 2px;
-        border-color: purple;
+        border-width: 2px !important;
+        border-color: rgba(128, 128, 128, 0.9) !important;
     }
 
 #customSizes {
@@ -101,9 +96,14 @@
     padding-right: 2px;
 }
 
-    [data-remove] span.btn:hover {
-        color: red;
+    [data-remove] span {
+        padding-top: 10px;
+        color: rgba(128, 128, 128, 0.9);
     }
+
+        [data-remove] span:hover {
+            color: red;
+        }
 
 [data-description] {
     padding-top: 20px;
@@ -135,9 +135,6 @@ li {
         color: white;
         text-align: center;
         margin-right: 1rem;
-        /*text-indent: -2rem;
-        margin-left: -2rem;
-        padding-left: 2rem;*/
     }
 
 ol ol li::before {
